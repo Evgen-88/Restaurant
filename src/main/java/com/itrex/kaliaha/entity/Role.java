@@ -1,0 +1,55 @@
+package com.itrex.kaliaha.entity;
+
+public class Role extends BaseEntity<Long> {
+    private String roleName;
+
+    public Role() {}
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Role(Long id, String roleName) {
+        this(roleName);
+        super.setId(id);
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(this == object) {return true;}
+        if(object == null || getClass() != object.getClass()) {return false;}
+        Role aThat = (Role) object;
+        if (getId() == null) {
+            if (aThat.getId() != null) { return false;}
+        } else if (!getId().equals(aThat.getId())) { return false;}
+
+        if (getRoleName() == null) {
+            return aThat.getRoleName() == null;
+        } else return getRoleName().equals(aThat.getRoleName());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (getId() != null ? getId().hashCode() : 0);
+        result = prime * result + (getRoleName() != null ? getRoleName().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "id=" + getId() +
+                ", roleName='" + roleName + '\'' +
+                '}';
+    }
+}

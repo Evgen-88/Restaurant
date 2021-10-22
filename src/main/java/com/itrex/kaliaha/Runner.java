@@ -1,5 +1,7 @@
 package com.itrex.kaliaha;
 
+import com.itrex.kaliaha.repository.OrderRepository;
+import com.itrex.kaliaha.repository.impl.JDBCOrderRepositoryImpl;
 import com.itrex.kaliaha.service.FlywayService;
 import org.h2.jdbcx.JdbcConnectionPool;
 
