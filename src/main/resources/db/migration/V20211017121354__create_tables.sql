@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `user`
     `login`      VARCHAR(32)  NOT NULL,
     `password`   VARCHAR(256) NOT NULL,
     `address`    VARCHAR(256) NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT login_unique UNIQUE (`login`)
 );
 
 CREATE TABLE IF NOT EXISTS `order`
