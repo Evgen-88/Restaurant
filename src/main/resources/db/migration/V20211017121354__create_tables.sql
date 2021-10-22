@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS `order_dish_link`
 (
     `order_id` BIGINT NOT NULL,
     `dish_id`  BIGINT NOT NULL,
-    CONSTRAINT order_dish_unique UNIQUE (`order_id`, `dish_id`),
     CONSTRAINT order_dish_link_dish_fk
         FOREIGN KEY (`dish_id`)
             REFERENCES `dish` (`id`),
