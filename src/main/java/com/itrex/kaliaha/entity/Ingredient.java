@@ -1,14 +1,12 @@
 package com.itrex.kaliaha.entity;
 
-import com.itrex.kaliaha.entity.util.Measurement;
+import com.itrex.kaliaha.enums.Measurement;
 
 public class Ingredient extends BaseEntity<Long> {
     private String ingredientName;
     private int price;
     private int remainder;
     private Measurement measurement;
-
-    public Ingredient() {}
 
     public Ingredient(String ingredientName, int price, int remainder, Measurement measurement) {
         this.ingredientName = ingredientName;

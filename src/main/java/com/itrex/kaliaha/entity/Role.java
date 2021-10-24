@@ -3,8 +3,6 @@ package com.itrex.kaliaha.entity;
 public class Role extends BaseEntity<Long> {
     private String roleName;
 
-    public Role() {}
-
     public Role(String roleName) {
         this.roleName = roleName;
     }

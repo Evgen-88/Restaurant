@@ -1,6 +1,6 @@
 package com.itrex.kaliaha.entity;
 
-import com.itrex.kaliaha.entity.util.Group;
+import com.itrex.kaliaha.enums.Group;
 
 public class Dish extends BaseEntity<Long> {
     private String dishName;
@@ -8,8 +8,6 @@ public class Dish extends BaseEntity<Long> {
     private Group group;
     private String description;
     private String imagePath;
-
-    public Dish() {}
 
     public Dish (String dishName, int price, Group group, String description, String imagePath) {
         this.dishName = dishName;

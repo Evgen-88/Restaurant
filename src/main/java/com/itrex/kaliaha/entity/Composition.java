@@ -5,8 +5,6 @@ public class Composition extends BaseEntity<Long>{
     private Long ingredientId;
     private int quantity;
 
-    public Composition() {}
-
     public Composition(Long dishId, Long ingredientId, int quantity) {
         this.dishId = dishId;
         this.ingredientId = ingredientId;

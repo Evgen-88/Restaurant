@@ -1,6 +1,6 @@
 package com.itrex.kaliaha.entity;
 
-import com.itrex.kaliaha.entity.util.OrderStatus;
+import com.itrex.kaliaha.enums.OrderStatus;
 
 import java.time.LocalDate;
 
@@ -10,8 +10,6 @@ public class Order extends BaseEntity<Long> {
     private String address;
     private OrderStatus orderStatus;
     private User user;
-
-    public Order() {}
 
     public Order(int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
         this.price = price;

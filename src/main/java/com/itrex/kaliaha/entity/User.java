@@ -7,8 +7,6 @@ public class User extends BaseEntity<Long> {
     private String password;
     private String address;
 
-    public User() {}
-
     public User(String lastName, String firstName, String login, String password, String address) {
         this.lastName = lastName;
         this.firstName = firstName;
