@@ -85,16 +85,20 @@ public class JDBCOrderRepositoryImpl
     }
 
     @Override
-    public boolean orderDish(Order order, Long dishId) {
+    public boolean orderDish(Long orderId, Long dishId) {
         try (Connection conn = getDataSource().getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(INSERT_DISH_TO_ORDER)) {
-            preparedStatement.setLong(1, order.getId());
-            preparedStatement.setLong(2, dishId);
+            fillPreparedStatementForOrdering(preparedStatement, orderId, dishId);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    private void fillPreparedStatementForOrdering(PreparedStatement preparedStatement, Long orderId, Long dishId) throws SQLException {
+        preparedStatement.setLong(1, orderId);
+        preparedStatement.setLong(2, dishId);
     }
 
     @Override

@@ -126,7 +126,7 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void orderDish_validData_shouldAddDishToOrder() {
         //given && when && then
-        boolean actual = orderRepository.orderDish(orders.get(1), 3L);
+        boolean actual = orderRepository.orderDish(orders.get(1).getId(), 3L);
         Assert.assertTrue(actual);
     }
 
@@ -138,9 +138,9 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
         orderRepository.add(newOrder);
         Assert.assertEquals(checkAddition, newOrder);
 
-        Assert.assertTrue(orderRepository.orderDish(newOrder, 1L));
-        Assert.assertTrue(orderRepository.orderDish(newOrder, 2L));
-        Assert.assertTrue(orderRepository.orderDish(newOrder, 3L));
+        Assert.assertTrue(orderRepository.orderDish(newOrder.getId(), 1L));
+        Assert.assertTrue(orderRepository.orderDish(newOrder.getId(), 2L));
+        Assert.assertTrue(orderRepository.orderDish(newOrder.getId(), 3L));
         Assert.assertTrue(orderRepository.deleteDishesByOrderId(newOrder.getId()));
     }
 }

@@ -115,8 +115,8 @@ public class JDBCDishRepositoryImplTest extends BaseRepositoryTest {
         orderRepository.add(newOrder);
         Assert.assertEquals(expected, newOrder);
         //when
-        Assert.assertTrue(orderRepository.orderDish(newOrder, 1L));
-        Assert.assertTrue(orderRepository.orderDish(newOrder, 2L));
+        Assert.assertTrue(orderRepository.orderDish(newOrder.getId(), 1L));
+        Assert.assertTrue(orderRepository.orderDish(newOrder.getId(), 2L));
         List<Dish> orderedDishesExpected = new ArrayList<>() {{
             add(dishes.get(0));
             add(dishes.get(1));
