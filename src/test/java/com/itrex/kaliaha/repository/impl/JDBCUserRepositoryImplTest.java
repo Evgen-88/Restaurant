@@ -91,14 +91,8 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void delete_validData_shouldDeleteUser() {
-        //given
-        User expected = new User(5L, "Коляго", "Владислав", "kaliaha_vladzilsav", "1111", "г.Минск");
-
-        User newUser = new User("Коляго", "Владислав", "kaliaha_vladzilsav", "1111", "г.Минск");
-        userRepository.add(newUser);
-        Assert.assertEquals(expected, newUser);
-        //when
-        boolean actual = userRepository.delete(newUser.getId());
+        //given && when
+        boolean actual = userRepository.delete(users.get(0).getId());
         //then
         Assert.assertTrue(actual);
     }

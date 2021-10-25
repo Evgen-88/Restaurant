@@ -1,7 +1,9 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.repository.UserRepository;
 
 import javax.sql.DataSource;
@@ -29,6 +31,10 @@ public class JDBCUserRepositoryImpl
     private static final String INSERT_QUERY = "INSERT INTO users(last_name, first_name, login, password, address) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE users SET last_name=?, first_name=?, login=?, password=?, address=? WHERE id = %d";
     private static final String DELETE_QUERY = "DELETE FROM users WHERE id = %d";
+
+    private static final String DELETE_ORDERS_BY_USER_ID_QUERY = "DELETE FROM USER_ORDER WHERE user_id = %d";
+    private static final String DELETE_ORDER_DISH_LINK_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
+    private static final String DELETE_USER_ROLES_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = %d";
 
     private static final String SELECT_USER_ROLES_QUERY = "SELECT r.id, r.role_name FROM user_role_link url LEFT JOIN user_role r ON r.id = url.role_id WHERE url.user_id = %d";
     private static final String DELETE_USER_ROLE_QUERY = "DELETE FROM user_role_link WHERE user_id = ? AND role_id = ?";
@@ -108,5 +114,51 @@ public class JDBCUserRepositoryImpl
             ex.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        String query = String.format(defineDeleteQuery(), id);
+        try (Connection conn = getDataSource().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            conn.setAutoCommit(false);
+            try {
+                deleteOrdersByUserId(conn, id);
+                deleteUserRoles(conn, id);
+                preparedStatement.executeUpdate();
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                conn.rollback();
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    private void deleteOrdersByUserId(Connection conn, Long userId) throws SQLException {
+        OrderRepository orderRepository = new JDBCOrderRepositoryImpl(getDataSource());
+        List<Order> orders = orderRepository.findOrdersByUserId(userId);
+        try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_ORDERS_BY_USER_ID_QUERY, userId))) {
+            for (Order order : orders) {
+                deleteOrderLinks(conn, order.getId());
+            }
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void deleteOrderLinks(Connection conn, Long orderId) throws SQLException {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_ORDER_DISH_LINK_QUERY, orderId))) {
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private void deleteUserRoles(Connection conn, Long userId) throws SQLException {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_USER_ROLES_LINK_QUERY, userId))) {
+            preparedStatement.executeUpdate();
+        }
     }
 }

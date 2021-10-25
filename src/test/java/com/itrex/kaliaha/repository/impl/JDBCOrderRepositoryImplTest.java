@@ -5,7 +5,6 @@ import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.OrderRepository;
-import com.itrex.kaliaha.repository.UserRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,28 +19,21 @@ import static org.junit.Assert.assertEquals;
 public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     private final OrderRepository orderRepository;
     private List<Order> orders;
-    private final List<User> users;
 
     public JDBCOrderRepositoryImplTest() {
         super();
         orderRepository = new JDBCOrderRepositoryImpl(getConnectionPool());
-
-        users = new ArrayList<>();
-        users.add(new User(1L, "Коляго", "Владислав", "kaliaha.vladzislav", "1111", "г.Витебск"));
-        users.add(new User(2L, "Молочко", "Юрий", "molochko.urey", "2222", "г.Хойники"));
-        users.add(new User(3L,"Рубанов", "Владислав", "rubanov", "3333", "г.Жлобин"));
-        users.add(new User(4L, "Петров", "Сергей", "petrov", "4444", "г.Москва"));
     }
 
     @Before
     public void init() {
         orders = new ArrayList<>() {{
-            add(new Order(1L, 1500, LocalDate.of(2021, 10, 21), "г. Минск", OrderStatus.COOKING, users.get(0)));
-            add(new Order(2L, 2800, LocalDate.of(2021, 10, 22), "г. Минск", OrderStatus.COOKING, users.get(1)));
-            add(new Order(3L, 1200, LocalDate.of(2021, 10, 23), "г. Витебск", OrderStatus.COOKING, users.get(0)));
-            add(new Order(4L, 1500, LocalDate.of(2021, 11, 24), "г. Минск", OrderStatus.NEW, users.get(2)));
-            add(new Order(5L, 2800, LocalDate.of(2021, 11, 25), "г. Минск", OrderStatus.NEW, users.get(3)));
-            add(new Order(6L, 1200, LocalDate.of(2021, 12, 26), "г. Витебск", OrderStatus.NEW, users.get(0)));
+            add(new Order(1L, 1500, LocalDate.of(2021, 10, 21), "г. Минск", OrderStatus.COOKING, 1L));
+            add(new Order(2L, 2800, LocalDate.of(2021, 10, 22), "г. Минск", OrderStatus.COOKING, 2L));
+            add(new Order(3L, 1200, LocalDate.of(2021, 10, 23), "г. Витебск", OrderStatus.COOKING, 1L));
+            add(new Order(4L, 1500, LocalDate.of(2021, 11, 24), "г. Минск", OrderStatus.NEW, 3L));
+            add(new Order(5L, 2800, LocalDate.of(2021, 11, 25), "г. Минск", OrderStatus.NEW, 4L));
+            add(new Order(6L, 1200, LocalDate.of(2021, 12, 26), "г. Витебск", OrderStatus.NEW, 1L));
         }};
     }
 
@@ -68,9 +60,9 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void add_validData_shouldAddOneOrder() {
         //given
-        Order expected = new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, users.get(0));
+        Order expected = new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L);
         //when
-        Order actual = new Order(-1L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, users.get(0));
+        Order actual = new Order(-1L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L);
         orderRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
@@ -80,13 +72,13 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     public void addAll_validData_shouldAddAllOrders() {
         //given
         List<Order> expected = new ArrayList<>() {{
-            add(new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, users.get(0)));
-            add(new Order(8L, 2800, LocalDate.of(2021, 12, 28), "г. Минск", OrderStatus.COOKING, users.get(1)));
+            add(new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L));
+            add(new Order(8L, 2800, LocalDate.of(2021, 12, 28), "г. Минск", OrderStatus.COOKING, 2L));
         }};
         //when
         List<Order> actual = new ArrayList<>() {{
-            add(new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, users.get(0)));
-            add(new Order(2800, LocalDate.of(2021, 12, 28), "г. Минск", OrderStatus.COOKING, users.get(1)));
+            add(new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L));
+            add(new Order(2800, LocalDate.of(2021, 12, 28), "г. Минск", OrderStatus.COOKING, 2L));
         }};
         orderRepository.addAll(actual);
         //then
@@ -96,7 +88,7 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void update_validData_shouldUpdateOrder() {
         //given
-        Order expected = new Order(1L, 1600, LocalDate.of(2021, 11, 1), "updated г. Минск", OrderStatus.COMPLETED, users.get(0));
+        Order expected = new Order(1L, 1600, LocalDate.of(2021, 11, 1), "updated г. Минск", OrderStatus.COMPLETED, 1L);
         Order actual = orders.get(0);
         //when
         actual.setPrice(1600);
@@ -112,8 +104,8 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void delete_validData_shouldDeleteOrder() {
         //given
-        Order checkAddition = new Order(7L, 15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, users.get(0));
-        Order newOrder = new Order(15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, users.get(0));
+        Order checkAddition = new Order(7L, 15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, 1L);
+        Order newOrder = new Order(15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, 1L);
         orderRepository.add(newOrder);
         Assert.assertEquals(checkAddition, newOrder);
         //when
@@ -125,7 +117,7 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findOrdersByUserId_validData_shouldReturnListUserOrders() {
         //given
-        List<Order> expected = orders.stream().filter(order -> order.getUser().getId() == 1).collect(Collectors.toList());
+        List<Order> expected = orders.stream().filter(order -> order.getUserId() == 1).collect(Collectors.toList());
         //when
         List<Order> actual = orderRepository.findOrdersByUserId(1L);
         //then
@@ -142,8 +134,8 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deleteDishesByOrderId_validData_shouldDeleteAllDishesInOrder() {
         //given && when
-        Order checkAddition = new Order(7L, 3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, users.get(1));
-        Order newOrder = new Order(3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, users.get(1));
+        Order checkAddition = new Order(7L, 3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, 2L);
+        Order newOrder = new Order(3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, 2L);
         orderRepository.add(newOrder);
         Assert.assertEquals(checkAddition, newOrder);
 
@@ -151,20 +143,5 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
         Assert.assertTrue(orderRepository.orderDish(newOrder, 2L));
         Assert.assertTrue(orderRepository.orderDish(newOrder, 3L));
         Assert.assertTrue(orderRepository.deleteDishesByOrderId(newOrder.getId()));
-    }
-
-    @Test
-    public void deleteOrdersByUserId_validData_shouldDeleteAllDishesInOrder() {
-        //given
-        User user = new User("Селиванов", "Михаил", "selivanov", "555", "г.Рига");
-        UserRepository userRepository = new JDBCUserRepositoryImpl(getConnectionPool());
-        userRepository.add(user);
-        Assert.assertNotNull(user.getId());
-        Order checkAddition = new Order(7L, 3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, user);
-        // when
-        Order newOrder = new Order(3000, LocalDate.of(2021, 12, 30), "г. Минск", OrderStatus.NEW, user);
-        orderRepository.add(newOrder);
-        Assert.assertEquals(checkAddition, newOrder);
-        Assert.assertTrue(orderRepository.deleteOrdersByUserId(user.getId()));
     }
 }

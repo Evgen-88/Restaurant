@@ -8,6 +8,4 @@ import java.util.List;
 public interface UserRepository extends Repository<User> {
     List<Role> findRolesByUserId(Long userId);
     boolean deleteRoleByUserId(Long userId, Long roleId);
-
-
 }

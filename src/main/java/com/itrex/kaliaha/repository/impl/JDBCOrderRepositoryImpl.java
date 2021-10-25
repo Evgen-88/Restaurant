@@ -29,11 +29,12 @@ public class JDBCOrderRepositoryImpl
     private static final String UPDATE_QUERY = "UPDATE user_order SET price=?, order_date=?, address=?, order_status=?, user_id = ?  WHERE id = %d";
     private static final String DELETE_QUERY = "DELETE FROM user_order WHERE id = %d";
 
+    private static final String DELETE_ORDER_LINKS_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
+
     private static final String INSERT_DISH_TO_ORDER = "INSERT INTO order_dish_link(order_id, dish_id) VALUES (?, ?)";
     private static final String DELETE_ALL_DISHES_BY_ORDER_ID_QUERY = "DELETE FROM order_dish_link WHERE order_id = ?";
 
     private static final String SELECT_ORDERS_BY_USER_ID_QUERY = "SELECT * FROM user_order WHERE user_id = ";
-    private static final String DELETE_ORDERS_BY_USER_ID_QUERY = "DELETE FROM user_order WHERE user_id = ?";
 
     private final JDBCUserRepositoryImpl userRepository;
 
@@ -75,7 +76,7 @@ public class JDBCOrderRepositoryImpl
                 resultSet.getDate(DATE_COLUMN).toLocalDate(),
                 resultSet.getString(ADDRESS_COLUMN),
                 OrderStatus.valueOf(resultSet.getString(ORDER_STATUS_COLUMN)),
-                userRepository.findById(resultSet.getLong(USER_ID_COLUMN))
+                resultSet.getLong(USER_ID_COLUMN)
         );
     }
 
@@ -84,7 +85,7 @@ public class JDBCOrderRepositoryImpl
         preparedStatement.setDate(2, Date.valueOf(order.getDate()));
         preparedStatement.setString(3, order.getAddress());
         preparedStatement.setString(4, order.getOrderStatus().toString());
-        preparedStatement.setLong(5, order.getUser().getId());
+        preparedStatement.setLong(5, order.getUserId());
     }
 
     @Override
@@ -128,14 +129,30 @@ public class JDBCOrderRepositoryImpl
     }
 
     @Override
-    public boolean deleteOrdersByUserId(Long userId) {
+    public boolean delete(Long id) {
+        String query = String.format(defineDeleteQuery(), id);
         try (Connection conn = getDataSource().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(DELETE_ORDERS_BY_USER_ID_QUERY)) {
-            preparedStatement.setLong(1, userId);
-            return preparedStatement.executeUpdate() == 1;
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            conn.setAutoCommit(false);
+            try{
+                deleteOrderLinks(conn, id);
+                preparedStatement.executeUpdate();
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                conn.rollback();
+            } finally {
+                conn.setAutoCommit(true);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    private void deleteOrderLinks(Connection conn, Long orderId) throws SQLException {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_ORDER_LINKS_QUERY, orderId))) {
+            preparedStatement.executeUpdate();
+        }
     }
 }
