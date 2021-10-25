@@ -1,16 +1,10 @@
 package com.itrex.kaliaha.repository;
 
+import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 
 import java.util.List;
 
-public interface DishRepository {
-    Dish selectById(Long id);
-    List<Dish> selectAll();
-    void add(Dish dish);
-    void addAll(List<Dish> dishes);
-    boolean update(Dish dish);
-    boolean remove(Long id);
-
+public interface DishRepository extends Repository<Dish> {
     List<Dish> findAllDishesInOrderById(Long orderId);
 }

@@ -4,17 +4,11 @@ import com.itrex.kaliaha.entity.Order;
 
 import java.util.List;
 
-public interface OrderRepository {
-    Order selectById(Long id);
-    List<Order> selectAll();
-    void add(Order order);
-    void addAll(List<Order> orders);
-    boolean update(Order order);
-    boolean remove(Long id);
-
+public interface OrderRepository extends Repository<Order>{
     List<Order> findOrdersByUserId(Long userId);
-    boolean removeOrdersByUserId(Long userId);
+
+    boolean deleteOrdersByUserId(Long userId);
 
     boolean orderDish(Order order, Long dishId);
-    boolean removeDishesByOrderId(Long orderId);
+    boolean deleteDishesByOrderId(Long orderId);
 }
