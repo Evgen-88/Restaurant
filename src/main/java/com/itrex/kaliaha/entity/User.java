@@ -107,11 +107,11 @@ public class User extends BaseEntity<Long> {
     public String toString() {
         return getClass().getSimpleName() + '{' +
                 "id=" + getId() +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", address='" + address + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", firstName='" + getLastName() + '\'' +
+                ", login='" + getLogin() + '\'' +
+                ", password='" + getPassword() + '\'' +
+                ", address='" + getAddress() + '\'' +
                 '}';
     }
 }

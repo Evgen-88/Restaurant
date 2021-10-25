@@ -9,18 +9,18 @@ public class Order extends BaseEntity<Long> {
     private LocalDate date;
     private String address;
     private OrderStatus orderStatus;
-    private User user;
+    private Long userId;
 
-    public Order(int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
+    public Order(int price, LocalDate date, String address, OrderStatus orderStatus, Long userId) {
         this.price = price;
         this.date = date;
         this.address = address;
         this.orderStatus = orderStatus;
-        this.user = user;
+        this.userId = userId;
     }
 
-    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
-        this(price, date, address, orderStatus, user);
+    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, Long userId) {
+        this(price, date, address, orderStatus, userId);
         super.setId(id);
     }
 
@@ -56,12 +56,12 @@ public class Order extends BaseEntity<Long> {
         this.orderStatus = orderStatus;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -87,9 +87,9 @@ public class Order extends BaseEntity<Long> {
             if (aThat.getOrderStatus() != null) { return false;}
         } else if (!getOrderStatus().equals(aThat.getOrderStatus())) { return false;}
 
-        if (getUser() == null) {
-            return aThat.getUser() == null;
-        } else return getUser().equals(aThat.getUser());
+        if (getUserId() == null) {
+            return aThat.getUserId() == null;
+        } else return getUserId().equals(aThat.getUserId());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Order extends BaseEntity<Long> {
         result = prime * result + (getDate() != null ? getDate().hashCode() : 0);
         result = prime * result + (getAddress() != null ? getAddress().hashCode() : 0);
         result = prime * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
-        result = prime * result + (getUser() != null ? getUser().hashCode() : 0);
+        result = prime * result + (getUserId() != null ? getUserId().hashCode() : 0);
         return result;
     }
 
@@ -109,11 +109,11 @@ public class Order extends BaseEntity<Long> {
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
-                ", price=" + price +
-                ", date=" + date +
-                ", address='" + address + '\'' +
-                ", orderStatus=" + orderStatus +
-                ", user=" + user +
+                ", price=" + getPrice() +
+                ", date=" + getDate() +
+                ", address='" + getAddress() + '\'' +
+                ", orderStatus=" + getOrderStatus() +
+                ", user=" + getUserId() +
                 '}';
     }
 }

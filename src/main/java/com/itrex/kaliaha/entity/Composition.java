@@ -77,7 +77,7 @@ public class Composition extends BaseEntity<Long>{
                 "id=" + getId() +
                 ", dish=" + getDishId() +
                 ", ingredient=" + getIngredientId() +
-                ", quantity=" + quantity +
+                ", quantity=" + getQuantity() +
                 "}";
     }
 }

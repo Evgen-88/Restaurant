@@ -107,11 +107,11 @@ public class Dish extends BaseEntity<Long> {
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
-                ", dishName='" + dishName + '\'' +
-                ", price=" + price +
-                ", group=" + group +
-                ", description='" + description + '\'' +
-                ", imagePath='" + imagePath + '\'' +
+                ", dishName='" + getDishName() + '\'' +
+                ", price=" + getPrice() +
+                ", group=" + getGroup() +
+                ", description='" + getDescription() + '\'' +
+                ", imagePath='" + getImagePath() + '\'' +
                 '}';
     }
 }

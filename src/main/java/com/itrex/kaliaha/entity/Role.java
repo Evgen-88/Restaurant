@@ -47,7 +47,7 @@ public class Role extends BaseEntity<Long> {
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
-                ", roleName='" + roleName + '\'' +
+                ", roleName='" + getRoleName() + '\'' +
                 '}';
     }
 }

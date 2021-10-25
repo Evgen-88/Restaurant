@@ -89,10 +89,10 @@ public class Ingredient extends BaseEntity<Long> {
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
-                ", ingredientName='" + ingredientName + '\'' +
-                ", price=" + price +
-                ", remainder=" + remainder +
-                ", measurement=" + measurement +
+                ", ingredientName='" + getIngredientName() + '\'' +
+                ", price=" + getPrice() +
+                ", remainder=" + getRemainder() +
+                ", measurement=" + getMeasurement() +
                 '}';
     }
 }
