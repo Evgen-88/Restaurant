@@ -2,7 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.Repository;
+import com.itrex.kaliaha.repository.BaseRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
-    private final Repository<Composition> compositionRepository;
+    private final BaseRepository<Composition> compositionBaseRepository;
     private final List<Composition> compositions;
 
     public JDBCCompositionRepositoryImplTest() {
         super();
-        compositionRepository = new JDBCCompositionRepositoryImpl(getConnectionPool());
+        compositionBaseRepository = new JDBCCompositionRepositoryImpl(getConnectionPool());
         compositions = new ArrayList<>() {{
             add(new Composition(1L,1L, 1L, 100));
             add(new Composition(2L,1L, 2L, 450));
@@ -35,7 +35,7 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
         //given
         Composition expected = compositions.get(0);
         //when
-        Composition actual = compositionRepository.findById(expected.getId());
+        Composition actual = compositionBaseRepository.findById(expected.getId());
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -43,7 +43,7 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnAllCompositions() {
         //given && when
-        List<Composition> actual = compositionRepository.findAll();
+        List<Composition> actual = compositionBaseRepository.findAll();
         //then
         Assert.assertEquals(compositions, actual);
     }
@@ -54,7 +54,7 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
         Composition expected = new Composition(10L, 2L, 4L, 100);
         //when
         Composition actual = new Composition(2L, 4L, 100);
-        compositionRepository.add(actual);
+        compositionBaseRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -71,7 +71,7 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
             add(new Composition(2L, 4L, 50));
             add(new Composition(2L, 5L, 150));
         }};
-        compositionRepository.addAll(actual);
+        compositionBaseRepository.addAll(actual);
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -83,7 +83,7 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
         //when
         Composition actual = compositions.get(0);
         actual.setQuantity(200);
-        compositionRepository.update(actual);
+        compositionBaseRepository.update(actual);
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -93,6 +93,6 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
         //given && when
         Composition actual = compositions.get(0);
         //then
-        Assert.assertTrue(compositionRepository.delete(actual.getId()));
+        Assert.assertTrue(compositionBaseRepository.delete(actual.getId()));
     }
 }

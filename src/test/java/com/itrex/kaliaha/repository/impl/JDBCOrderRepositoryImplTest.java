@@ -1,7 +1,6 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.OrderRepository;
@@ -62,7 +61,7 @@ public class JDBCOrderRepositoryImplTest extends BaseRepositoryTest {
         //given
         Order expected = new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L);
         //when
-        Order actual = new Order(-1L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L);
+        Order actual = new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, 1L);
         orderRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);

@@ -2,7 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.Repository;
+import com.itrex.kaliaha.repository.BaseRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class JDBCRoleRepositoryImplTest extends BaseRepositoryTest {
-    private final Repository<Role> roleRepository;
+    private final BaseRepository<Role> roleRepository;
     private final List<Role> roles;
 
     public JDBCRoleRepositoryImplTest() {
@@ -83,13 +83,8 @@ public class JDBCRoleRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void delete_shouldDeleteFirstRole() {
-        //given
-        Role newRole = new Role("senior admin");
-        roleRepository.add(newRole);
-        Role checkAdd = new Role(4L, "senior admin");
-        Assert.assertEquals(checkAdd, newRole);
-        //when
-        boolean actual = roleRepository.delete(newRole.getId());
+        //given && when
+        boolean actual = roleRepository.delete(2L);
         //then
         Assert.assertTrue(actual);
     }

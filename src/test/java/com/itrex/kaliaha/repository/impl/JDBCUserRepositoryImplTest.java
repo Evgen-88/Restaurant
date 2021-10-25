@@ -2,8 +2,12 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.entity.Order;
+import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.DishRepository;
+import com.itrex.kaliaha.repository.OrderRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
     private final UserRepository userRepository;
-    private List<User> users;
+    private final List<User> users;
 
     public JDBCUserRepositoryImplTest() {
         super();
@@ -46,27 +50,31 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void add_validData_shouldAddNewUser() {
+    public void add_validData_shouldAddNewUserAndSetDefaultRole() {
         //given
-        User expected = new User(5L, "Сидоров", "Александр", "sidor", "5555", "г.Минск");
+        User expected = new User(5L, "Сидоров", "Александр", "suitor", "5555", "г.Минск");
+        List<Role> userRolesBeforeAdding = userRepository.findRolesByUserId(5L);
+        Assert.assertEquals(0, userRolesBeforeAdding.size());
         //when
-        User actual = new User("Сидоров", "Александр", "sidor", "5555", "г.Минск");
+        User actual = new User("Сидоров", "Александр", "suitor", "5555", "г.Минск");
         userRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
+        List<Role> userRolesAfterAdding = userRepository.findRolesByUserId(5L);
+        Assert.assertEquals(1, userRolesAfterAdding.size());
     }
 
     @Test
     public void addAll_validData_shouldAddAllUsers() {
         //given
         List<User> expected = new ArrayList<>() {{
-            add(new User(5L, "Черкасов", "Владимир", "cherkasov", "5555", "г.Минск"));
-            add(new User(6L, "Проркин", "Павел", "prork", "666", "г.Минск"));
+            add(new User(5L, "Черкасов", "Владимир", "checks", "5555", "г.Минск"));
+            add(new User(6L, "Пирожков", "Павел", "prior", "666", "г.Минск"));
         }};
         //when
         List<User> actual = new ArrayList<>() {{
-            add(new User("Черкасов", "Владимир", "cherkasov", "5555", "г.Минск"));
-            add(new User("Проркин", "Павел", "prork", "666", "г.Минск"));
+            add(new User("Черкасов", "Владимир", "checks", "5555", "г.Минск"));
+            add(new User("Пирожков", "Павел", "prior", "666", "г.Минск"));
         }};
         userRepository.addAll(actual);
         //then
@@ -91,9 +99,31 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void delete_validData_shouldDeleteUser() {
-        //given && when
-        boolean actual = userRepository.delete(users.get(0).getId());
+        //given
+        Long userId = users.get(0).getId();
+        OrderRepository orderRepository = new JDBCOrderRepositoryImpl(getConnectionPool());
+        DishRepository dishRepository = new JDBCDishRepositoryImpl(getConnectionPool());
+
+        List<Role> userRolesBeforeDelete = userRepository.findRolesByUserId(userId);
+        Assert.assertEquals(2, userRolesBeforeDelete.size());
+
+        List<Order> remainderOrdersBeforeDelete = orderRepository.findOrdersByUserId(userId);
+        Assert.assertEquals(3, remainderOrdersBeforeDelete.size());
+
+        List<Dish> userOrderedDishesBeforeDelete = dishRepository.findAllDishesInOrderById(1L);
+        Assert.assertEquals(3, userOrderedDishesBeforeDelete.size());
+        //when
+        boolean actual = userRepository.delete(userId);
         //then
+        List<Order> remainderUserOrdersAfterDelete = orderRepository.findOrdersByUserId(userId);
+        Assert.assertEquals(0, remainderUserOrdersAfterDelete.size());
+
+        List<Dish> dishesAfterDelete = dishRepository.findAllDishesInOrderById(1L);
+        Assert.assertEquals(0, dishesAfterDelete.size());
+
+        List<Role> userRolesAfterDelete = userRepository.findRolesByUserId(userId);
+        Assert.assertEquals(0, userRolesAfterDelete.size());
+
         Assert.assertTrue(actual);
     }
 
@@ -111,8 +141,8 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteUserRoleById__validData_shouldDeleteUserRoles() {
+    public void deleteRoleFromUserById__validData_shouldDeleteUserRole() {
         //given && when && then
-        Assert.assertTrue(userRepository.deleteRoleByUserId(1L, 2L));
+        Assert.assertTrue(userRepository.deleteRoleFromUserById(1L, 2L));
     }
 }

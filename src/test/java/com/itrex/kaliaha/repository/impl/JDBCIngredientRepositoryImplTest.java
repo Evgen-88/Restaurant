@@ -3,7 +3,7 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.Repository;
+import com.itrex.kaliaha.repository.BaseRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,12 +13,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
-    private final Repository<Ingredient> ingredientRepository;
+    private final BaseRepository<Ingredient> ingredientBaseRepository;
     private final List<Ingredient> ingredients;
 
     public JDBCIngredientRepositoryImplTest() {
         super();
-        ingredientRepository = new JDBCIngredientRepositoryImpl(getConnectionPool());
+        ingredientBaseRepository = new JDBCIngredientRepositoryImpl(getConnectionPool());
         ingredients = new ArrayList<>() {{
             add(new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM));
             add(new Ingredient(2L, "Картошка", 300, 777, Measurement.KILOGRAM));
@@ -33,7 +33,7 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
         //given
         Ingredient expected = ingredients.get(0);
         //when
-        Ingredient actual = ingredientRepository.findById(expected.getId());
+        Ingredient actual = ingredientBaseRepository.findById(expected.getId());
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -41,7 +41,7 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnAllIngredients() {
         //given && when
-        List<Ingredient> actual = ingredientRepository.findAll();
+        List<Ingredient> actual = ingredientBaseRepository.findAll();
         //then
         Assert.assertEquals(ingredients, actual);
     }
@@ -52,7 +52,7 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
         Ingredient expected = new Ingredient(6L, "Петрушка", 8, 1500, Measurement.KILOGRAM);
         //when
         Ingredient actual = new Ingredient("Петрушка", 8, 1500, Measurement.KILOGRAM);
-        ingredientRepository.add(actual);
+        ingredientBaseRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -70,7 +70,7 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
             add(new Ingredient("Петрушка", 8, 1500, Measurement.KILOGRAM));
             add(new Ingredient("Баклажан", 3, 7777, Measurement.KILOGRAM));
         }};
-        ingredientRepository.addAll(actual);
+        ingredientBaseRepository.addAll(actual);
         //then
         assertEquals(expected, actual);
     }
@@ -86,7 +86,7 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
         actual.setRemainder(1550);
         actual.setMeasurement(Measurement.KILOGRAM);
         //then
-        Assert.assertTrue(ingredientRepository.update(actual));
+        Assert.assertTrue(ingredientBaseRepository.update(actual));
         Assert.assertEquals(expected, actual);
     }
 
@@ -95,10 +95,10 @@ public class JDBCIngredientRepositoryImplTest extends BaseRepositoryTest {
         //given
         Ingredient checkAddition = new Ingredient(6L, "Шоколад", 8, 1500, Measurement.KILOGRAM);
         Ingredient newIngredient = new Ingredient("Шоколад", 8, 1500, Measurement.KILOGRAM);
-        ingredientRepository.add(newIngredient);
+        ingredientBaseRepository.add(newIngredient);
         Assert.assertEquals(checkAddition, newIngredient);
         //when
-        boolean actual = ingredientRepository.delete(newIngredient.getId());
+        boolean actual = ingredientBaseRepository.delete(newIngredient.getId());
         //then
         Assert.assertTrue(actual);
     }
