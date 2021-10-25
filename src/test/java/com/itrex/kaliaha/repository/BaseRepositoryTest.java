@@ -5,7 +5,9 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.After;
 import org.junit.Before;
 
-import static com.itrex.kaliaha.property.Properties.*;
+import static com.itrex.kaliaha.property.Properties.H2_URL;
+import static com.itrex.kaliaha.property.Properties.H2_USER;
+import static com.itrex.kaliaha.property.Properties.H2_PASSWORD;
 
 public abstract class BaseRepositoryTest {
 
