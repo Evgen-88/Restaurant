@@ -2,7 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.CompositionRepository;
+import com.itrex.kaliaha.repository.Repository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
-    private final CompositionRepository compositionRepository;
+    private final Repository<Composition> compositionRepository;
     private final List<Composition> compositions;
 
     public JDBCCompositionRepositoryImplTest() {
@@ -31,19 +31,19 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void selectById_validData_shouldReturnCompositionById() {
+    public void findById_validData_shouldReturnCompositionById() {
         //given
         Composition expected = compositions.get(0);
         //when
-        Composition actual = compositionRepository.selectById(expected.getId());
+        Composition actual = compositionRepository.findById(expected.getId());
         //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void selectAll_validData_shouldReturnAllCompositions() {
+    public void findAll_validData_shouldReturnAllCompositions() {
         //given && when
-        List<Composition> actual = compositionRepository.selectAll();
+        List<Composition> actual = compositionRepository.findAll();
         //then
         Assert.assertEquals(compositions, actual);
     }
@@ -89,10 +89,10 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void remove_validData_shouldRemoveComposition() {
+    public void delete_validData_shouldDeleteComposition() {
         //given && when
         Composition actual = compositions.get(0);
         //then
-        Assert.assertTrue(compositionRepository.remove(actual.getId()));
+        Assert.assertTrue(compositionRepository.delete(actual.getId()));
     }
 }

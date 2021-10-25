@@ -28,19 +28,19 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void selectById_validData_shouldReturnUserById() {
+    public void findById_validData_shouldReturnUserById() {
         //given
         User expected = users.get(0);
         //when
-        User actual = userRepository.selectById(expected.getId());
+        User actual = userRepository.findById(expected.getId());
         //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void selectAll_validData_shouldReturnAllUsers() {
+    public void findAll_validData_shouldReturnAllUsers() {
         //given && when
-        List<User> actual = userRepository.selectAll();
+        List<User> actual = userRepository.findAll();
         //then
         Assert.assertEquals(users, actual);
     }
@@ -90,15 +90,15 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void remove_validData_shouldRemoveUser() {
+    public void delete_validData_shouldDeleteUser() {
         //given
         User expected = new User(5L, "Коляго", "Владислав", "kaliaha_vladzilsav", "1111", "г.Минск");
 
-        User newUser = new User(-1L, "Коляго", "Владислав", "kaliaha_vladzilsav", "1111", "г.Минск");
+        User newUser = new User("Коляго", "Владислав", "kaliaha_vladzilsav", "1111", "г.Минск");
         userRepository.add(newUser);
         Assert.assertEquals(expected, newUser);
         //when
-        boolean actual = userRepository.remove(newUser.getId());
+        boolean actual = userRepository.delete(newUser.getId());
         //then
         Assert.assertTrue(actual);
     }
@@ -111,14 +111,14 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
             add(new Role(2L, "user"));
         }};
         //when
-        List<Role> actual = userRepository.findUserRolesById(1L);
+        List<Role> actual = userRepository.findRolesByUserId(1L);
         //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void removeUserRoleById__validData_shouldRemoveUserRoles() {
+    public void deleteUserRoleById__validData_shouldDeleteUserRoles() {
         //given && when && then
-        Assert.assertTrue(userRepository.removeUserRoleById(1L, 2L));
+        Assert.assertTrue(userRepository.deleteRoleByUserId(1L, 2L));
     }
 }
