@@ -29,18 +29,14 @@ public class JDBCOrderRepositoryImpl
     private static final String UPDATE_QUERY = "UPDATE user_order SET price=?, order_date=?, address=?, order_status=?, user_id = ?  WHERE id = %d";
     private static final String DELETE_QUERY = "DELETE FROM user_order WHERE id = %d";
 
-    private static final String DELETE_ORDER_LINKS_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
-
     private static final String INSERT_DISH_TO_ORDER = "INSERT INTO order_dish_link(order_id, dish_id) VALUES (?, ?)";
-    private static final String DELETE_ALL_DISHES_BY_ORDER_ID_QUERY = "DELETE FROM order_dish_link WHERE order_id = ?";
+    private static final String DELETE_ALL_DISHES_BY_ORDER_ID_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
 
-    private static final String SELECT_ORDERS_BY_USER_ID_QUERY = "SELECT * FROM user_order WHERE user_id = ";
-
-    private final JDBCUserRepositoryImpl userRepository;
+    private static final String SELECT_ORDERS_BY_USER_ID_QUERY = "SELECT * FROM user_order WHERE user_id = %d";
+    private static final String DELETE_ORDER_LINKS_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
 
     public JDBCOrderRepositoryImpl(DataSource dataSource) {
         super(dataSource);
-        userRepository = new JDBCUserRepositoryImpl(dataSource);
     }
 
     @Override
@@ -104,9 +100,9 @@ public class JDBCOrderRepositoryImpl
     @Override
     public boolean deleteDishesByOrderId(Long orderId) {
         try (Connection conn = getDataSource().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(DELETE_ALL_DISHES_BY_ORDER_ID_QUERY)) {
-            preparedStatement.setLong(1, orderId);
-            return preparedStatement.executeUpdate() > 0;
+             PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_ALL_DISHES_BY_ORDER_ID_QUERY, orderId))) {
+            preparedStatement.executeUpdate();
+            return  true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -115,17 +111,18 @@ public class JDBCOrderRepositoryImpl
 
     @Override
     public List<Order> findOrdersByUserId(Long userId) {
-        List<Order> orders = new ArrayList<>();
         try (Connection conn = getDataSource().getConnection();
              Statement stm = conn.createStatement();
-             ResultSet resultSet = stm.executeQuery(SELECT_ORDERS_BY_USER_ID_QUERY + userId)) {
+             ResultSet resultSet = stm.executeQuery(String.format(SELECT_ORDERS_BY_USER_ID_QUERY, userId))) {
+            List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
                 orders.add(construct(resultSet));
             }
+            return orders;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return orders;
+        return new ArrayList<>();
     }
 
     @Override

@@ -26,6 +26,8 @@ public class JDBCUserRepositoryImpl
     private static final String ADDRESS_COLUMN = "address";
     private static final String ROLE_NAME_COLUMN = "role_name";
 
+    private static final Long DEFAULT_ROLE_ID = 2L;
+
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM users WHERE id = %d";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM users";
     private static final String INSERT_QUERY = "INSERT INTO users(last_name, first_name, login, password, address) VALUES (?, ?, ?, ?, ?)";
@@ -34,10 +36,11 @@ public class JDBCUserRepositoryImpl
 
     private static final String DELETE_ORDERS_BY_USER_ID_QUERY = "DELETE FROM USER_ORDER WHERE user_id = %d";
     private static final String DELETE_ORDER_DISH_LINK_QUERY = "DELETE FROM order_dish_link WHERE order_id = %d";
-    private static final String DELETE_USER_ROLES_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = %d";
 
     private static final String SELECT_USER_ROLES_QUERY = "SELECT r.id, r.role_name FROM user_role_link url LEFT JOIN user_role r ON r.id = url.role_id WHERE url.user_id = %d";
+    private static final String INSERT_USER_ROLE_LINK_QUERY = "INSERT INTO user_role_link(user_id, role_id) VALUES (?, ?)";
     private static final String DELETE_USER_ROLE_QUERY = "DELETE FROM user_role_link WHERE user_id = ? AND role_id = ?";
+    private static final String DELETE_USER_ROLES_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = %d";
 
     public JDBCUserRepositoryImpl(DataSource dataSource) {
         super(dataSource);
@@ -69,12 +72,12 @@ public class JDBCUserRepositoryImpl
     }
 
     @Override
-    protected void fillPreparedStatement(PreparedStatement preparedStatement, User entity) throws SQLException {
-        preparedStatement.setString(1, entity.getLastName());
-        preparedStatement.setString(2, entity.getFirstName());
-        preparedStatement.setString(3, entity.getLogin());
-        preparedStatement.setString(4, entity.getPassword());
-        preparedStatement.setString(5, entity.getAddress());
+    protected void fillPreparedStatement(PreparedStatement preparedStatement, User user) throws SQLException {
+        preparedStatement.setString(1, user.getLastName());
+        preparedStatement.setString(2, user.getFirstName());
+        preparedStatement.setString(3, user.getLogin());
+        preparedStatement.setString(4, user.getPassword());
+        preparedStatement.setString(5, user.getAddress());
     }
 
     protected User construct(ResultSet resultSet) throws SQLException {
@@ -86,6 +89,31 @@ public class JDBCUserRepositoryImpl
                 resultSet.getString(PASSWORD_COLUMN),
                 resultSet.getString(ADDRESS_COLUMN)
         );
+    }
+
+    @Override
+    public void add(User user) {
+        try (Connection con = getDataSource().getConnection()) {
+            con.setAutoCommit(false);
+            try {
+                insert(con, user);
+                addUserRoleById(con, user.getId());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void addUserRoleById(Connection conn, Long userId) throws SQLException {
+        try(PreparedStatement preparedStatement = conn.prepareStatement(INSERT_USER_ROLE_LINK_QUERY)) {
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, DEFAULT_ROLE_ID);
+            preparedStatement.executeUpdate();
+        }
     }
 
     @Override
@@ -104,7 +132,7 @@ public class JDBCUserRepositoryImpl
     }
 
     @Override
-    public boolean deleteRoleByUserId(Long userId, Long roleId) {
+    public boolean deleteRoleFromUserById(Long userId, Long roleId) {
         try (Connection conn = getDataSource().getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(DELETE_USER_ROLE_QUERY)) {
             preparedStatement.setLong(1, userId);
@@ -124,7 +152,7 @@ public class JDBCUserRepositoryImpl
             conn.setAutoCommit(false);
             try {
                 deleteOrdersByUserId(conn, id);
-                deleteUserRoles(conn, id);
+                deleteUserRolesLinks(conn, id);
                 preparedStatement.executeUpdate();
                 return true;
             } catch (SQLException ex) {
@@ -156,7 +184,7 @@ public class JDBCUserRepositoryImpl
         }
     }
 
-    private void deleteUserRoles(Connection conn, Long userId) throws SQLException {
+    private void deleteUserRolesLinks(Connection conn, Long userId) throws SQLException {
         try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_USER_ROLES_LINK_QUERY, userId))) {
             preparedStatement.executeUpdate();
         }
