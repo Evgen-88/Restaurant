@@ -1,7 +1,7 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Dish;
-import com.itrex.kaliaha.entity.util.Group;
+import com.itrex.kaliaha.enums.Group;
 import com.itrex.kaliaha.repository.DishRepository;
 
 import javax.sql.DataSource;
@@ -13,95 +13,68 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JDBCDishRepositoryImpl implements DishRepository {
-    public static final String ID_COLUMN = "id";
+public class JDBCDishRepositoryImpl
+        extends JDBCAbstractRepositoryImpl<Dish>
+        implements DishRepository {
     public static final String DISH_NAME_COLUMN = "dish_name";
     public static final String PRICE_COLUMN = "price";
-    public static final String GROUP_COLUMN = "group";
-    public static final String DESCRIPTION_COLUMN = "description";
+    public static final String GROUP_COLUMN = "dish_group";
+    public static final String DESCRIPTION_COLUMN = "dish_description";
     public static final String IMAGE_PATH_COLUMN = "image_path";
 
+    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM dish WHERE id = %d";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM dish";
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM dish WHERE id = ";
-    private static final String INSERT_QUERY = "INSERT INTO dish(dish_name, price, `group`, description, image_path) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE dish SET dish_name=?, price=?, `group`=?, description=?, image_path=?  WHERE id = ?";
-    private static final String DELETE_QUERY = "DELETE FROM dish WHERE id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO dish(dish_name, price, dish_group, dish_description, image_path) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE dish SET dish_name=?, price=?, dish_group=?, dish_description=?, image_path=?  WHERE id = %d";
+    private static final String DELETE_QUERY = "DELETE FROM dish WHERE id = %d";
 
-    private static final String SELECT_ALL_DISHES_IN_ORDER_QUERY  = "SELECT * FROM dish LEFT JOIN order_dish_link on dish.id = dish_id WHERE order_id = ";
-
-    private final DataSource dataSource;
+    private static final String SELECT_ALL_DISHES_IN_ORDER_QUERY =
+            "SELECT d.id, d.DISH_NAME, d.PRICE, d.DISH_GROUP, d.DISH_DESCRIPTION, d.IMAGE_PATH " +
+                    "FROM dish d LEFT JOIN order_dish_link odl ON d.id = odl.dish_id " +
+                    "WHERE odl.order_id = %d";
 
     public JDBCDishRepositoryImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     @Override
-    public Dish selectById(Long id) {
-        Dish dish;
-        try (Connection conn = dataSource.getConnection();
-             Statement stm = conn.createStatement();
-             ResultSet resultSet = stm.executeQuery(SELECT_BY_ID_QUERY + id)) {
-
-            if (resultSet.next()) {
-                dish = constructDish(resultSet);
-                return dish;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return new Dish();
-    }
-
-    private Dish constructDish(ResultSet resultSet) throws SQLException {
-        Dish dish = new Dish();
-        dish.setId(resultSet.getLong(ID_COLUMN));
-        dish.setDishName(resultSet.getString(DISH_NAME_COLUMN));
-        dish.setPrice(resultSet.getInt(PRICE_COLUMN));
-        dish.setGroup(Group.valueOf(resultSet.getString(GROUP_COLUMN)));
-        dish.setDescription(resultSet.getString(DESCRIPTION_COLUMN));
-        dish.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-        return dish;
+    protected String defineSelectByIdQuery() {
+        return SELECT_BY_ID_QUERY;
     }
 
     @Override
-    public List<Dish> selectAll() {
-        List<Dish> dishes = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-             Statement stm = conn.createStatement();
-             ResultSet resultSet = stm.executeQuery(SELECT_ALL_QUERY)) {
-            while (resultSet.next()) {
-                dishes.add(constructDish(resultSet));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return dishes;
+    protected String defineSelectAllQuery() {
+        return SELECT_ALL_QUERY;
     }
 
     @Override
-    public void add(Dish dish) {
-        try (Connection con = dataSource.getConnection()) {
-            insert(con, dish);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    protected String defineInsertQuery() {
+        return INSERT_QUERY;
     }
 
-    private void insert(Connection con, Dish dish) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
-            fillPreparedStatement(preparedStatement, dish);
-            final int effectiveRows = preparedStatement.executeUpdate();
-            if (effectiveRows == 1) {
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        dish.setId(generatedKeys.getLong(ID_COLUMN));
-                    }
-                }
-            }
-        }
+    @Override
+    protected String defineUpdateQuery() {
+        return UPDATE_QUERY;
     }
 
-    private void fillPreparedStatement(PreparedStatement preparedStatement, Dish dish) throws SQLException {
+    @Override
+    protected String defineDeleteQuery() {
+        return DELETE_QUERY;
+    }
+
+    @Override
+    protected Dish construct(ResultSet resultSet) throws SQLException {
+        return new Dish(
+                resultSet.getLong(ID_COLUMN),
+                resultSet.getString(DISH_NAME_COLUMN),
+                resultSet.getInt(PRICE_COLUMN),
+                Group.valueOf(resultSet.getString(GROUP_COLUMN)),
+                resultSet.getString(DESCRIPTION_COLUMN),
+                resultSet.getString(IMAGE_PATH_COLUMN)
+        );
+    }
+
+    protected void fillPreparedStatement(PreparedStatement preparedStatement, Dish dish) throws SQLException {
         preparedStatement.setString(1, dish.getDishName());
         preparedStatement.setInt(2, dish.getPrice());
         preparedStatement.setString(3, dish.getGroup().toString());
@@ -110,61 +83,13 @@ public class JDBCDishRepositoryImpl implements DishRepository {
     }
 
     @Override
-    public void addAll(List<Dish> dishes) {
-        try (Connection con = dataSource.getConnection()) {
-            con.setAutoCommit(false);
-            try {
-                for (Dish dish : dishes) {
-                    insert(con, dish);
-                }
-                con.commit();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                con.rollback();
-            } finally {
-                con.setAutoCommit(true);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean update(Dish dish) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_QUERY)) {
-            fillPreparedStatement(preparedStatement, dish);
-
-            preparedStatement.setLong(6, dish.getId());
-
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean remove(Long id) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(DELETE_QUERY)) {
-            preparedStatement.setLong(1, id);
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
-
-    @Override
     public List<Dish> findAllDishesInOrderById(Long orderId) {
         List<Dish> dishes = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
+        try (Connection conn = getDataSource().getConnection();
              Statement stm = conn.createStatement();
-             ResultSet resultSet = stm.executeQuery(SELECT_ALL_DISHES_IN_ORDER_QUERY + orderId)) {
+             ResultSet resultSet = stm.executeQuery(String.format(SELECT_ALL_DISHES_IN_ORDER_QUERY, orderId))) {
             while (resultSet.next()) {
-                dishes.add(constructDish(resultSet));
+                dishes.add(construct(resultSet));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
