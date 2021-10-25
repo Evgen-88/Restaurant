@@ -2,7 +2,10 @@ package com.itrex.kaliaha.service;
 
 import org.flywaydb.core.Flyway;
 
-import static com.itrex.kaliaha.property.Properties.*;
+import static com.itrex.kaliaha.property.Properties.H2_URL;
+import static com.itrex.kaliaha.property.Properties.H2_USER;
+import static com.itrex.kaliaha.property.Properties.H2_PASSWORD;
+import static com.itrex.kaliaha.property.Properties.MIGRATIONS_LOCATION;
 
 public class FlywayService {
 
