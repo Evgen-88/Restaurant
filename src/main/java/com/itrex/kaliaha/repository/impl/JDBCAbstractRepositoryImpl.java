@@ -1,7 +1,7 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.BaseEntity;
-import com.itrex.kaliaha.repository.Repository;
+import com.itrex.kaliaha.repository.BaseRepository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>>
-        implements Repository<Entity> {
+        implements BaseRepository<Entity> {
 
     public static final String ID_COLUMN = "id";
 
@@ -79,7 +79,7 @@ public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>
         }
     }
 
-    private void insert(Connection con, Entity entity) throws SQLException {
+    protected void insert(Connection con, Entity entity) throws SQLException {
         try (PreparedStatement preparedStatement = con.prepareStatement(defineInsertQuery(), Statement.RETURN_GENERATED_KEYS)) {
             fillPreparedStatement(preparedStatement, entity);
             if (preparedStatement.executeUpdate() == 1) {
