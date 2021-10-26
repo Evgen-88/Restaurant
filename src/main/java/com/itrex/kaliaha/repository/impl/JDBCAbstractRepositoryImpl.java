@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>>
-        implements BaseRepository<Entity> {
+public abstract class JDBCAbstractRepositoryImpl<E extends BaseEntity<Long>>
+        implements BaseRepository<E> {
 
     public static final String ID_COLUMN = "id";
 
@@ -38,14 +38,14 @@ public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>
     protected abstract String defineDeleteQuery();
 
     @Override
-    public Entity findById(Long id) {
-        Entity entity;
+    public E findById(Long id) {
+        E e;
         try (Connection conn = dataSource.getConnection();
              Statement stm = conn.createStatement();
              ResultSet resultSet = stm.executeQuery(String.format(defineSelectByIdQuery(), id))) {
             if (resultSet.next()) {
-                entity = construct(resultSet);
-                return entity;
+                e = construct(resultSet);
+                return e;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -53,11 +53,11 @@ public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>
         return null;
     }
 
-    protected abstract Entity construct(ResultSet resultSet) throws SQLException;
+    protected abstract E construct(ResultSet resultSet) throws SQLException;
 
     @Override
-    public List<Entity> findAll() {
-        List<Entity> entities = new ArrayList<>();
+    public List<E> findAll() {
+        List<E> entities = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              Statement stm = conn.createStatement();
              ResultSet resultSet = stm.executeQuery(defineSelectAllQuery())) {
@@ -71,36 +71,36 @@ public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>
     }
 
     @Override
-    public void add(Entity entity) {
+    public void add(E e) {
         try (Connection con = dataSource.getConnection()) {
-            insert(con, entity);
+            insert(con, e);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    protected void insert(Connection con, Entity entity) throws SQLException {
+    protected void insert(Connection con, E e) throws SQLException {
         try (PreparedStatement preparedStatement = con.prepareStatement(defineInsertQuery(), Statement.RETURN_GENERATED_KEYS)) {
-            fillPreparedStatement(preparedStatement, entity);
+            fillPreparedStatement(preparedStatement, e);
             if (preparedStatement.executeUpdate() == 1) {
                 try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        entity.setId(generatedKeys.getLong(ID_COLUMN));
+                        e.setId(generatedKeys.getLong(ID_COLUMN));
                     }
                 }
             }
         }
     }
 
-    protected abstract void fillPreparedStatement(PreparedStatement preparedStatement, Entity entity) throws SQLException;
+    protected abstract void fillPreparedStatement(PreparedStatement preparedStatement, E e) throws SQLException;
 
     @Override
-    public void addAll(List<Entity> entities) {
+    public void addAll(List<E> entities) {
         try (Connection con = dataSource.getConnection()) {
             con.setAutoCommit(false);
             try {
-                for (Entity entity : entities) {
-                    insert(con, entity);
+                for (E e : entities) {
+                    insert(con, e);
                 }
                 con.commit();
             } catch (SQLException ex) {
@@ -115,11 +115,11 @@ public abstract class JDBCAbstractRepositoryImpl<Entity extends BaseEntity<Long>
     }
 
     @Override
-    public boolean update(Entity entity) {
-        String query = String.format(defineUpdateQuery(), entity.getId());
+    public boolean update(E e) {
+        String query = String.format(defineUpdateQuery(), e.getId());
         try (Connection conn = dataSource.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            fillPreparedStatement(preparedStatement, entity);
+            fillPreparedStatement(preparedStatement, e);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             ex.printStackTrace();
