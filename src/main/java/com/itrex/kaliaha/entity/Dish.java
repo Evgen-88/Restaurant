@@ -2,12 +2,42 @@ package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.Group;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+
+import java.util.List;
+
+@Entity
+@Table(name = "dish")
 public class Dish extends BaseEntity<Long> {
+    @Column(name = "dish_name")
     private String dishName;
+
+    @Column(name = "price")
     private int price;
+
+    @Column(name = "dish_group")
+    @Enumerated(EnumType.ORDINAL)
     private Group group;
+
+    @Column(name = "dish_description")
     private String description;
+
+    @Column(name = "image_path")
     private String imagePath;
+
+    @ManyToMany(mappedBy = "dishes")
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "dish")
+    private List<Composition> compositions;
+
+    public Dish() {}
 
     public Dish (String dishName, int price, Group group, String description, String imagePath) {
         this.dishName = dishName;

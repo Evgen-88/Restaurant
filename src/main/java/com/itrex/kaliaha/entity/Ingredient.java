@@ -2,11 +2,35 @@ package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.Measurement;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.OneToMany;
+
+import java.util.List;
+
+@Entity
+@Table(name = "ingredient")
 public class Ingredient extends BaseEntity<Long> {
+    @Column(name = "ingredient_name")
     private String ingredientName;
+
+    @Column(name = "price")
     private int price;
+
+    @Column(name = "remainder")
     private int remainder;
+
+    @Column(name = "measurement")
+    @Enumerated(EnumType.ORDINAL)
     private Measurement measurement;
+
+    @OneToMany(mappedBy = "ingredient")
+    private List<Composition> compositions;
+
+    public Ingredient() {}
 
     public Ingredient(String ingredientName, int price, int remainder, Measurement measurement) {
         this.ingredientName = ingredientName;

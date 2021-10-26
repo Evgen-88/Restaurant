@@ -1,11 +1,45 @@
 package com.itrex.kaliaha.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "users")
 public class User extends BaseEntity<Long> {
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "login")
     private String login;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "address")
     private String address;
+
+    @ManyToMany
+    @JoinTable(name = "user_role_link",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
+
+    public User() {}
 
     public User(String lastName, String firstName, String login, String password, String address) {
         this.lastName = lastName;

@@ -2,14 +2,51 @@ package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.OrderStatus;
 
-import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "user_order")
 public class Order extends BaseEntity<Long> {
+    @Column(name = "price")
     private int price;
+
+    @Column(name = "order_date")
     private LocalDate date;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "order_status")
+    @Enumerated(EnumType.ORDINAL)
     private OrderStatus orderStatus;
+
+    //@Column(name = "user_id")
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToMany
+    @JoinTable(name = "order_dish_link",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "dish_id")
+    )
+    private List<Dish> dishes = new ArrayList<>();
+
+    public Order() {}
 
     public Order(int price, LocalDate date, String address, OrderStatus orderStatus, Long userId) {
         this.price = price;

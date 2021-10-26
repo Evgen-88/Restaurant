@@ -1,9 +1,32 @@
 package com.itrex.kaliaha.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+
+@Entity
+@Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
+    //@Column(name = "dish_id")
     private Long dishId;
+
+    //@Column(name = "ingredient_id")
     private Long ingredientId;
+
+    @Column(name = "quantity")
     private int quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
+
+    @ManyToOne
+    @JoinColumn(name = "ingredient_id")
+    private Ingredient ingredient;
+
+    public Composition() {}
 
     public Composition(Long dishId, Long ingredientId, int quantity) {
         this.dishId = dishId;
