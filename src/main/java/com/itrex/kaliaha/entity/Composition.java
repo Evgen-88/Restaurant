@@ -9,10 +9,10 @@ import javax.persistence.JoinColumn;
 @Entity
 @Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
-    //@Column(name = "dish_id")
+    @Column(name = "dish_id", insertable = false, updatable = false)
     private Long dishId;
 
-    //@Column(name = "ingredient_id")
+    @Column(name = "ingredient_id", insertable = false, updatable = false)
     private Long ingredientId;
 
     @Column(name = "quantity")

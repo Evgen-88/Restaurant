@@ -32,7 +32,7 @@ public class Order extends BaseEntity<Long> {
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus orderStatus;
 
-    //@Column(name = "user_id")
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
     @ManyToOne
