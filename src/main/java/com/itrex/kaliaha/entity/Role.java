@@ -15,7 +15,7 @@ public class Role extends BaseEntity<Long> {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
-    private List<User> roles = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     public Role() {}
 
@@ -34,6 +34,14 @@ public class Role extends BaseEntity<Long> {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Override

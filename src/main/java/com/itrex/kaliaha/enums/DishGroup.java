@@ -1,13 +1,13 @@
 package com.itrex.kaliaha.enums;
 
-public enum Group {
+public enum DishGroup {
     HOT("Горячее"),
     SALAD("Салаты"),
     DRINK("Напитки");
 
     private String title;
 
-    Group(String title) {
+    DishGroup(String title) {
         this.title = title;
     }
 

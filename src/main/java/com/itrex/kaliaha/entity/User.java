@@ -1,5 +1,8 @@
 package com.itrex.kaliaha.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
@@ -37,9 +40,12 @@ public class User extends BaseEntity<Long> {
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Order> orders = new ArrayList<>();
 
     public User() {}
+
+    public User(Long id) {setId(id);}
 
     public User(String lastName, String firstName, String login, String password, String address) {
         this.lastName = lastName;
@@ -92,6 +98,22 @@ public class User extends BaseEntity<Long> {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     @Override

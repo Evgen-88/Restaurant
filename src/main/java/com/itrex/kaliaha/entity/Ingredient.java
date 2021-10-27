@@ -1,6 +1,8 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.Measurement;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,9 +30,14 @@ public class Ingredient extends BaseEntity<Long> {
     private Measurement measurement;
 
     @OneToMany(mappedBy = "ingredient")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Composition> compositions;
 
     public Ingredient() {}
+
+    public Ingredient(Long id) {
+        setId(id);
+    }
 
     public Ingredient(String ingredientName, int price, int remainder, Measurement measurement) {
         this.ingredientName = ingredientName;
@@ -41,7 +48,7 @@ public class Ingredient extends BaseEntity<Long> {
 
     public Ingredient(Long id, String ingredientName, int price, int remainder, Measurement measurement) {
         this(ingredientName, price, remainder, measurement);
-        super.setId(id);
+        setId(id);
     }
 
     public String getIngredientName() {
@@ -74,6 +81,14 @@ public class Ingredient extends BaseEntity<Long> {
 
     public void setMeasurement(Measurement measurement) {
         this.measurement = measurement;
+    }
+
+    public List<Composition> getCompositions() {
+        return compositions;
+    }
+
+    public void setCompositions(List<Composition> compositions) {
+        this.compositions = compositions;
     }
 
     @Override

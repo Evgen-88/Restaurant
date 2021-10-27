@@ -1,6 +1,8 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.OrderStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -44,6 +46,7 @@ public class Order extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
+    @Fetch(FetchMode.SUBSELECT)
     private List<Dish> dishes = new ArrayList<>();
 
     public Order() {}
@@ -99,6 +102,22 @@ public class Order extends BaseEntity<Long> {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void setDishes(List<Dish> dishes) {
+        this.dishes = dishes;
     }
 
     @Override

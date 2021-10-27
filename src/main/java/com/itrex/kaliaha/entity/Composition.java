@@ -39,6 +39,12 @@ public class Composition extends BaseEntity<Long>{
         super.setId(id);
     }
 
+    public Composition(Dish dish, Ingredient ingredient, int quantity) {
+        this.dish = dish;
+        this.ingredient = ingredient;
+        this.quantity = quantity;
+    }
+
     public Long getDishId() {
         return dishId;
     }
