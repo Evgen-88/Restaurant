@@ -92,7 +92,7 @@ public class HibernateUserRepositoryImplTest extends BaseRepositoryTest {
         actual.setAddress("Updated г.Минск");
         userRepository.update(actual);
         //then
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, userRepository.findById(1L));
     }
 
     @Test

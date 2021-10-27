@@ -56,6 +56,7 @@ public class HibernateUserRepositoryImpl
         query.setParameter(LOGIN_COLUMN, user.getLogin());
         query.setParameter(PASSWORD_COLUMN, user.getPassword());
         query.setParameter(ADDRESS_COLUMN, user.getAddress());
+        query.setParameter(ID_COLUMN, user.getId());
     }
 
     @Override

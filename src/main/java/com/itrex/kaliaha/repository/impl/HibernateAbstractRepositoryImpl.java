@@ -68,8 +68,8 @@ public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>
                 ex.printStackTrace();
                 session.getTransaction().rollback();
             }
-            return false;
         }
+        return false;
     }
 
     protected abstract void constructQuery(Query query, E e);
