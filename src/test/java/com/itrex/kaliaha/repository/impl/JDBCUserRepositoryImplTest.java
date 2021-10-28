@@ -57,7 +57,7 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
         Assert.assertEquals(0, userRolesBeforeAdding.size());
         //when
         User actual = new User("Сидоров", "Александр", "suitor", "5555", "г.Минск");
-        userRepository.add(actual);
+        userRepository.add(actual, new ArrayList<>() {{add(new Role(1L, "admin"));}});
         //then
         Assert.assertEquals(expected, actual);
         List<Role> userRolesAfterAdding = userRepository.findRolesByUserId(5L);
@@ -76,7 +76,7 @@ public class JDBCUserRepositoryImplTest extends BaseRepositoryTest {
             add(new User("Черкасов", "Владимир", "checks", "5555", "г.Минск"));
             add(new User("Пирожков", "Павел", "prior", "666", "г.Минск"));
         }};
-        userRepository.addAll(actual);
+        userRepository.addAll(actual, new ArrayList<>() {{add(new Role(1L, "admin"));}});
         //then
         assertEquals(expected, actual);
     }

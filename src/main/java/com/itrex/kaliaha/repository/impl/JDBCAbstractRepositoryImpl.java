@@ -12,9 +12,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JDBCAbstractRepositoryImpl<E extends BaseEntity<Long>>
-        implements BaseRepository<E> {
-
+public abstract class JDBCAbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
     public static final String ID_COLUMN = "id";
 
     private final DataSource dataSource;

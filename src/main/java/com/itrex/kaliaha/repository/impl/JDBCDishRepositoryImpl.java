@@ -1,6 +1,8 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
+import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.repository.DishRepository;
 
@@ -13,9 +15,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JDBCDishRepositoryImpl
-        extends JDBCAbstractRepositoryImpl<Dish>
-        implements DishRepository {
+public class JDBCDishRepositoryImpl extends JDBCAbstractRepositoryImpl<Dish>  implements DishRepository {
     public static final String DISH_NAME_COLUMN = "dish_name";
     public static final String PRICE_COLUMN = "price";
     public static final String DISH_GROUP_COLUMN = "dish_group";
@@ -95,5 +95,15 @@ public class JDBCDishRepositoryImpl
             ex.printStackTrace();
         }
         return dishes;
+    }
+
+    @Override
+    public List<Composition> getDishCompositionById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Order> findAllOrdersThatIncludeDishById(Long id) {
+        return null;
     }
 }

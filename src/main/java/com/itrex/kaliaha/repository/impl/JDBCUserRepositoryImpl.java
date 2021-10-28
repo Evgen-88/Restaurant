@@ -15,9 +15,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JDBCUserRepositoryImpl
-        extends JDBCAbstractRepositoryImpl<User>
-        implements UserRepository {
+public class JDBCUserRepositoryImpl implements UserRepository {
     private static final String ID_COLUMN = "id";
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String FIRST_NAME_COLUMN = "first_name";
@@ -42,45 +40,29 @@ public class JDBCUserRepositoryImpl
     private static final String DELETE_USER_ROLE_QUERY = "DELETE FROM user_role_link WHERE user_id = ? AND role_id = ?";
     private static final String DELETE_USER_ROLES_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = %d";
 
+    private DataSource dataSource;
+
     public JDBCUserRepositoryImpl(DataSource dataSource) {
-        super(dataSource);
+        this.dataSource = dataSource;
     }
 
     @Override
-    protected String defineSelectByIdQuery() {
-        return SELECT_BY_ID_QUERY;
+    public User findById(Long id) {
+        User user;
+        try (Connection conn = dataSource.getConnection();
+             Statement stm = conn.createStatement();
+             ResultSet resultSet = stm.executeQuery(String.format(SELECT_BY_ID_QUERY, id))) {
+            if (resultSet.next()) {
+                user = construct(resultSet);
+                return user;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
-    @Override
-    protected String defineSelectAllQuery() {
-        return SELECT_ALL_QUERY;
-    }
-
-    @Override
-    protected String defineInsertQuery() {
-        return INSERT_QUERY;
-    }
-
-    @Override
-    protected String defineUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected String defineDeleteQuery() {
-        return DELETE_QUERY;
-    }
-
-    @Override
-    protected void fillPreparedStatement(PreparedStatement preparedStatement, User user) throws SQLException {
-        preparedStatement.setString(1, user.getLastName());
-        preparedStatement.setString(2, user.getFirstName());
-        preparedStatement.setString(3, user.getLogin());
-        preparedStatement.setString(4, user.getPassword());
-        preparedStatement.setString(5, user.getAddress());
-    }
-
-    protected User construct(ResultSet resultSet) throws SQLException {
+    private User construct(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getLong(ID_COLUMN),
                 resultSet.getString(LAST_NAME_COLUMN),
@@ -92,12 +74,54 @@ public class JDBCUserRepositoryImpl
     }
 
     @Override
-    public void add(User user) {
-        try (Connection con = getDataSource().getConnection()) {
+    public List<User> findAll() {
+        List<User> entities = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             Statement stm = conn.createStatement();
+             ResultSet resultSet = stm.executeQuery(SELECT_ALL_QUERY)) {
+            while (resultSet.next()) {
+                entities.add(construct(resultSet));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return entities;
+    }
+
+    @Override
+    public boolean addAll(List<User> users, List<Role> roles) {
+        try (Connection con = dataSource.getConnection()) {
+            con.setAutoCommit(false);
+            try {
+                for (User e : users) {
+                    insert(con, e);
+                }
+                con.commit();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                con.rollback();
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean update(User user) {
+        return true;
+    }
+
+    @Override
+    public boolean add(User user, List<Role> roles) {
+        try (Connection con = dataSource.getConnection()) {
             con.setAutoCommit(false);
             try {
                 insert(con, user);
                 addUserRoleById(con, user.getId());
+                return true;
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } finally {
@@ -106,10 +130,32 @@ public class JDBCUserRepositoryImpl
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return false;
+    }
+
+    protected void insert(Connection con, User user) throws SQLException {
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+            fillPreparedStatement(preparedStatement, user);
+            if (preparedStatement.executeUpdate() == 1) {
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setId(generatedKeys.getLong(ID_COLUMN));
+                    }
+                }
+            }
+        }
+    }
+
+    private void fillPreparedStatement(PreparedStatement preparedStatement, User user) throws SQLException {
+        preparedStatement.setString(1, user.getLastName());
+        preparedStatement.setString(2, user.getFirstName());
+        preparedStatement.setString(3, user.getLogin());
+        preparedStatement.setString(4, user.getPassword());
+        preparedStatement.setString(5, user.getAddress());
     }
 
     private void addUserRoleById(Connection conn, Long userId) throws SQLException {
-        try(PreparedStatement preparedStatement = conn.prepareStatement(INSERT_USER_ROLE_LINK_QUERY)) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(INSERT_USER_ROLE_LINK_QUERY)) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, DEFAULT_ROLE_ID);
             preparedStatement.executeUpdate();
@@ -119,7 +165,7 @@ public class JDBCUserRepositoryImpl
     @Override
     public List<Role> findRolesByUserId(Long userId) {
         List<Role> roles = new ArrayList<>();
-        try (Connection conn = getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              Statement stm = conn.createStatement();
              ResultSet resultSet = stm.executeQuery(String.format(SELECT_USER_ROLES_QUERY, userId))) {
             while (resultSet.next()) {
@@ -133,7 +179,7 @@ public class JDBCUserRepositoryImpl
 
     @Override
     public boolean deleteRoleFromUserById(Long userId, Long roleId) {
-        try (Connection conn = getDataSource().getConnection();
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(DELETE_USER_ROLE_QUERY)) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, roleId);
@@ -146,8 +192,8 @@ public class JDBCUserRepositoryImpl
 
     @Override
     public boolean delete(Long id) {
-        String query = String.format(defineDeleteQuery(), id);
-        try (Connection conn = getDataSource().getConnection();
+        String query = String.format(DELETE_QUERY, id);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             conn.setAutoCommit(false);
             try {
@@ -168,7 +214,7 @@ public class JDBCUserRepositoryImpl
     }
 
     private void deleteOrdersByUserId(Connection conn, Long userId) throws SQLException {
-        OrderRepository orderRepository = new JDBCOrderRepositoryImpl(getDataSource());
+        OrderRepository orderRepository = new JDBCOrderRepositoryImpl(dataSource);
         List<Order> orders = orderRepository.findOrdersByUserId(userId);
         try (PreparedStatement preparedStatement = conn.prepareStatement(String.format(DELETE_ORDERS_BY_USER_ID_QUERY, userId))) {
             for (Order order : orders) {

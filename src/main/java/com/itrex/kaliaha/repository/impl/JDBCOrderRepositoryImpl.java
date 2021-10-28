@@ -1,6 +1,7 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Order;
+import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.repository.OrderRepository;
 
@@ -14,9 +15,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JDBCOrderRepositoryImpl
-        extends JDBCAbstractRepositoryImpl<Order>
-        implements OrderRepository {
+public class JDBCOrderRepositoryImpl extends JDBCAbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String PRICE_COLUMN = "price";
     private static final String DATE_COLUMN = "order_date";
     private static final String ADDRESS_COLUMN = "address";
@@ -72,7 +71,7 @@ public class JDBCOrderRepositoryImpl
                 resultSet.getDate(DATE_COLUMN).toLocalDate(),
                 resultSet.getString(ADDRESS_COLUMN),
                 OrderStatus.valueOf(resultSet.getString(ORDER_STATUS_COLUMN)),
-                resultSet.getLong(USER_ID_COLUMN)
+                new User(resultSet.getLong(USER_ID_COLUMN))
         );
     }
 

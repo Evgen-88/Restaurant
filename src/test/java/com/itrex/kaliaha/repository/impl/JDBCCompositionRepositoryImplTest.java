@@ -27,7 +27,6 @@ public class JDBCCompositionRepositoryImplTest extends BaseRepositoryTest {
             add(new Composition(8L,3L, 5L, 43));
             add(new Composition(9L,3L, 2L, 132));
         }};
-        
     }
 
     @Test
