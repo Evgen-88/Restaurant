@@ -1,9 +1,6 @@
 package com.itrex.kaliaha.repository.impl;
 
-import com.itrex.kaliaha.entity.Dish;
-import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.Role;
-import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.entity.*;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
@@ -48,18 +45,19 @@ public class HibernateUserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void add_validData_shouldAddNewUserAndSetDefaultRole() {
+    public void add_validData_shouldAddNewUser() {
         //given
         User expected = new User(5L, "Сидоров", "Александр", "suitor", "5555", "г.Минск");
-        List<Role> userRolesBeforeAdding = userRepository.findRolesByUserId(5L);
-        Assert.assertEquals(0, userRolesBeforeAdding.size());
-        //when
         User actual = new User("Сидоров", "Александр", "suitor", "5555", "г.Минск");
-        userRepository.add(actual);
+
+        //when
+        boolean isAdded = userRepository.add(actual, new ArrayList<>() {{add(new Role(1L)); add(new Role(2L));}});
+
         //then
+        Assert.assertTrue(isAdded);
         Assert.assertEquals(expected, actual);
-        List<Role> userRolesAfterAdding = userRepository.findRolesByUserId(5L);
-        Assert.assertEquals(1, userRolesAfterAdding.size());
+        Assert.assertEquals(actual, userRepository.findById(actual.getId()));
+        Assert.assertEquals(2, userRepository.findRolesByUserId(actual.getId()).size());
     }
 
     @Test
@@ -69,14 +67,23 @@ public class HibernateUserRepositoryImplTest extends BaseRepositoryTest {
             add(new User(5L, "Черкасов", "Владимир", "checks", "5555", "г.Минск"));
             add(new User(6L, "Пирожков", "Павел", "prior", "666", "г.Минск"));
         }};
-        //when
         List<User> actual = new ArrayList<>() {{
             add(new User("Черкасов", "Владимир", "checks", "5555", "г.Минск"));
             add(new User("Пирожков", "Павел", "prior", "666", "г.Минск"));
         }};
-        userRepository.addAll(actual);
+
+        //when
+        boolean isAdded = userRepository.addAll(actual, new ArrayList<>() {{add(new Role(1L)); add(new Role(2L));}});
+
         //then
+        Assert.assertTrue(isAdded);
         Assert.assertEquals(expected, actual);
+
+        Assert.assertEquals(actual.get(0), userRepository.findById(actual.get(0).getId()));
+        Assert.assertEquals(2, userRepository.findRolesByUserId(actual.get(0).getId()).size());
+
+        Assert.assertEquals(actual.get(1), userRepository.findById(actual.get(1).getId()));
+        Assert.assertEquals(2, userRepository.findRolesByUserId(actual.get(1).getId()).size());
     }
 
     @Test
@@ -97,32 +104,29 @@ public class HibernateUserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void delete_validData_shouldDeleteUser() {
-        //given
-        Long userId = users.get(0).getId();
         OrderRepository orderRepository = new HibernateOrderRepositoryImpl();
         DishRepository dishRepository = new HibernateDishRepositoryImpl();
+        //given
+        User expected = users.get(0);
+        User actual = userRepository.findById(1L);
 
-        List<Role> userRolesBeforeDelete = userRepository.findRolesByUserId(userId);
-        Assert.assertEquals(2, userRolesBeforeDelete.size());
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(2, userRepository.findRolesByUserId(actual.getId()).size());
+        List<Order> actualOrders = orderRepository.findOrdersByUserId(actual.getId());
+        Assert.assertEquals(3, actualOrders.size());
 
-        List<Order> remainderOrdersBeforeDelete = orderRepository.findOrdersByUserId(userId);
-        Assert.assertEquals(3, remainderOrdersBeforeDelete.size());
-
-        List<Dish> userOrderedDishesBeforeDelete = dishRepository.findAllDishesInOrderById(1L);
-        Assert.assertEquals(3, userOrderedDishesBeforeDelete.size());
+        List<Dish> orderedDishes =  dishRepository.findAllDishesInOrderById(actualOrders.get(0).getId());
         //when
-        boolean actual = userRepository.delete(userId);
+        boolean isDeleted = userRepository.delete(actual.getId());
+
         //then
-        List<Order> remainderUserOrdersAfterDelete = orderRepository.findOrdersByUserId(userId);
-        Assert.assertEquals(0, remainderUserOrdersAfterDelete.size());
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(userRepository.findById(1L));
+        Assert.assertEquals(0, userRepository.findRolesByUserId(actual.getId()).size());
+        Assert.assertEquals(0, orderRepository.findOrdersByUserId(actual.getId()).size());
 
-        List<Dish> dishesAfterDelete = dishRepository.findAllDishesInOrderById(1L);
-        Assert.assertEquals(0, dishesAfterDelete.size());
-
-        List<Role> userRolesAfterDelete = userRepository.findRolesByUserId(userId);
-        Assert.assertEquals(0, userRolesAfterDelete.size());
-
-        Assert.assertTrue(actual);
+        Assert.assertNotNull(dishRepository.findById(orderedDishes.get(0).getId()));
+        Assert.assertNotNull(dishRepository.findById(orderedDishes.get(1).getId()));
     }
 
     @Test
@@ -140,8 +144,14 @@ public class HibernateUserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void deleteRoleFromUserById__validData_shouldDeleteUserRole() {
+        List<Role> expected = userRepository.findRolesByUserId(1L);
+        expected.remove(new Role(2L, "user"));
+        List<Role> rolesExpected = new ArrayList<>(expected);
         //given && when && then
         Assert.assertTrue(userRepository.deleteRoleFromUserById(1L, 2L));
+        List<Role> actual = userRepository.findRolesByUserId(1L);
+        List<Role> rolesActual = new ArrayList<>(actual);
+        Assert.assertEquals(rolesExpected, rolesActual);
     }
 
 }

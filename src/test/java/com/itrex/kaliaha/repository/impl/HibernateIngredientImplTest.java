@@ -1,9 +1,10 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
-import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
+import com.itrex.kaliaha.repository.IngredientRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,12 +14,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class HibernateIngredientImplTest extends BaseRepositoryTest {
-    private final BaseRepository<Ingredient> ingredientBaseRepository;
+    private final IngredientRepository ingredientRepository;
     private final List<Ingredient> ingredients;
 
     public HibernateIngredientImplTest() {
         super();
-        ingredientBaseRepository = new HibernateIngredientImpl();
+        ingredientRepository = new HibernateIngredientImpl();
         ingredients = new ArrayList<>() {{
             add(new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM));
             add(new Ingredient(2L, "Картошка", 300, 777, Measurement.KILOGRAM));
@@ -33,7 +34,7 @@ public class HibernateIngredientImplTest extends BaseRepositoryTest {
         //given
         Ingredient expected = ingredients.get(0);
         //when
-        Ingredient actual = ingredientBaseRepository.findById(expected.getId());
+        Ingredient actual = ingredientRepository.findById(expected.getId());
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -41,7 +42,7 @@ public class HibernateIngredientImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnAllIngredients() {
         //given && when
-        List<Ingredient> actual = ingredientBaseRepository.findAll();
+        List<Ingredient> actual = ingredientRepository.findAll();
         //then
         Assert.assertEquals(ingredients, actual);
     }
@@ -52,7 +53,7 @@ public class HibernateIngredientImplTest extends BaseRepositoryTest {
         Ingredient expected = new Ingredient(6L, "Петрушка", 8, 1500, Measurement.KILOGRAM);
         //when
         Ingredient actual = new Ingredient("Петрушка", 8, 1500, Measurement.KILOGRAM);
-        ingredientBaseRepository.add(actual);
+        ingredientRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
     }
@@ -70,7 +71,7 @@ public class HibernateIngredientImplTest extends BaseRepositoryTest {
             add(new Ingredient("Петрушка", 8, 1500, Measurement.KILOGRAM));
             add(new Ingredient("Баклажан", 3, 7777, Measurement.KILOGRAM));
         }};
-        ingredientBaseRepository.addAll(actual);
+        ingredientRepository.addAll(actual);
         //then
         assertEquals(expected, actual);
     }
@@ -86,20 +87,25 @@ public class HibernateIngredientImplTest extends BaseRepositoryTest {
         actual.setRemainder(1550);
         actual.setMeasurement(Measurement.KILOGRAM);
         //then
-        Assert.assertTrue(ingredientBaseRepository.update(actual));
+        Assert.assertTrue(ingredientRepository.update(actual));
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void delete_validData_shouldDeleteIngredient() {
         //given
-        Ingredient checkAddition = new Ingredient(6L, "Шоколад", 8, 1500, Measurement.KILOGRAM);
-        Ingredient newIngredient = new Ingredient("Шоколад", 8, 1500, Measurement.KILOGRAM);
-        ingredientBaseRepository.add(newIngredient);
-        Assert.assertEquals(checkAddition, newIngredient);
+        Ingredient expected = ingredients.get(0);
+        Ingredient actual = ingredientRepository.findById(1L);
+
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(3, ingredientRepository.findAllDishesThatIncludeIngredientById(actual.getId()).size());
+
         //when
-        boolean actual = ingredientBaseRepository.delete(1L);
+        boolean isDeleted = ingredientRepository.delete(actual.getId());
+
         //then
-        Assert.assertTrue(actual);
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(ingredientRepository.findById(1L));
+        Assert.assertEquals(0, ingredientRepository.findAllDishesThatIncludeIngredientById(actual.getId()).size());
     }
 }

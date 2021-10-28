@@ -1,8 +1,6 @@
 package com.itrex.kaliaha.repository.impl;
 
-import com.itrex.kaliaha.entity.Dish;
-import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.entity.*;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
@@ -98,19 +96,29 @@ public class HibernateDishRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void delete_validData_shouldDeleteDish() {
         //given
+        Dish expected = dishes.get(0);
+        Dish actual = dishRepository.findById(1L);
+
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(4, dishRepository.findAllOrdersThatIncludeDishById(actual.getId()).size());
+        Assert.assertEquals(3, dishRepository.getDishCompositionById(actual.getId()).size());
 
         //when
-        boolean actual = dishRepository.delete(dishes.get(0).getId());
+        boolean isDeleted = dishRepository.delete(actual.getId());
+
         //then
-        Assert.assertTrue(actual);
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(dishRepository.findById(1L));
+        Assert.assertEquals(0, dishRepository.findAllOrdersThatIncludeDishById(actual.getId()).size());
+        Assert.assertEquals(0, dishRepository.getDishCompositionById(actual.getId()).size());
     }
 
     @Test
     public void findAllDishesInOrderById_validData_shouldFindAllDishesInOrder() {
         //given
-        Order expected = new Order(7L, 15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, 1L);
-        Order newOrder = new Order(15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, 1L);
-        newOrder.setUser(new User(1L));
+        Order expected = new Order(7L, 15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, new User(1L));
+        Order newOrder = new Order(15, LocalDate.of(2021, 10, 20), "г. Минск", OrderStatus.NEW, new User(1L));
+
         orderRepository.add(newOrder);
         Assert.assertEquals(expected, newOrder);
         //when

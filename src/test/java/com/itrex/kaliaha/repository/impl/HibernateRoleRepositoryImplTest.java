@@ -1,8 +1,12 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.entity.Composition;
+import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.entity.Role;
+import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
+import com.itrex.kaliaha.repository.RoleRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HibernateRoleRepositoryImplTest extends BaseRepositoryTest {
-    private final BaseRepository<Role> roleRepository;
+    private final RoleRepository roleRepository;
     private final List<Role> roles;
 
     public HibernateRoleRepositoryImplTest() {
@@ -81,9 +85,21 @@ public class HibernateRoleRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void delete_shouldDeleteFirstRole() {
-        //given && when
-        boolean actual = roleRepository.delete(2L);
+        //given
+        Role expected = roles.get(1) ;
+
+        Role actual = roleRepository.findById(2L);
+        Assert.assertEquals(expected, actual);
+
+        List<User> users = roleRepository.findAllUsersWhoHaveRoleById(actual.getId());
+        Assert.assertEquals(3, users.size());
+        //when
+        boolean isDeleted = roleRepository.delete(actual.getId());
         //then
-        Assert.assertTrue(actual);
+        Assert.assertTrue(isDeleted);
+        Role afterDeleting = roleRepository.findById(2L);
+        Assert.assertNull(afterDeleting);
+        Assert.assertEquals(0, roleRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
+
     }
 }
