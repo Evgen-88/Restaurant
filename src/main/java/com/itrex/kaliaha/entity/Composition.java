@@ -69,6 +69,22 @@ public class Composition extends BaseEntity<Long>{
         this.quantity = quantity;
     }
 
+    public Dish getDish() {
+        return dish;
+    }
+
+    public void setDish(Dish dish) {
+        this.dish = dish;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
     @Override
     public boolean equals(Object object) {
         if(this == object) {return true;}

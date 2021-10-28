@@ -19,6 +19,10 @@ public class Role extends BaseEntity<Long> {
 
     public Role() {}
 
+    public Role(Long id) {
+        setId(id);
+    }
+
     public Role(String roleName) {
         this.roleName = roleName;
     }

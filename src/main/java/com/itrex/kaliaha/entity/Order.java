@@ -51,16 +51,17 @@ public class Order extends BaseEntity<Long> {
 
     public Order() {}
 
-    public Order(int price, LocalDate date, String address, OrderStatus orderStatus, Long userId) {
+    public Order(int price, LocalDate date, String address, OrderStatus orderStatus,  User user) {
         this.price = price;
         this.date = date;
         this.address = address;
         this.orderStatus = orderStatus;
-        this.userId = userId;
+        this.user = user;
+        userId = user.getId();
     }
 
-    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, Long userId) {
-        this(price, date, address, orderStatus, userId);
+    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
+        this(price, date, address, orderStatus, user);
         super.setId(id);
     }
 
