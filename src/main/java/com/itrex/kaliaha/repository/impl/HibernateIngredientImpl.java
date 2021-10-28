@@ -2,13 +2,16 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
+import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateIngredientImpl extends HibernateAbstractRepositoryImpl<Ingredient>{
+public class HibernateIngredientImpl extends HibernateAbstractRepositoryImpl<Ingredient> implements IngredientRepository {
     private static final String INGREDIENT_NAME_COLUMN = "ingredientName";
     private static final String PRICE_COLUMN = "price";
     private static final String REMAINDER_COLUMN = "remainder";
@@ -70,5 +73,16 @@ public class HibernateIngredientImpl extends HibernateAbstractRepositoryImpl<Ing
         for(Composition composition : compositions) {
             session.delete(composition);
         }
+    }
+
+    @Override
+    public List<Composition> findAllDishesThatIncludeIngredientById(Long id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Ingredient ingredient = session.get(Ingredient.class, id);
+            if(ingredient != null) {
+                return new ArrayList<>(ingredient.getCompositions());
+            }
+        }
+        return new ArrayList<>();
     }
 }

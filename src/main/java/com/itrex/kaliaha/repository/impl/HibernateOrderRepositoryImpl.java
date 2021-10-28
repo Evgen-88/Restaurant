@@ -12,9 +12,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateOrderRepositoryImpl
-        extends HibernateAbstractRepositoryImpl<Order>
-        implements OrderRepository {
+public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String PRICE_COLUMN = "price";
     private static final String DATE_COLUMN = "date";
     private static final String ADDRESS_COLUMN = "address";
@@ -57,16 +55,32 @@ public class HibernateOrderRepositoryImpl
     }
 
     @Override
+    public boolean delete(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.getTransaction().begin();
+            try {
+                Order order = session.get(Order.class, id);
+                order.setDishes(new ArrayList<>());
+                session.delete(order);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                session.getTransaction().rollback();
+            }
+            return false;
+        }
+    }
+
+    @Override
     public List<Order> findOrdersByUserId(Long userId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession())  {
             User user = session.get(User.class, userId);
             if(user != null) {
-                List<Order> orders = user.getOrders();
-                Hibernate.initialize(orders);
-                return orders;
+                return new ArrayList<>(user.getOrders());
             }
-            return new ArrayList<>();
         }
+        return new ArrayList<>();
     }
 
     @Override

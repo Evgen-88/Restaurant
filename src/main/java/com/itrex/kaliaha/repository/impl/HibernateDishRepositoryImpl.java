@@ -5,16 +5,13 @@ import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.util.HibernateUtil;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateDishRepositoryImpl
-        extends HibernateAbstractRepositoryImpl<Dish>
-        implements DishRepository {
+public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl<Dish> implements DishRepository {
     private static final String DISH_NAME_COLUMN = "dishName";
     private static final String PRICE_COLUMN = "price";
     private static final String DISH_GROUP_COLUMN = "dishGroup";
@@ -92,9 +89,29 @@ public class HibernateDishRepositoryImpl
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             if(order != null) {
-                List<Dish> dishes = order.getDishes();
-                Hibernate.initialize(dishes);
-                return dishes;
+                return new ArrayList<>(order.getDishes());
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Order> findAllOrdersThatIncludeDishById(Long id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Dish dish = session.get(Dish.class, id);
+            if(dish != null) {
+                return new ArrayList<>(dish.getOrders());
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Composition> getDishCompositionById(Long id) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Dish dish = session.get(Dish.class, id);
+            if(dish != null) {
+                return new ArrayList<>(dish.getCompositions());
             }
         }
         return new ArrayList<>();

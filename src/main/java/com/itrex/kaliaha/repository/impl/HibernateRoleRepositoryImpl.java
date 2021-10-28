@@ -2,13 +2,15 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.repository.RoleRepository;
 import com.itrex.kaliaha.util.HibernateUtil;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl<Role> {
+public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl<Role> implements RoleRepository {
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL = "from Role r";
@@ -63,5 +65,16 @@ public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl
             List<Role> roles = user.getRoles();
             roles.remove(deletionRole);
         }
+    }
+
+    @Override
+    public List<User> findAllUsersWhoHaveRoleById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Role role = session.get(Role.class, id);
+            if(role != null) {
+                return new ArrayList<>(role.getUsers());
+            }
+        }
+        return new ArrayList<>();
     }
 }
