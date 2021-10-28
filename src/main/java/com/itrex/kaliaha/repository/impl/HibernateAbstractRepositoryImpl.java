@@ -8,8 +8,7 @@ import org.hibernate.Session;
 import javax.persistence.Query;
 import java.util.List;
 
-public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>>
-        implements BaseRepository<E> {
+public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
     public static final String ID_COLUMN = "id";
 
     private final Class<E> clazz;
@@ -48,8 +47,15 @@ public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>
     @Override
     public void addAll(List<E> e) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            for (E element : e) {
-                session.save(element);
+            session.getTransaction().begin();
+            try{
+                for (E element : e) {
+                    session.save(element);
+                }
+                session.getTransaction().commit();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                session.getTransaction().rollback();
             }
         }
     }
