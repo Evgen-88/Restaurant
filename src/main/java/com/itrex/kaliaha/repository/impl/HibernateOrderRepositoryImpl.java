@@ -55,24 +55,6 @@ public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImp
     }
 
     @Override
-    public boolean delete(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try {
-                Order order = session.get(Order.class, id);
-                order.setDishes(new ArrayList<>());
-                session.delete(order);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                session.getTransaction().rollback();
-            }
-            return false;
-        }
-    }
-
-    @Override
     public List<Order> findOrdersByUserId(Long userId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession())  {
             User user = session.get(User.class, userId);
