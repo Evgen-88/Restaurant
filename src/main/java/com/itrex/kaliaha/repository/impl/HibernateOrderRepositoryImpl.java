@@ -5,7 +5,6 @@ import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.util.HibernateUtil;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
