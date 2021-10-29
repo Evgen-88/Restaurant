@@ -1,6 +1,5 @@
 package com.itrex.kaliaha.repository.impl;
 
-import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
