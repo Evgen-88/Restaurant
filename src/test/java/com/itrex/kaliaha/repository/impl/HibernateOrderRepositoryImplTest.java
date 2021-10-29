@@ -63,10 +63,8 @@ public class HibernateOrderRepositoryImplTest extends BaseRepositoryTest {
     public void add_validData_shouldAddOneOrder() {
         //given
         Order expected = new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, new User(1L));
-        expected.setUser(new User(1L));
         //when
         Order actual = new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, new User(1L));
-        actual.setUser(new User(1L));
         orderRepository.add(actual);
         //then
         Assert.assertEquals(expected, actual);
@@ -83,8 +81,6 @@ public class HibernateOrderRepositoryImplTest extends BaseRepositoryTest {
         List<Order> actual = new ArrayList<>() {{
             add(new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, new User(1L)));
             add(new Order(2800, LocalDate.of(2021, 12, 28), "г. Минск", OrderStatus.COOKING, new User(2L)));
-            get(0).setUser(new User(1L));
-            get(1).setUser(new User(2L));
         }};
 
         orderRepository.addAll(actual);
