@@ -59,8 +59,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     @Override
     public boolean orderDish(Long orderId, Long dishId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
+                session.getTransaction().begin();
                 Order order = session.get(Order.class, orderId);
                 Dish dish = session.get(Dish.class, dishId);
                 order.getDishes().add(dish);
@@ -77,8 +77,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     @Override
     public boolean deleteFromOrderDishById(Long orderId, Long dishId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
+                session.getTransaction().begin();
                 Order order = session.get(Order.class, orderId);
                 Dish dish = session.get(Dish.class, dishId);
                 order.getDishes().remove(dish);

@@ -56,8 +56,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     public boolean add(User user, List<Role> roles) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
+                session.getTransaction().begin();
                 user.setRoles(roles);
                 session.save(user);
                 session.getTransaction().commit();
@@ -97,8 +97,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     public boolean deleteRoleFromUserById(Long userId, Long roleId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
+                session.getTransaction().begin();
                 User user = session.get(User.class, userId);
                 deleteRoleFromUser(user.getRoles(), roleId);
                 session.getTransaction().commit();

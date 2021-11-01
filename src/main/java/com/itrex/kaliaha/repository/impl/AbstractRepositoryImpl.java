@@ -49,8 +49,8 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     @Override
     public final boolean update(E e) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
+                session.getTransaction().begin();
                 Query query = session.createQuery(defineUpdateQuery());
                 constructQuery(query, e);
                 query.executeUpdate();
