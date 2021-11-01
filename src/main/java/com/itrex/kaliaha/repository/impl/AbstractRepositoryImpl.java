@@ -22,14 +22,14 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     protected abstract String defineUpdateQuery();
 
     @Override
-    public final E findById(Long id) {
+    public E findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(clazz, id);
         }
     }
 
     @Override
-    public final List<E> findAll() {
+    public List<E> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(defineSelectAllQuery(), clazz).list();
         }
@@ -47,7 +47,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     }
 
     @Override
-    public final boolean update(E e) {
+    public boolean update(E e) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -67,7 +67,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     protected abstract void constructQuery(Query query, E e);
 
     @Override
-    public final boolean delete(Long id) {
+    public boolean delete(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();

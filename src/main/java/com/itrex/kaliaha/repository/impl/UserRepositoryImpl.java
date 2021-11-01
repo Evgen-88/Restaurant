@@ -48,7 +48,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public final boolean add(User user) {
+    public boolean add(User user) {
         throw new AddMethodUserRepositoryImplException("You can't use this method, " +
                 "you should add new user with add(User user, List<Role> roles) method");
     }
