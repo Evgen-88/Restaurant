@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImpl<Order> implements OrderRepository {
+public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String PRICE_COLUMN = "price";
     private static final String DATE_COLUMN = "date";
     private static final String ADDRESS_COLUMN = "address";
@@ -19,12 +19,9 @@ public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImp
     private static final String USER_ID_COLUMN = "userId";
 
     private static final String SELECT_ALL = "from Order o";
-    private static final String UPDATE_QUERY = "update Order set " +
-            "price = :price, date = :date, address = :address, " +
-            "orderStatus = :orderStatus, userId = :userId where id = :id";
-    private static final String DELETE_QUERY = "delete Order where id = :id";
+    private static final String UPDATE_QUERY = "update Order set price = :price, date = :date, address = :address, orderStatus = :orderStatus, userId = :userId where id = :id";
 
-    public HibernateOrderRepositoryImpl() {
+    public OrderRepositoryImpl() {
         super(Order.class);
     }
 
@@ -36,11 +33,6 @@ public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImp
     @Override
     protected String defineUpdateQuery() {
         return UPDATE_QUERY;
-    }
-
-    @Override
-    protected String defineDeleteQuery() {
-        return DELETE_QUERY;
     }
 
     @Override
@@ -83,12 +75,13 @@ public class HibernateOrderRepositoryImpl extends HibernateAbstractRepositoryImp
     }
 
     @Override
-    public boolean deleteDishesByOrderId(Long orderId) {
+    public boolean deleteFromOrderDishById(Long orderId, Long dishId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.getTransaction().begin();
             try {
                 Order order = session.get(Order.class, orderId);
-                order.getDishes().clear();
+                Dish dish = session.get(Dish.class, dishId);
+                order.getDishes().remove(dish);
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {

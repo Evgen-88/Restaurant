@@ -6,5 +6,5 @@ import com.itrex.kaliaha.entity.User;
 import java.util.List;
 
 public interface RoleRepository extends BaseRepository<Role>{
-    List<User> findAllUsersWhoHaveRoleById(Long id);
+    List<User> findAllUsersWhoHaveRoleById(Long roleId);
 }

@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl<Dish> implements DishRepository {
+public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
     private static final String DISH_NAME_COLUMN = "dishName";
     private static final String PRICE_COLUMN = "price";
     private static final String DISH_GROUP_COLUMN = "dishGroup";
@@ -19,12 +19,9 @@ public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl
     private static final String IMAGE_PATH_COLUMN = "imagePath";
 
     private static final String SELECT_ALL = "from Dish r";
-    private static final String UPDATE_QUERY = "update Dish set " +
-            "dishName = :dishName, price = :price, dishGroup = :dishGroup, " +
-            "dishDescription = :dishDescription, imagePath = :imagePath where id = :id";
-    private static final String DELETE_QUERY = "delete Dish where id = :id";
+    private static final String UPDATE_QUERY = "update Dish set dishName = :dishName, price = :price, dishGroup = :dishGroup, dishDescription = :dishDescription, imagePath = :imagePath where id = :id";
 
-    public HibernateDishRepositoryImpl() {
+    public DishRepositoryImpl() {
         super(Dish.class);
     }
 
@@ -39,11 +36,6 @@ public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    protected String defineDeleteQuery() {
-        return DELETE_QUERY;
-    }
-
-    @Override
     protected void constructQuery(Query query, Dish dish) {
         query.setParameter(DISH_NAME_COLUMN, dish.getDishName());
         query.setParameter(PRICE_COLUMN, dish.getPrice());
@@ -54,22 +46,11 @@ public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    public boolean delete(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try {
-                Dish dish = session.get(Dish.class, id);
-                deleteDishLinksComposition(session, dish.getCompositions());
-                deleteDishLinksOrder(dish.getOrders(), dish);
-                session.delete(dish);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                session.getTransaction().rollback();
-            }
-            return false;
-        }
+    protected void doDeletionOperations(Session session, Long id) {
+        Dish dish = session.get(Dish.class, id);
+        deleteDishLinksComposition(session, dish.getCompositions());
+        deleteDishLinksOrder(dish.getOrders(), dish);
+        session.delete(dish);
     }
 
     private void deleteDishLinksComposition(Session session, List<Composition> compositions){
@@ -96,9 +77,9 @@ public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    public List<Order> findAllOrdersThatIncludeDishById(Long id) {
+    public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Dish dish = session.get(Dish.class, id);
+            Dish dish = session.get(Dish.class, dishId);
             if(dish != null) {
                 return new ArrayList<>(dish.getOrders());
             }
@@ -107,9 +88,9 @@ public class HibernateDishRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    public List<Composition> getDishCompositionById(Long id) {
+    public List<Composition> getCompositionsByDishId(Long dishId) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Dish dish = session.get(Dish.class, id);
+            Dish dish = session.get(Dish.class, dishId);
             if(dish != null) {
                 return new ArrayList<>(dish.getCompositions());
             }

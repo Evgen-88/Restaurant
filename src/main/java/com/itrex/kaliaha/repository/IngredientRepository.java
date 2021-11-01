@@ -6,5 +6,5 @@ import com.itrex.kaliaha.entity.Ingredient;
 import java.util.List;
 
 public interface IngredientRepository extends BaseRepository<Ingredient>{
-    List<Composition> findAllDishesThatIncludeIngredientById(Long id);
+    List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId);
 }

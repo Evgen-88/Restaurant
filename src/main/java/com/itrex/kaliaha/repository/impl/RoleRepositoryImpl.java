@@ -10,14 +10,13 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl<Role> implements RoleRepository {
+public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL = "from Role r";
     private static final String UPDATE_QUERY = "update Role set roleName = :roleName where id = :id";
-    private static final String DELETE_QUERY = "delete Role where id = :id";
 
-    public HibernateRoleRepositoryImpl() {
+    public RoleRepositoryImpl() {
         super(Role.class);
     }
 
@@ -32,32 +31,16 @@ public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    protected String defineDeleteQuery() {
-        return DELETE_QUERY;
-    }
-
-    @Override
     protected void constructQuery(Query query, Role role) {
         query.setParameter(ROLE_NAME_COLUMN, role.getRoleName());
         query.setParameter(ID_COLUMN, role.getId());
     }
 
     @Override
-    public boolean delete(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try {
-                Role role = session.get(Role.class, id);
-                deleteRoleLinks(role.getUsers(), role);
-                session.delete(role);
-                session.getTransaction().commit();
-                return true;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                session.getTransaction().rollback();
-            }
-        }
-        return false;
+    protected void doDeletionOperations(Session session, Long id) {
+        Role role = session.get(Role.class, id);
+        deleteRoleLinks(role.getUsers(), role);
+        session.delete(role);
     }
 
     private void deleteRoleLinks(List<User> users, Role deletionRole) {
@@ -68,9 +51,9 @@ public class HibernateRoleRepositoryImpl extends HibernateAbstractRepositoryImpl
     }
 
     @Override
-    public List<User> findAllUsersWhoHaveRoleById(Long id) {
+    public List<User> findAllUsersWhoHaveRoleById(Long roleId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Role role = session.get(Role.class, id);
+            Role role = session.get(Role.class, roleId);
             if(role != null) {
                 return new ArrayList<>(role.getUsers());
             }

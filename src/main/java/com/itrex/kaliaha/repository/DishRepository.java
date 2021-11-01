@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface DishRepository extends BaseRepository<Dish> {
     List<Dish> findAllDishesInOrderById(Long orderId);
-    List<Composition> getDishCompositionById(Long id);
-    List<Order> findAllOrdersThatIncludeDishById(Long id);
+    List<Composition> getCompositionsByDishId(Long dishId);
+    List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId);
 }

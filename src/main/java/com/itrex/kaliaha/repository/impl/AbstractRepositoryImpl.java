@@ -8,12 +8,12 @@ import org.hibernate.Session;
 import javax.persistence.Query;
 import java.util.List;
 
-public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
+public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
     public static final String ID_COLUMN = "id";
 
     private final Class<E> clazz;
 
-    public HibernateAbstractRepositoryImpl(Class<E> clazz) {
+    public AbstractRepositoryImpl(Class<E> clazz) {
         this.clazz = clazz;
     }
 
@@ -21,47 +21,33 @@ public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>
 
     protected abstract String defineUpdateQuery();
 
-    protected abstract String defineDeleteQuery();
-
     @Override
-    public E findById(Long id) {
+    public final E findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(clazz, id);
         }
     }
 
     @Override
-    public List<E> findAll() {
+    public final List<E> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(defineSelectAllQuery(), clazz).list();
         }
     }
 
     @Override
-    public void add(E e) {
+    public boolean add(E e) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.save(e);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+        return false;
     }
 
     @Override
-    public void addAll(List<E> e) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
-            try{
-                for (E element : e) {
-                    session.save(element);
-                }
-                session.getTransaction().commit();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                session.getTransaction().rollback();
-            }
-        }
-    }
-
-    @Override
-    public boolean update(E e) {
+    public final boolean update(E e) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.getTransaction().begin();
             try {
@@ -81,12 +67,11 @@ public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>
     protected abstract void constructQuery(Query query, E e);
 
     @Override
-    public boolean delete(Long id) {
+    public final boolean delete(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.getTransaction().begin();
             try {
-                E e = session.get(clazz, id);
-                session.delete(e);
+                session.getTransaction().begin();
+                doDeletionOperations(session, id);
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
@@ -95,5 +80,10 @@ public abstract class HibernateAbstractRepositoryImpl<E extends BaseEntity<Long>
             }
             return false;
         }
+    }
+
+    protected void doDeletionOperations(Session session, Long id) {
+        E e = session.get(clazz, id);
+        session.delete(e);
     }
 }
