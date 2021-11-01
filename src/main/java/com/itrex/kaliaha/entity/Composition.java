@@ -9,15 +9,6 @@ import javax.persistence.JoinColumn;
 @Entity
 @Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
-    @Column(name = "dish_id", insertable = false, updatable = false)
-    private Long dishId;
-
-    @Column(name = "ingredient_id", insertable = false, updatable = false)
-    private Long ingredientId;
-
-    @Column(name = "quantity")
-    private int quantity;
-
     @ManyToOne
     @JoinColumn(name = "dish_id")
     private Dish dish;
@@ -26,18 +17,10 @@ public class Composition extends BaseEntity<Long>{
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
+    @Column(name = "quantity")
+    private int quantity;
+
     public Composition() {}
-
-    public Composition(Long dishId, Long ingredientId, int quantity) {
-        this.dishId = dishId;
-        this.ingredientId = ingredientId;
-        this.quantity = quantity;
-    }
-
-    public Composition(Long id, Long dishId, Long ingredientId, int quantity) {
-        this(dishId, ingredientId, quantity);
-        super.setId(id);
-    }
 
     public Composition(Dish dish, Ingredient ingredient, int quantity) {
         this.dish = dish;
@@ -45,28 +28,9 @@ public class Composition extends BaseEntity<Long>{
         this.quantity = quantity;
     }
 
-    public Long getDishId() {
-        return dishId;
-    }
-
-    public void setDishId(Long dishId) {
-        this.dishId = dishId;
-    }
-
-    public Long getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(Long ingredientId) {
-        this.ingredientId = ingredientId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public Composition(Long id, Dish dish, Ingredient ingredient, int quantity) {
+        this(dish, ingredient, quantity);
+        super.setId(id);
     }
 
     public Dish getDish() {
@@ -85,24 +49,25 @@ public class Composition extends BaseEntity<Long>{
         this.ingredient = ingredient;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public boolean equals(Object object) {
         if(this == object) {return true;}
         if(object == null || getClass() != object.getClass()) {return false;}
         Composition aThat = (Composition) object;
-        if(getQuantity() != aThat.getQuantity()){return false;}
 
         if (getId() == null) {
             if (aThat.getId() != null) { return false;}
         } else if (!getId().equals(aThat.getId())) { return false;}
 
-        if (getDishId() == null) {
-            if (aThat.getDishId() != null) { return false;}
-        } else if (!getDishId().equals(aThat.getDishId())) { return false;}
-
-        if (getIngredientId() == null) {
-            return aThat.getIngredientId() == null;
-        } else return getIngredientId().equals(aThat.getIngredientId());
+        return getQuantity() == aThat.getQuantity();
     }
 
     @Override
@@ -110,8 +75,6 @@ public class Composition extends BaseEntity<Long>{
         final int prime = 31;
         int result = 1;
         result = prime * result + (getId() != null ? getId().hashCode() : 0);
-        result = prime * result + (getDishId() != null ? getDishId().hashCode() : 0);
-        result = prime * result + (getIngredientId() != null ? getIngredientId().hashCode() : 0);
         result = prime * result + getQuantity();
         return result;
     }
@@ -120,8 +83,6 @@ public class Composition extends BaseEntity<Long>{
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
-                ", dish=" + getDishId() +
-                ", ingredient=" + getIngredientId() +
                 ", quantity=" + getQuantity() +
                 "}";
     }
