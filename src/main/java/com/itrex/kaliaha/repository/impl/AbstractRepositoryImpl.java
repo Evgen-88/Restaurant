@@ -4,7 +4,6 @@ import com.itrex.kaliaha.entity.BaseEntity;
 import com.itrex.kaliaha.repository.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Query;
 import java.util.List;
