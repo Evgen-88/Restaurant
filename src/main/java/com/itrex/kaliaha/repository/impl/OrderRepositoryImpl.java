@@ -16,13 +16,13 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     private static final String DATE_COLUMN = "date";
     private static final String ADDRESS_COLUMN = "address";
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
-    private static final String USER_ID_COLUMN = "userId";
+    private static final String USER_COLUMN = "user";
 
     private static final String SELECT_ALL = "from Order o";
     private static final String UPDATE_QUERY = "update Order set " +
             "price = :price, date = :date, " +
             "address = :address, orderStatus = :orderStatus, " +
-            "userId = :userId where id = :id";
+            "user = :user where id = :id";
 
     public OrderRepositoryImpl() {
         super(Order.class);
@@ -44,7 +44,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
         query.setParameter(DATE_COLUMN, order.getDate());
         query.setParameter(ADDRESS_COLUMN, order.getAddress());
         query.setParameter(ORDER_STATUS_COLUMN, order.getOrderStatus());
-        query.setParameter(USER_ID_COLUMN, order.getUserId());
+        query.setParameter(USER_COLUMN, order.getUser());
         query.setParameter(ID_COLUMN, order.getId());
     }
 
