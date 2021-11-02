@@ -44,8 +44,8 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
         session.delete(role);
     }
 
-    private void deleteRoleLinks(List<User> users, Role deletingRole) {
-        users.forEach(user -> user.getRoles().remove(deletingRole));
+    private void deleteRoleLinks(List<User> users, Role deletedRole) {
+        users.forEach(user -> user.getRoles().remove(deletedRole));
     }
 
     @Override
