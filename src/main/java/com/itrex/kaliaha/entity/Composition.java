@@ -9,9 +9,15 @@ import javax.persistence.JoinColumn;
 @Entity
 @Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
+    @Column(name = "dish_id", insertable = false, updatable = false)
+    private Long dishId;
+
     @ManyToOne
     @JoinColumn(name = "dish_id")
     private Dish dish;
+
+    @Column(name = "ingredient_id", insertable = false, updatable = false)
+    private Long ingredientId;
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id")
@@ -23,7 +29,9 @@ public class Composition extends BaseEntity<Long>{
     public Composition() {}
 
     public Composition(Dish dish, Ingredient ingredient, int quantity) {
+        this.dishId = dish.getId();
         this.dish = dish;
+        this.ingredientId = ingredient.getId();
         this.ingredient = ingredient;
         this.quantity = quantity;
     }
@@ -33,12 +41,21 @@ public class Composition extends BaseEntity<Long>{
         super.setId(id);
     }
 
+    public Long getDishId() {
+        return dishId;
+    }
+
     public Dish getDish() {
         return dish;
     }
 
     public void setDish(Dish dish) {
+        this.dishId = dish.getId();
         this.dish = dish;
+    }
+
+    public Long getIngredientId() {
+        return ingredientId;
     }
 
     public Ingredient getIngredient() {
@@ -46,6 +63,7 @@ public class Composition extends BaseEntity<Long>{
     }
 
     public void setIngredient(Ingredient ingredient) {
+        this.ingredientId = ingredient.getId();
         this.ingredient = ingredient;
     }
 
@@ -67,6 +85,14 @@ public class Composition extends BaseEntity<Long>{
             if (aThat.getId() != null) { return false;}
         } else if (!getId().equals(aThat.getId())) { return false;}
 
+        if (getDishId() == null) {
+            if (aThat.getDishId() != null) { return false;}
+        } else if (!getDishId().equals(aThat.getDishId())) { return false;}
+
+        if (getIngredientId() == null) {
+            if (aThat.getIngredientId() != null) { return false;}
+        } else if (!getIngredientId().equals(aThat.getIngredientId())) { return false;}
+
         return getQuantity() == aThat.getQuantity();
     }
 
@@ -75,6 +101,8 @@ public class Composition extends BaseEntity<Long>{
         final int prime = 31;
         int result = 1;
         result = prime * result + (getId() != null ? getId().hashCode() : 0);
+        result = prime * result + (getDishId() != null ? getDishId().hashCode() : 0);
+        result = prime * result + (getIngredientId() != null ? getIngredientId().hashCode() : 0);
         result = prime * result + getQuantity();
         return result;
     }
@@ -83,6 +111,8 @@ public class Composition extends BaseEntity<Long>{
     public String toString() {
         return getClass().getSimpleName() + "{" +
                 "id=" + getId() +
+                "dish=" + getDishId() +
+                "ingredient=" + getIngredientId() +
                 ", quantity=" + getQuantity() +
                 "}";
     }

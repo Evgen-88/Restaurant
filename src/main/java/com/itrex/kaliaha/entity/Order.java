@@ -34,6 +34,9 @@ public class Order extends BaseEntity<Long> {
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus orderStatus;
 
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -53,6 +56,7 @@ public class Order extends BaseEntity<Long> {
         this.date = date;
         this.address = address;
         this.orderStatus = orderStatus;
+        this.userId = user.getId();
         this.user = user;
     }
 
@@ -93,11 +97,16 @@ public class Order extends BaseEntity<Long> {
         this.orderStatus = orderStatus;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
+        this.userId = user.getId();
         this.user = user;
     }
 
@@ -128,6 +137,10 @@ public class Order extends BaseEntity<Long> {
             if (aThat.getAddress() != null) { return false;}
         } else if (!getAddress().equals(aThat.getAddress())) { return false;}
 
+        if (getUserId() == null) {
+            if (aThat.getUserId() != null) { return false;}
+        } else if (!getUserId().equals(aThat.getUserId())) { return false;}
+
         if (getOrderStatus() == null) {
             return aThat.getOrderStatus() == null;
         } else return getOrderStatus().equals(aThat.getOrderStatus());
@@ -142,6 +155,7 @@ public class Order extends BaseEntity<Long> {
         result = prime * result + (getDate() != null ? getDate().hashCode() : 0);
         result = prime * result + (getAddress() != null ? getAddress().hashCode() : 0);
         result = prime * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
+        result = prime * result + (getUserId() != null ? getUserId().hashCode() : 0);
         return result;
     }
 
@@ -153,6 +167,7 @@ public class Order extends BaseEntity<Long> {
                 ", date=" + getDate() +
                 ", address='" + getAddress() + '\'' +
                 ", orderStatus=" + getOrderStatus() +
+                ", userId=" + getUserId() +
                 '}';
     }
 }
