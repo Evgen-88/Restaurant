@@ -18,7 +18,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     private final List<Dish> dishes;
 
     public DishRepositoryImplTest() {
-        dishRepository = new DishRepositoryImpl();
+        dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
         dishes = new ArrayList<>() {{
             add(new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img"));
             add(new Dish(2L, "Салат по-французски", 7, DishGroup.SALAD, "Невкусно", "photo1.img"));
@@ -110,7 +110,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findAllDishesInOrderByIdTest_validData_shouldFindAllDishesInOrder() {
-        OrderRepository orderRepository = new OrderRepositoryImpl();
+        OrderRepository orderRepository = getApplicationContext().getBean(OrderRepositoryImpl.class);
 
         //given
         Order order = orderRepository.findById(1L);

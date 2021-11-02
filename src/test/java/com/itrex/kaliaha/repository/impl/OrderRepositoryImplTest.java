@@ -20,7 +20,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     private final List<Order> orders;
 
     public OrderRepositoryImplTest() {
-        orderRepository = new OrderRepositoryImpl();
+        orderRepository = getApplicationContext().getBean(OrderRepositoryImpl.class);
         orders = new ArrayList<>() {{
             add(new Order(1L, 1500, LocalDate.of(2021, 10, 21), "г. Минск", OrderStatus.COOKING, new User(1L)));
             add(new Order(2L, 2800, LocalDate.of(2021, 10, 22), "г. Минск", OrderStatus.COOKING, new User(2L)));
@@ -95,7 +95,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void deleteTest_validData_shouldDeleteOrder() {
-        DishRepository dishRepository = new DishRepositoryImpl();
+        DishRepository dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
         //given
         Order expected = orders.get(0);
         Order actual = orderRepository.findById(1L);
@@ -123,8 +123,8 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void orderDishTest_validData_shouldAddDishToOrder() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        DishRepository dishRepository = new DishRepositoryImpl();
+        UserRepository userRepository = getApplicationContext().getBean(UserRepositoryImpl.class);
+        DishRepository dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
 
         //given
         User user = userRepository.findById(1L);
@@ -147,8 +147,8 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void deleteFromOrderDishByIdTest_validData_shouldDeleteDishInOrder() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        DishRepository dishRepository = new DishRepositoryImpl();
+        UserRepository userRepository = getApplicationContext().getBean(UserRepositoryImpl.class);
+        DishRepository dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
 
         //given
         User user = userRepository.findById(1L);

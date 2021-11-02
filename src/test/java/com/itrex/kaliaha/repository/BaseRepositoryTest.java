@@ -1,21 +1,23 @@
 package com.itrex.kaliaha.repository;
 
+import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.service.FlywayService;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.After;
 import org.junit.Before;
-
-import static com.itrex.kaliaha.property.Properties.H2_URL;
-import static com.itrex.kaliaha.property.Properties.H2_USER;
-import static com.itrex.kaliaha.property.Properties.H2_PASSWORD;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public abstract class BaseRepositoryTest {
     private final FlywayService flywayService;
-    private final JdbcConnectionPool connectionPool;
+    private final ApplicationContext applicationContext;
 
     public BaseRepositoryTest() {
-        flywayService = new FlywayService();
-        connectionPool = JdbcConnectionPool.create(H2_URL, H2_USER, H2_PASSWORD);
+        applicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfiguration.class);
+        flywayService = applicationContext.getBean(FlywayService.class);
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     @Before
@@ -26,9 +28,5 @@ public abstract class BaseRepositoryTest {
     @After
     public void cleanDB() {
         flywayService.clean();
-    }
-
-    public JdbcConnectionPool getConnectionPool() {
-        return connectionPool;
     }
 }

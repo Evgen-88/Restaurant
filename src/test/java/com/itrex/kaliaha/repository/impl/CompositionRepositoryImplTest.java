@@ -16,7 +16,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     private final List<Composition> compositions;
 
     public CompositionRepositoryImplTest() {
-        compositionRepository = new CompositionRepositoryImpl();
+        compositionRepository = getApplicationContext().getBean(CompositionRepositoryImpl.class);
         compositions = new ArrayList<>() {{
             add(new Composition(1L,new Dish(1L), new Ingredient(1L), 100));
             add(new Composition(2L,new Dish(1L), new Ingredient(2L), 450));

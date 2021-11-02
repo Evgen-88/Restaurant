@@ -20,8 +20,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     private final List<User> users;
 
     public UserRepositoryImplTest() {
-        super();
-        userRepository = new UserRepositoryImpl();
+        userRepository = getApplicationContext().getBean(UserRepositoryImpl.class);
         users = new ArrayList<>() {{
             add(new User(1L, "Коляго", "Владислав", "kaliaha.vladzislav", "1111", "г.Витебск"));
             add(new User(2L, "Молочко", "Юрий", "molochko.urey", "2222", "г.Хойники"));
@@ -104,8 +103,8 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void deleteTest_validData_shouldDeleteUser() {
-        OrderRepository orderRepository = new OrderRepositoryImpl();
-        DishRepository dishRepository = new DishRepositoryImpl();
+        OrderRepository orderRepository = getApplicationContext().getBean(OrderRepositoryImpl.class);
+        DishRepository dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
 
         //given
         User expected = users.get(0);
@@ -143,7 +142,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void deleteRoleFromUserByIdTest_validData_shouldDeleteUserRole() {
-        UserRepository userRepository = new UserRepositoryImpl();
+        UserRepository userRepository = getApplicationContext().getBean(UserRepositoryImpl.class);
 
         //given
         User user = userRepository.findById(1L);

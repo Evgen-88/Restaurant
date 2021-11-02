@@ -16,7 +16,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     private final List<Ingredient> ingredients;
 
     public IngredientRepositoryImplTest() {
-        ingredientRepository = new IngredientRepositoryImpl();
+        ingredientRepository = getApplicationContext().getBean(IngredientRepositoryImpl.class);
         ingredients = new ArrayList<>() {{
             add(new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM));
             add(new Ingredient(2L, "Картошка", 300, 777, Measurement.KILOGRAM));

@@ -15,7 +15,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final List<Role> roles;
 
     public RoleRepositoryImplTest() {
-        roleRepository = new RoleRepositoryImpl();
+        roleRepository = getApplicationContext().getBean(RoleRepositoryImpl.class);
         roles = new ArrayList<>() {{
             add(new Role(1L, "admin"));
             add(new Role(2L, "user"));
