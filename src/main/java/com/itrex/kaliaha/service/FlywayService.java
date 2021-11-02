@@ -8,11 +8,10 @@ import static com.itrex.kaliaha.property.Properties.H2_PASSWORD;
 import static com.itrex.kaliaha.property.Properties.MIGRATIONS_LOCATION;
 
 public class FlywayService {
-
     private Flyway flyway;
 
     public FlywayService() {
-        inti();
+        init();
     }
 
     public void migrate() {
@@ -23,7 +22,7 @@ public class FlywayService {
         flyway.clean();
     }
 
-    private void inti() {
+    private void init() {
         flyway = Flyway.configure()
                 .dataSource(H2_URL, H2_USER, H2_PASSWORD)
                 .locations(MIGRATIONS_LOCATION)
