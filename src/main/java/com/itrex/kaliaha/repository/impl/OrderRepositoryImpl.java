@@ -4,13 +4,15 @@ import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.OrderRepository;
-import com.itrex.kaliaha.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String PRICE_COLUMN = "price";
     private static final String DATE_COLUMN = "date";
@@ -24,8 +26,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
             "address = :address, orderStatus = :orderStatus, " +
             "user = :user where id = :id";
 
-    public OrderRepositoryImpl() {
-        super(Order.class);
+    public OrderRepositoryImpl(SessionFactory sessionFactory) {
+        super(Order.class, sessionFactory);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public List<Order> findOrdersByUserId(Long userId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession())  {
+        try(Session session = getSessionFactory().openSession())  {
             User user = session.get(User.class, userId);
             if(user != null) {
                 return new ArrayList<>(user.getOrders());
@@ -61,7 +63,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public boolean orderDish(Long orderId, Long dishId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 Order order = session.get(Order.class, orderId);
@@ -79,7 +81,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     @Override
     public boolean deleteFromOrderDishById(Long orderId, Long dishId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 Order order = session.get(Order.class, orderId);

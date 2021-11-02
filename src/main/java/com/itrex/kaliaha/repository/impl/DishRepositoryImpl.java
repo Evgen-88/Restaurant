@@ -4,13 +4,15 @@ import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.repository.DishRepository;
-import com.itrex.kaliaha.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
     private static final String DISH_NAME_COLUMN = "dishName";
     private static final String PRICE_COLUMN = "price";
@@ -25,8 +27,8 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
             "imagePath = :imagePath where id = :id";
 
 
-    public DishRepositoryImpl() {
-        super(Dish.class);
+    public DishRepositoryImpl(SessionFactory sessionFactory) {
+        super(Dish.class, sessionFactory);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
 
     @Override
     public List<Dish> findAllDishesInOrderById(Long orderId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             Order order = session.get(Order.class, orderId);
             if(order != null) {
                 return new ArrayList<>(order.getDishes());
@@ -82,7 +84,7 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
 
     @Override
     public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             Dish dish = session.get(Dish.class, dishId);
             if(dish != null) {
                 return new ArrayList<>(dish.getOrders());
@@ -93,7 +95,7 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
 
     @Override
     public List<Composition> getCompositionsByDishId(Long dishId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             Dish dish = session.get(Dish.class, dishId);
             if(dish != null) {
                 return new ArrayList<>(dish.getCompositions());

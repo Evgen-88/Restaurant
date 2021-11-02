@@ -3,13 +3,15 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.repository.IngredientRepository;
-import com.itrex.kaliaha.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient> implements IngredientRepository {
     private static final String INGREDIENT_NAME_COLUMN = "ingredientName";
     private static final String PRICE_COLUMN = "price";
@@ -22,8 +24,8 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
             "remainder = :remainder, measurement = :measurement " +
             "where id = :id";
 
-    public IngredientRepositoryImpl() {
-        super(Ingredient.class);
+    public IngredientRepositoryImpl(SessionFactory sessionFactory) {
+        super(Ingredient.class, sessionFactory);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
 
     @Override
     public List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = getSessionFactory().openSession()) {
             Ingredient ingredient = session.get(Ingredient.class, ingredientId);
             if(ingredient != null) {
                 return new ArrayList<>(ingredient.getCompositions());

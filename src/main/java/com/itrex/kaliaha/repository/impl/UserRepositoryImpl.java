@@ -5,14 +5,16 @@ import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.AddMethodUserRepositoryImplException;
 import com.itrex.kaliaha.repository.UserRepository;
-import com.itrex.kaliaha.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String LAST_NAME_COLUMN = "lastName";
     private static final String FIRST_NAME_COLUMN = "firstName";
@@ -26,8 +28,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
             "login = :login, password = :password, " +
             "address = :address where id = :id";
 
-    public UserRepositoryImpl() {
-        super(User.class);
+    public UserRepositoryImpl(SessionFactory sessionFactory) {
+        super(User.class, sessionFactory);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     @Override
     public boolean add(User user, List<Role> roles) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 user.setRoles(roles);
@@ -88,7 +90,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     @Override
     public List<Role> findRolesByUserId(Long userId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             User user = session.get(User.class, userId);
             if (user != null) {
                 return new ArrayList<>(user.getRoles());
@@ -99,7 +101,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     @Override
     public boolean deleteRoleFromUserById(Long userId, Long roleId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 User user = session.get(User.class, userId);

@@ -1,9 +1,12 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 
+@Repository
 public class CompositionRepositoryImpl extends AbstractRepositoryImpl<Composition> {
     private static final String QUANTITY_COLUMN = "quantity";
 
@@ -11,8 +14,8 @@ public class CompositionRepositoryImpl extends AbstractRepositoryImpl<Compositio
     private static final String UPDATE_QUERY = "update Composition set " +
             "quantity = :quantity where id = :id";
 
-    public CompositionRepositoryImpl() {
-        super(Composition.class);
+    public CompositionRepositoryImpl(SessionFactory sessionFactory) {
+        super(Composition.class, sessionFactory);
     }
 
     @Override
