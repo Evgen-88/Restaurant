@@ -130,11 +130,9 @@ public class Order extends BaseEntity<Long> {
 
         if (getUser() == null) {
             if (aThat.getUser() != null) { return false;}
-        } else {
-            if (getUser().getId() == null) {
-                if (aThat.getUser() != null && aThat.getUser().getId() != null) { return false;}
-            } else if (!getUser().getId().equals(aThat.getUser().getId())) { return false;}
-        }
+        } else if (getUser().getId() == null) {
+            if (aThat.getUser() != null && aThat.getUser().getId() != null) { return false;}
+        } else if (!getUser().getId().equals(aThat.getUser().getId())) { return false;}
 
         if (getOrderStatus() == null) {
             return aThat.getOrderStatus() == null;

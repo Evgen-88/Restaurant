@@ -69,19 +69,15 @@ public class Composition extends BaseEntity<Long>{
 
         if (getDish() == null) {
             if (aThat.getDish() != null) { return false;}
-        } else {
-            if (getDish().getId() == null) {
-                if (aThat.getDish() != null && aThat.getDish().getId() != null) { return false;}
-            } else if (!getDish().getId().equals(aThat.getDish().getId())) { return false;}
-        }
+        } else if (getDish().getId() == null) {
+            if (aThat.getDish() != null && aThat.getDish().getId() != null) { return false;}
+        } else if (!getDish().getId().equals(aThat.getDish().getId())) { return false;}
 
         if (getIngredient() == null) {
             if (aThat.getIngredient() != null) { return false;}
-        } else {
-            if (getIngredient().getId() == null) {
-                if (aThat.getIngredient() != null && aThat.getIngredient().getId() != null) { return false;}
-            } else if (!getIngredient().getId().equals(aThat.getIngredient().getId())) { return false;}
-        }
+        } else if (getIngredient().getId() == null) {
+            if (aThat.getIngredient() != null && aThat.getIngredient().getId() != null) { return false;}
+        } else if (!getIngredient().getId().equals(aThat.getIngredient().getId())) { return false;}
 
         return getQuantity() == aThat.getQuantity();
     }
