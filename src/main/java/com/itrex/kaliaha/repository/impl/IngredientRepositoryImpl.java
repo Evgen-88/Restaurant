@@ -17,7 +17,10 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
     private static final String MEASUREMENT_COLUMN = "measurement";
 
     private static final String SELECT_ALL = "from Ingredient i";
-    private static final String UPDATE_QUERY = "update Ingredient set ingredientName = :ingredientName, price = :price, remainder = :remainder, measurement = :measurement where id = :id";
+    private static final String UPDATE_QUERY = "update Ingredient set " +
+            "ingredientName = :ingredientName, price = :price, " +
+            "remainder = :remainder, measurement = :measurement " +
+            "where id = :id";
 
     public IngredientRepositoryImpl() {
         super(Ingredient.class);

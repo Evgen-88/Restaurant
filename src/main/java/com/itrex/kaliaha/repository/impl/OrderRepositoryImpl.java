@@ -19,7 +19,10 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     private static final String USER_ID_COLUMN = "userId";
 
     private static final String SELECT_ALL = "from Order o";
-    private static final String UPDATE_QUERY = "update Order set price = :price, date = :date, address = :address, orderStatus = :orderStatus, userId = :userId where id = :id";
+    private static final String UPDATE_QUERY = "update Order set " +
+            "price = :price, date = :date, " +
+            "address = :address, orderStatus = :orderStatus, " +
+            "userId = :userId where id = :id";
 
     public OrderRepositoryImpl() {
         super(Order.class);

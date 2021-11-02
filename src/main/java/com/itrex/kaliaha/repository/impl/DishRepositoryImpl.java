@@ -19,7 +19,11 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     private static final String IMAGE_PATH_COLUMN = "imagePath";
 
     private static final String SELECT_ALL = "from Dish r";
-    private static final String UPDATE_QUERY = "update Dish set dishName = :dishName, price = :price, dishGroup = :dishGroup, dishDescription = :dishDescription, imagePath = :imagePath where id = :id";
+    private static final String UPDATE_QUERY = "update Dish set " +
+            "dishName = :dishName, price = :price, " +
+            "dishGroup = :dishGroup, dishDescription = :dishDescription, " +
+            "imagePath = :imagePath where id = :id";
+
 
     public DishRepositoryImpl() {
         super(Dish.class);

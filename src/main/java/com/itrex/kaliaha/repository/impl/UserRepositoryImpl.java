@@ -21,7 +21,10 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String ADDRESS_COLUMN = "address";
 
     private static final String SELECT_ALL = "from User u";
-    private static final String UPDATE_QUERY = "update User set lastName = :lastName, firstName = :firstName, login = :login, password = :password, address = :address where id = :id";
+    private static final String UPDATE_QUERY = "update User set " +
+            "lastName = :lastName, firstName = :firstName, " +
+            "login = :login, password = :password, " +
+            "address = :address where id = :id";
 
     public UserRepositoryImpl() {
         super(User.class);

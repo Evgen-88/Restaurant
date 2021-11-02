@@ -8,7 +8,8 @@ public class CompositionRepositoryImpl extends AbstractRepositoryImpl<Compositio
     private static final String QUANTITY_COLUMN = "quantity";
 
     private static final String SELECT_ALL = "from Composition c";
-    private static final String UPDATE_QUERY = "update Composition set quantity = :quantity where id = :id";
+    private static final String UPDATE_QUERY = "update Composition set " +
+            "quantity = :quantity where id = :id";
 
     public CompositionRepositoryImpl() {
         super(Composition.class);
