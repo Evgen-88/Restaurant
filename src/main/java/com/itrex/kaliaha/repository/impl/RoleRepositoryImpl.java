@@ -14,7 +14,8 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     private static final String ROLE_NAME_COLUMN = "roleName";
 
     private static final String SELECT_ALL = "from Role r";
-    private static final String UPDATE_QUERY = "update Role set roleName = :roleName where id = :id";
+    private static final String UPDATE_QUERY = "update Role set " +
+            "roleName = :roleName where id = :id";
 
     public RoleRepositoryImpl() {
         super(Role.class);
@@ -43,18 +44,15 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
         session.delete(role);
     }
 
-    private void deleteRoleLinks(List<User> users, Role deletionRole) {
-        for (User user : users) {
-            List<Role> roles = user.getRoles();
-            roles.remove(deletionRole);
-        }
+    private void deleteRoleLinks(List<User> users, Role deletingRole) {
+        users.forEach(user -> user.getRoles().remove(deletingRole));
     }
 
     @Override
     public List<User> findAllUsersWhoHaveRoleById(Long roleId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Role role = session.get(Role.class, roleId);
-            if(role != null) {
+            if (role != null) {
                 return new ArrayList<>(role.getUsers());
             }
         }
