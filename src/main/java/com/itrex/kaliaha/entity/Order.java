@@ -34,9 +34,6 @@ public class Order extends BaseEntity<Long> {
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus orderStatus;
 
-    @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -57,7 +54,6 @@ public class Order extends BaseEntity<Long> {
         this.address = address;
         this.orderStatus = orderStatus;
         this.user = user;
-        userId = user.getId();
     }
 
     public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
@@ -97,14 +93,6 @@ public class Order extends BaseEntity<Long> {
         this.orderStatus = orderStatus;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public User getUser() {
         return user;
     }
@@ -141,12 +129,8 @@ public class Order extends BaseEntity<Long> {
         } else if (!getAddress().equals(aThat.getAddress())) { return false;}
 
         if (getOrderStatus() == null) {
-            if (aThat.getOrderStatus() != null) { return false;}
-        } else if (!getOrderStatus().equals(aThat.getOrderStatus())) { return false;}
-
-        if (getUserId() == null) {
-            return aThat.getUserId() == null;
-        } else return getUserId().equals(aThat.getUserId());
+            return aThat.getOrderStatus() == null;
+        } else return getOrderStatus().equals(aThat.getOrderStatus());
     }
 
     @Override
@@ -158,7 +142,6 @@ public class Order extends BaseEntity<Long> {
         result = prime * result + (getDate() != null ? getDate().hashCode() : 0);
         result = prime * result + (getAddress() != null ? getAddress().hashCode() : 0);
         result = prime * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
-        result = prime * result + (getUserId() != null ? getUserId().hashCode() : 0);
         return result;
     }
 
@@ -170,7 +153,6 @@ public class Order extends BaseEntity<Long> {
                 ", date=" + getDate() +
                 ", address='" + getAddress() + '\'' +
                 ", orderStatus=" + getOrderStatus() +
-                ", user=" + getUserId() +
                 '}';
     }
 }
