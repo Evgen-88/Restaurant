@@ -1,32 +1,17 @@
 package com.itrex.kaliaha.repository;
 
-import com.itrex.kaliaha.config.ApplicationContextConfiguration;
-import com.itrex.kaliaha.service.FlywayService;
-import org.junit.After;
-import org.junit.Before;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.flywaydb.core.Flyway;
+
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseRepositoryTest {
-    private final FlywayService flywayService;
-    private final ApplicationContext applicationContext;
+    @Autowired
+    private Flyway flyway;
 
-    public BaseRepositoryTest() {
-        applicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfiguration.class);
-        flywayService = applicationContext.getBean(FlywayService.class);
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    @Before
-    public void initDB() {
-        flywayService.migrate();
-    }
-
-    @After
+    @AfterEach
     public void cleanDB() {
-        flywayService.clean();
+        flyway.clean();
+        flyway.migrate();
     }
 }
