@@ -1,7 +1,7 @@
 package com.itrex.kaliaha.config;
 
 import org.flywaydb.core.Flyway;
-import org.hibernate.Session;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
