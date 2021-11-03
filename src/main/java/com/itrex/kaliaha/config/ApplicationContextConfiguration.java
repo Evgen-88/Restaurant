@@ -34,10 +34,4 @@ public class ApplicationContextConfiguration {
     public SessionFactory sessionFactory() {
         return new org.hibernate.cfg.Configuration().configure().buildSessionFactory();
     }
-
-    @Bean
-    public Session session() {
-        return sessionFactory().openSession();
-    }
-
 }
