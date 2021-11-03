@@ -3,22 +3,30 @@ package com.itrex.kaliaha.config;
 import org.flywaydb.core.Flyway;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import static com.itrex.kaliaha.property.Properties.*;
-import static com.itrex.kaliaha.property.Properties.MIGRATIONS_LOCATION;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ComponentScan("com.itrex.kaliaha")
+@PropertySource("classpath:/database.properties")
 public class ApplicationContextConfiguration {
+    @Value("${database.url}")
+    private String url;
+    @Value("${database.user}")
+    private String user;
+    @Value("${database.password}")
+    private String password;
+    @Value("${database.migration.location}")
+    private String migrationLocation;
 
     @Bean(initMethod = "migrate")
     public Flyway flyway() {
         return Flyway.configure()
-                .dataSource(H2_URL, H2_USER, H2_PASSWORD)
-                .locations(MIGRATIONS_LOCATION)
+                .dataSource(url, user, password)
+                .locations(migrationLocation)
                 .load();
     }
 
@@ -31,4 +39,5 @@ public class ApplicationContextConfiguration {
     public Session session() {
         return sessionFactory().openSession();
     }
+
 }
