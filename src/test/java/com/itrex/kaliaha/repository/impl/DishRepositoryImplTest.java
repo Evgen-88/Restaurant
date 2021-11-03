@@ -1,5 +1,6 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
@@ -7,18 +8,27 @@ import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringJUnitConfig
+@ContextConfiguration(classes = ApplicationContextConfiguration.class)
 public class DishRepositoryImplTest extends BaseRepositoryTest {
-    private final DishRepository dishRepository;
-    private final List<Dish> dishes;
+    @Autowired
+    private DishRepository dishRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    private final List<Dish> dishes;
     public DishRepositoryImplTest() {
-        dishRepository = getApplicationContext().getBean(DishRepositoryImpl.class);
         dishes = new ArrayList<>() {{
             add(new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img"));
             add(new Dish(2L, "Салат по-французски", 7, DishGroup.SALAD, "Невкусно", "photo1.img"));
@@ -35,7 +45,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         Dish actual = dishRepository.findById(expected.getId());
 
         //then
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -44,7 +54,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         List<Dish> actual = dishRepository.findAll();
 
         //then
-        Assert.assertEquals(dishes, actual);
+        Assertions.assertEquals(dishes, actual);
     }
 
     @Test
@@ -52,7 +62,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<Dish> expected = dishRepository.findAll();
 
-        Assert.assertEquals(dishes.size(), expected.size());
+        Assertions.assertEquals(dishes.size(), expected.size());
 
         //when
         Dish newActual = new Dish("Макароны по-немецки", 2, DishGroup.HOT, "Nice dish", "not image");
@@ -61,9 +71,9 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         expected.add(newExpected);
 
         //then
-        Assert.assertTrue(isAdded);
-        Assert.assertEquals(newExpected, newActual);
-        Assert.assertEquals(newExpected, dishRepository.findById(newActual.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newExpected, newActual);
+        Assertions.assertEquals(newExpected, dishRepository.findById(newActual.getId()));
     }
 
     @Test
@@ -72,7 +82,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         Dish expected = new Dish(1L, "Шаньга", 3, DishGroup.DRINK, "Ужасно", "photo1111.img");
         Dish actual = dishRepository.findById(expected.getId());
 
-        Assert.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
         actual.setDishName("Шаньга");
@@ -83,9 +93,9 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         boolean isUpdated = dishRepository.update(actual);
 
         //then
-        Assert.assertTrue(isUpdated);
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(expected, dishRepository.findById(actual.getId()));
+        Assertions.assertTrue(isUpdated);
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, dishRepository.findById(actual.getId()));
     }
 
     @Test
@@ -94,24 +104,22 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         Dish expected = dishes.get(0);
         Dish actual = dishRepository.findById(1L);
 
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(4, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
-        Assert.assertEquals(3, dishRepository.getCompositionsByDishId(actual.getId()).size());
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(4, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
+        Assertions.assertEquals(3, dishRepository.getCompositionsByDishId(actual.getId()).size());
 
         //when
         boolean isDeleted = dishRepository.delete(actual.getId());
 
         //then
-        Assert.assertTrue(isDeleted);
-        Assert.assertNull(dishRepository.findById(1L));
-        Assert.assertEquals(0, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
-        Assert.assertEquals(0, dishRepository.getCompositionsByDishId(actual.getId()).size());
+        Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(dishRepository.findById(1L));
+        Assertions.assertEquals(0, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
+        Assertions.assertEquals(0, dishRepository.getCompositionsByDishId(actual.getId()).size());
     }
 
     @Test
     public void findAllDishesInOrderByIdTest_validData_shouldFindAllDishesInOrder() {
-        OrderRepository orderRepository = getApplicationContext().getBean(OrderRepositoryImpl.class);
-
         //given
         Order order = orderRepository.findById(1L);
 
@@ -119,7 +127,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         List<Dish> orderedDishes = dishRepository.findAllDishesInOrderById(order.getId());
 
         //then
-        Assert.assertEquals(3, orderedDishes.size());
+        Assertions.assertEquals(3, orderedDishes.size());
     }
 
     @Test
@@ -128,7 +136,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         List<Composition> dishCompositions = dishRepository.getCompositionsByDishId(1L);
 
         //then
-        Assert.assertEquals(3, dishCompositions.size());
+        Assertions.assertEquals(3, dishCompositions.size());
     }
 
     @Test
@@ -137,6 +145,6 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         List<Order> orders = dishRepository.findAllOrdersThatIncludeDishByDishId(1L);
 
         //then
-        Assert.assertEquals(4, orders.size());
+        Assertions.assertEquals(4, orders.size());
     }
 }

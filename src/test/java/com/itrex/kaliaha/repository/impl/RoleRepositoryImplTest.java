@@ -1,21 +1,28 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.RoleRepository;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringJUnitConfig
+@ContextConfiguration(classes = ApplicationContextConfiguration.class)
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
     private final List<Role> roles;
 
     public RoleRepositoryImplTest() {
-        roleRepository = getApplicationContext().getBean(RoleRepositoryImpl.class);
         roles = new ArrayList<>() {{
             add(new Role(1L, "admin"));
             add(new Role(2L, "user"));
@@ -32,7 +39,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Role actual = roleRepository.findById(expected.getId());
 
         //then
-        Assert.assertEquals(expected, actual);
+       Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -41,7 +48,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         List<Role> actual = roleRepository.findAll();
 
         //then
-        Assert.assertEquals(roles, actual);
+       Assertions.assertEquals(roles, actual);
     }
 
     @Test
@@ -49,7 +56,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<Role> expected = roleRepository.findAll();
 
-        Assert.assertEquals(roles.size(), expected.size());
+       Assertions.assertEquals(roles.size(), expected.size());
 
         //when
         Role newActual = new Role( "check");
@@ -58,9 +65,9 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         expected.add(newExpected);
 
         //then
-        Assert.assertTrue(isAdded);
-        Assert.assertEquals(newExpected, newActual);
-        Assert.assertEquals(newExpected, roleRepository.findById(newActual.getId()));
+        Assertions.assertTrue(isAdded);
+       Assertions.assertEquals(newExpected, newActual);
+       Assertions.assertEquals(newExpected, roleRepository.findById(newActual.getId()));
     }
 
     @Test
@@ -69,16 +76,16 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Role expected = new Role(1L, "middle admin");
         Role actual = roleRepository.findById(1L);
 
-        Assert.assertEquals(expected.getId(), actual.getId());
+       Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
         actual.setRoleName("middle admin");
         boolean isUpdated = roleRepository.update(actual);
 
         //then
-        Assert.assertTrue(isUpdated);
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(expected, roleRepository.findById(actual.getId()));
+        Assertions.assertTrue(isUpdated);
+       Assertions.assertEquals(expected, actual);
+       Assertions.assertEquals(expected, roleRepository.findById(actual.getId()));
     }
 
     @Test
@@ -88,16 +95,16 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Role actual = roleRepository.findById(2L);
         List<User> users = roleRepository.findAllUsersWhoHaveRoleById(actual.getId());
 
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(3, users.size());
+       Assertions.assertEquals(expected, actual);
+       Assertions.assertEquals(3, users.size());
 
         //when
         boolean isDeleted = roleRepository.delete(actual.getId());
 
         //then
-        Assert.assertTrue(isDeleted);
-        Assert.assertNull(roleRepository.findById(2L));
-        Assert.assertEquals(0, roleRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
+        Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(roleRepository.findById(2L));
+       Assertions.assertEquals(0, roleRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
     }
 
     @Test
@@ -106,6 +113,6 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         List<User> actual = roleRepository.findAllUsersWhoHaveRoleById(2L);
 
         //then
-        Assert.assertEquals(3, actual.size());
+       Assertions.assertEquals(3, actual.size());
     }
 }

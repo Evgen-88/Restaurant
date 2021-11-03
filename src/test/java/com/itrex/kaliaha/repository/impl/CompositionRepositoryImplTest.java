@@ -1,22 +1,28 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
-import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringJUnitConfig
+@ContextConfiguration(classes = ApplicationContextConfiguration.class)
 public class CompositionRepositoryImplTest extends BaseRepositoryTest {
-    private final BaseRepository<Composition> compositionRepository;
+    @Autowired
+    private CompositionRepositoryImpl compositionRepository;
+
     private final List<Composition> compositions;
 
     public CompositionRepositoryImplTest() {
-        compositionRepository = getApplicationContext().getBean(CompositionRepositoryImpl.class);
         compositions = new ArrayList<>() {{
             add(new Composition(1L,new Dish(1L), new Ingredient(1L), 100));
             add(new Composition(2L,new Dish(1L), new Ingredient(2L), 450));
@@ -39,7 +45,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         Composition actual = compositionRepository.findById(expected.getId());
 
         //then
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -48,7 +54,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         List<Composition> actual = compositionRepository.findAll();
 
         //then
-        Assert.assertEquals(compositions, actual);
+        Assertions.assertEquals(compositions, actual);
     }
 
     @Test
@@ -56,7 +62,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<Composition> expected = compositionRepository.findAll();
 
-        Assert.assertEquals(compositions.size(), expected.size());
+        Assertions.assertEquals(compositions.size(), expected.size());
 
         //when
         Composition newActual = new Composition(new Dish(2L), new Ingredient(4L), 100);
@@ -65,9 +71,9 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         expected.add(newExpected);
 
         //then
-        Assert.assertTrue(isAdded);
-        Assert.assertEquals(newExpected, newActual);
-        Assert.assertEquals(newExpected, compositionRepository.findById(newActual.getId()));
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(newExpected, newActual);
+        Assertions.assertEquals(newExpected, compositionRepository.findById(newActual.getId()));
     }
 
     @Test
@@ -76,16 +82,16 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         Composition expected = new Composition(1L, new Dish(1L), new Ingredient(1L), 200);
         Composition actual = compositionRepository.findById(expected.getId());
 
-        Assert.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
         actual.setQuantity(200);
         boolean isUpdated = compositionRepository.update(actual);
 
         //then
-        Assert.assertTrue(isUpdated);
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(expected, compositionRepository.findById(actual.getId()));
+        Assertions.assertTrue(isUpdated);
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, compositionRepository.findById(actual.getId()));
     }
 
     @Test
@@ -94,13 +100,13 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         Composition expected = compositions.get(0);
         Composition actual = compositionRepository.findById(1L);
 
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
         //when
         boolean isDeleted = compositionRepository.delete(actual.getId());
 
         //then
-        Assert.assertTrue(isDeleted);
-        Assert.assertNull(compositionRepository.findById(actual.getId()));
+        Assertions.assertTrue(isDeleted);
+        Assertions.assertNull(compositionRepository.findById(actual.getId()));
     }
 }
