@@ -1,16 +1,13 @@
 package com.itrex.kaliaha.config;
 
 import org.flywaydb.core.Flyway;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:/db.properties")
-@ComponentScan("com.itrex.kaliaha.repository")
 public class MigrationContextConfiguration {
     @Value("${database.url}")
     private String url;
@@ -28,10 +25,5 @@ public class MigrationContextConfiguration {
                 .locations(migrationLocation)
                 .baselineOnMigrate(true)
                 .load();
-    }
-
-    @Bean
-    public SessionFactory sessionFactory() {
-        return new org.hibernate.cfg.Configuration().configure().buildSessionFactory();
     }
 }

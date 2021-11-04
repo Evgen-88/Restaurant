@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan("com.itrex.kaliaha")
-public class ApplicationContextConfiguration {
+public class ApplicationContextConfigurationTest {
     @Bean
     public SessionFactory sessionFactory() {
         return new org.hibernate.cfg.Configuration().configure().buildSessionFactory();
