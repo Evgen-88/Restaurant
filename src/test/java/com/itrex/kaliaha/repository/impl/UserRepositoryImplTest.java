@@ -1,6 +1,5 @@
 package com.itrex.kaliaha.repository.impl;
 
-import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.entity.Order;
@@ -13,14 +12,10 @@ import com.itrex.kaliaha.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringJUnitConfig
-@ContextConfiguration(classes = ApplicationContextConfiguration.class)
 public class UserRepositoryImplTest extends BaseRepositoryTest {
     private final List<User> users;
     @Autowired

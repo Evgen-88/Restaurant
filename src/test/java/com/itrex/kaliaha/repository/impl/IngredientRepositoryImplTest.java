@@ -1,6 +1,5 @@
 package com.itrex.kaliaha.repository.impl;
 
-import com.itrex.kaliaha.config.ApplicationContextConfiguration;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
@@ -9,14 +8,10 @@ import com.itrex.kaliaha.repository.IngredientRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringJUnitConfig
-@ContextConfiguration(classes = ApplicationContextConfiguration.class)
 public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     @Autowired
     private IngredientRepository ingredientRepository;
