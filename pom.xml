@@ -17,13 +17,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <flyway.url>jdbc:h2:mem:restaurant;DB_CLOSE_DELAY=-1</flyway.url>
-        <flyway.schemas>restaurant</flyway.schemas>
-        <flyway.user>sa</flyway.user>
         <spring.version>5.3.11</spring.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.27</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
