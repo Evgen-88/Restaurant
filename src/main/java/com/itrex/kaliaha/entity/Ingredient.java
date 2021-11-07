@@ -26,7 +26,7 @@ public class Ingredient extends BaseEntity<Long> {
     private int remainder;
 
     @Column(name = "measurement")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Measurement measurement;
 
     @OneToMany(mappedBy = "ingredient")
