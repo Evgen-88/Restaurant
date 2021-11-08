@@ -31,7 +31,7 @@ public class Order extends BaseEntity<Long> {
     private String address;
 
     @Column(name = "order_status")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @ManyToOne
