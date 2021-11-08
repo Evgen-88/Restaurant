@@ -20,6 +20,5 @@ public class UserListDTO implements DTO {
     private String lastName;
     private String firstName;
     private String login;
-    private String password;
     private String address;
 }

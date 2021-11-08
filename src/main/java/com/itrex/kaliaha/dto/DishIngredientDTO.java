@@ -22,4 +22,5 @@ public class DishIngredientDTO implements DTO {
     private String ingredientName;
     private Measurement measurement;
     private int quantity;
+    private int price;
 }

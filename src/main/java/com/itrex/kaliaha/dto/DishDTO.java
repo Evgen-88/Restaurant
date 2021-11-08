@@ -19,6 +19,7 @@ import java.util.List;
 @ToString
 @Builder
 public class DishDTO implements DTO {
+    private Long id;
     private String dishName;
     private int price;
     private DishGroup dishGroup;

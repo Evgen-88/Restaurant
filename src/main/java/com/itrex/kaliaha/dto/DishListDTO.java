@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class DishListDTO implements DTO {
+    private Long id;
     private String dishName;
     private int price;
 }

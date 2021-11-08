@@ -26,5 +26,5 @@ public class UserDTO implements DTO {
     private String address;
 
     private List<RoleDTO> roles;
-    private List<OrderDTO> orders;
+    private List<OrderListDTO> orders;
 }

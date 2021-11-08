@@ -1,18 +1,18 @@
 package com.itrex.kaliaha.enums;
 
 public enum Measurement {
-    KILOGRAM("Килограмм"),
-    GRAM("Грамм"),
-    LITER("Литр"),
-    MILLILITER("Миллилитр");
+    KILOGRAM(1000),
+    GRAM(1),
+    LITER(1000),
+    MILLILITER(1);
 
-    private String title;
+    private int value;
 
-    Measurement(String title) {
-        this.title = title;
+    Measurement(int value) {
+        this.value = value;
     }
 
-    public String getTitle() {
-        return title;
+    public int getValue() {
+        return value;
     }
 }

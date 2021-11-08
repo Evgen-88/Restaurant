@@ -19,8 +19,9 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderWithDishesDTO implements DTO {
+public class OrderUserDTO implements DTO {
     private Long userId;
+    private String login;
 
     private Long orderId;
     private int price;

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class DTOParser {
     public static DishDTO toDTO(Dish dish) {
         return DishDTO.builder()
+                .id(dish.getId())
                 .dishName(dish.getDishName())
                 .price(dish.getPrice())
                 .dishGroup(dish.getDishGroup())
@@ -21,9 +22,18 @@ public class DTOParser {
     public static List<DishIngredientDTO> toIngredientDTO(List<Ingredient> ingredients, List<Composition> compositions) {
         List<DishIngredientDTO> dishIngredientDTOList = new ArrayList<>();
         for (int index = 0; index < compositions.size(); index++) {
-            dishIngredientDTOList.add(toDTO(ingredients.get(index), compositions.get(index)));
+            Ingredient ingredient = ingredients.get(index);
+            Composition composition = compositions.get(index);
+            DishIngredientDTO dishIngredientDTO = toDTO(ingredient, composition);
+            dishIngredientDTO.setPrice(calculatePriceIngredient(ingredient, composition));
+            dishIngredientDTOList.add(dishIngredientDTO);
         }
         return dishIngredientDTOList;
+    }
+
+    private static int calculatePriceIngredient(Ingredient ingredient, Composition composition) {
+        int partMeasurementPrice = ingredient.getPrice() * composition.getQuantity();
+        return partMeasurementPrice / ingredient.getMeasurement().getValue() ;
     }
 
     public static DishIngredientDTO toDTO(Ingredient ingredient, Composition composition) {
@@ -38,6 +48,7 @@ public class DTOParser {
 
     public static DishListDTO toDishListDTO(Dish dish) {
         return DishListDTO.builder()
+                .id(dish.getId())
                 .dishName(dish.getDishName())
                 .price(dish.getPrice())
                 .build();
@@ -84,14 +95,15 @@ public class DTOParser {
                 .build();
     }
 
-    public static OrderWithDishesDTO toDTO(Order order, List<Dish> dishes) {
-        return OrderWithDishesDTO.builder()
+    public static OrderUserDTO toDTO(Order order, List<Dish> dishes) {
+        return OrderUserDTO.builder()
+                .userId(order.getUser().getId())
+                .login(order.getUser().getLogin())
                 .orderId(order.getId())
                 .price(order.getPrice())
                 .date(order.getDate())
                 .address(order.getAddress())
                 .orderStatus(order.getOrderStatus())
-                .userId(order.getUser().getId())
                 .orderedDishes(toDishListDTO(dishes))
                 .build();
     }
@@ -102,8 +114,8 @@ public class DTOParser {
                 .collect(Collectors.toList());
     }
 
-    public static OrderDTO toDTO(Order order) {
-        return OrderDTO.builder()
+    public static OrderListDTO toDTO(Order order) {
+        return OrderListDTO.builder()
                 .userId(order.getUser().getId())
                 .orderId(order.getId())
                 .price(order.getPrice())
@@ -113,19 +125,20 @@ public class DTOParser {
                 .build();
     }
 
-    public static List<OrderDTO> toOrderListDTO(List<Order> orders) {
+    public static List<OrderListDTO> toOrderListDTO(List<Order> orders) {
         return orders.stream()
                 .map(DTOParser::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public static Order fromDTO(OrderDTO orderDTO) {
+    public static Order fromDTO(OrderUserDTO orderDTO) {
         Order order = new Order();
         order.setId(orderDTO.getOrderId());
         order.setDate(orderDTO.getDate());
         order.setOrderStatus(orderDTO.getOrderStatus());
         order.setAddress(orderDTO.getAddress());
         order.setPrice(orderDTO.getPrice());
+        order.setUser(new User(orderDTO.getUserId()));
         return order;
     }
 
@@ -136,7 +149,6 @@ public class DTOParser {
                         .lastName(user.getLastName())
                         .firstName(user.getFirstName())
                         .login(user.getLogin())
-                        .password(user.getPassword())
                         .address(user.getAddress())
                         .build()
         ).collect(Collectors.toList());
@@ -170,6 +182,18 @@ public class DTOParser {
 
     public static List<Role> fromRoleListDTO(List<RoleDTO> roles) {
         return roles.stream()
+                .map(DTOParser::fromDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static Role fromDTO(Long id) {
+        Role role = new Role();
+        role.setId(id);
+        return role;
+    }
+
+    public static List<Role> fromRoleListIdDTO(List<Long> rolesId) {
+        return rolesId.stream()
                 .map(DTOParser::fromDTO)
                 .collect(Collectors.toList());
     }

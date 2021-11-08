@@ -34,11 +34,11 @@ class DishServiceImplTest extends BaseRepositoryTest {
     void findByIdTest_shouldReturnDishDTOWithIncludedIngredients() {
         //given
         List<DishIngredientDTO> ingredients = new ArrayList<>(){{
-            add(new DishIngredientDTO(1L, 1L, "Мясо", Measurement.KILOGRAM, 100));
-            add(new DishIngredientDTO(2L, 2L, "Картошка", Measurement.KILOGRAM, 450));
-            add(new DishIngredientDTO(3L, 3L, "Рис", Measurement.KILOGRAM, 43));
+            add(new DishIngredientDTO(1L, 1L, "Мясо", Measurement.KILOGRAM, 100, 80));
+            add(new DishIngredientDTO(2L, 2L, "Картошка", Measurement.KILOGRAM, 450, 135));
+            add(new DishIngredientDTO(3L, 3L, "Рис", Measurement.KILOGRAM, 43, 15));
         }};
-        DishDTO expected = new DishDTO("Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img", ingredients);
+        DishDTO expected = new DishDTO(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img", ingredients);
 
         //when
         DishDTO actual = dishService.findById(1L);
@@ -51,9 +51,9 @@ class DishServiceImplTest extends BaseRepositoryTest {
     void findAll() {
         //given
         List<DishListDTO> expected = new ArrayList<>() {{
-            add(new DishListDTO("Картошка с грибами", 2));
-            add(new DishListDTO("Салат по-французски", 7));
-            add(new DishListDTO("Макароны по-европейски", 11));
+            add(new DishListDTO(1L,"Картошка с грибами", 2));
+            add(new DishListDTO(2L, "Салат по-французски", 7));
+            add(new DishListDTO(3L,"Макароны по-европейски", 11));
         }};
 
         //when

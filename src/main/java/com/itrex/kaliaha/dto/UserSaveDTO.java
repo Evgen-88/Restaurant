@@ -25,5 +25,5 @@ public class UserSaveDTO implements DTO {
     private String password;
     private String address;
 
-    private List<RoleDTO> roles;
+    private List<Long> rolesId;
 }

@@ -12,9 +12,11 @@ import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.UserService;
 import com.itrex.kaliaha.util.DTOParser;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     public void add(UserSaveDTO userSaveDTO) {
         User user = DTOParser.fromDTO(userSaveDTO);
-        userRepository.add(user, DTOParser.fromRoleListDTO(userSaveDTO.getRoles()));
+        userRepository.add(user, DTOParser.fromRoleListIdDTO(userSaveDTO.getRolesId()));
         userSaveDTO.setId(user.getId());
     }
 
