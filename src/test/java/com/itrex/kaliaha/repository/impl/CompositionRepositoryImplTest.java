@@ -3,6 +3,8 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
+import com.itrex.kaliaha.enums.DishGroup;
+import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -103,5 +105,29 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(compositionRepository.findById(actual.getId()));
+    }
+
+    @Test
+    public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+        //given
+        Dish expected = new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img");
+
+        // when
+        Dish actual = compositionRepository.getDishByCompositionId(1L);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+        //given
+        Ingredient expected = new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM);
+
+        // when
+        Ingredient actual = compositionRepository.getIngredientByCompositionId(1L);
+
+        //then
+        Assertions.assertEquals(expected, actual);
     }
 }
