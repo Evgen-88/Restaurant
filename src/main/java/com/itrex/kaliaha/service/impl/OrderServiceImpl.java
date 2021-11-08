@@ -4,7 +4,6 @@ import com.itrex.kaliaha.dto.OrderListDTO;
 import com.itrex.kaliaha.dto.OrderUserDTO;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.DishRepository;

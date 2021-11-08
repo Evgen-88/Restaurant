@@ -1,7 +1,6 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.dto.IngredientSaveDTO;
-import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.IngredientRepository;
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class IngredientServiceImplTest extends BaseRepositoryTest {
     @Autowired
