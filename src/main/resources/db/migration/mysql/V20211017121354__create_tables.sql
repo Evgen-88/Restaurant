@@ -1,6 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS restaurant DEFAULT CHARACTER SET utf8;
-USE restaurant;
-
 CREATE TABLE IF NOT EXISTS dish
 (
     id               BIGINT                         NOT NULL AUTO_INCREMENT,
