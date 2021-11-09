@@ -1,9 +1,5 @@
 package com.itrex.kaliaha.dto;
 
-import com.itrex.kaliaha.enums.OrderStatus;
-
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +15,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderListDTO {
-    private Long orderId;
-    private int price;
-    private LocalDate date;
+public class UserUpdateDTO implements DTO{
+    private Long id;
+    private String lastName;
+    private String firstName;
+    private String login;
+    private String password;
     private String address;
-    private OrderStatus orderStatus;
-    private UserListDTO user;
 }

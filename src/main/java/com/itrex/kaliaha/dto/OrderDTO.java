@@ -19,15 +19,13 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderUserDTO implements DTO {
-    private Long userId;
-    private String login;
-
+public class OrderDTO implements DTO {
     private Long orderId;
     private int price;
     private LocalDate date;
     private String address;
     private OrderStatus orderStatus;
 
+    private UserListDTO userListDTO;
     private List<DishListDTO> orderedDishes;
 }

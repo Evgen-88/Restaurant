@@ -1,9 +1,6 @@
 package com.itrex.kaliaha.dto;
 
-import com.itrex.kaliaha.enums.OrderStatus;
-
-import java.time.LocalDate;
-
+import com.itrex.kaliaha.enums.DishGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +16,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderListDTO {
-    private Long orderId;
+public class DishUpdateDTO implements DTO{
+    private Long id;
+    private String dishName;
     private int price;
-    private LocalDate date;
-    private String address;
-    private OrderStatus orderStatus;
-    private UserListDTO user;
+    private DishGroup dishGroup;
+    private String dishDescription;
+    private String imagePath;
 }
