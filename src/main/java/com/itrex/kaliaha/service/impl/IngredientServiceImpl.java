@@ -1,12 +1,12 @@
 package com.itrex.kaliaha.service.impl;
 
+import com.itrex.kaliaha.converters.IngredientConverter;
 import com.itrex.kaliaha.dto.IngredientSaveDTO;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.service.IngredientService;
-import com.itrex.kaliaha.util.DTOParser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +20,15 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     public IngredientSaveDTO findById(Long id) {
-        return DTOParser.toDTO(ingredientRepository.findById(id));
+        return IngredientConverter.toDTO(ingredientRepository.findById(id));
     }
 
     public List<IngredientSaveDTO> findAll() {
-        return DTOParser.toIngredientListDTO(ingredientRepository.findAll());
+        return IngredientConverter.toIngredientListDTO(ingredientRepository.findAll());
     }
 
     public void add(IngredientSaveDTO ingredientSaveDTO) throws ServiceException {
-        Ingredient ingredient = DTOParser.fromDTO(ingredientSaveDTO);
+        Ingredient ingredient = IngredientConverter.fromDTO(ingredientSaveDTO);
 
         if(ingredientRepository.add(ingredient)) {
             ingredientSaveDTO.setId(ingredient.getId());
@@ -38,7 +38,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     public void update(IngredientSaveDTO ingredientSaveDTO) throws ServiceException {
-        Ingredient ingredient = DTOParser.fromDTO(ingredientSaveDTO);
+        Ingredient ingredient = IngredientConverter.fromDTO(ingredientSaveDTO);
 
         if(!ingredientRepository.update(ingredient)) {
             throw new ServiceException("Ingredient object is not updated in database", ingredientSaveDTO);

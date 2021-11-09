@@ -1,8 +1,11 @@
 package com.itrex.kaliaha.service.impl;
 
+import com.itrex.kaliaha.converters.RoleConverter;
+import com.itrex.kaliaha.converters.UserConverter;
 import com.itrex.kaliaha.dto.UserDTO;
 import com.itrex.kaliaha.dto.UserListDTO;
 import com.itrex.kaliaha.dto.UserSaveDTO;
+import com.itrex.kaliaha.dto.UserUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
@@ -11,7 +14,6 @@ import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.UserService;
-import com.itrex.kaliaha.util.DTOParser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,24 +32,24 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id);
         List<Role> roles = userRepository.findRolesByUserId(id);
         List<Order> orders = orderRepository.findOrdersByUserId(id);
-        return DTOParser.toDTO(user, roles, orders);
+        return UserConverter.toDTO(user, roles, orders);
     }
 
     public List<UserListDTO> findAll() {
         List<User> users = userRepository.findAll();
-        return DTOParser.toUserListDTO(users);
+        return UserConverter.toUserListDTO(users);
     }
 
     public void add(UserSaveDTO userSaveDTO) {
-        User user = DTOParser.fromDTO(userSaveDTO);
-        userRepository.add(user, DTOParser.fromRoleListIdDTO(userSaveDTO.getRolesId()));
+        User user = UserConverter.fromDTO(userSaveDTO);
+        userRepository.add(user, RoleConverter.fromRoleListIdDTO(userSaveDTO.getRolesId()));
         userSaveDTO.setId(user.getId());
     }
 
-    public void update(UserSaveDTO userSaveDTO) throws ServiceException {
-        User user = DTOParser.fromDTO(userSaveDTO);
+    public void update(UserUpdateDTO userUpdateDTO) throws ServiceException {
+        User user = UserConverter.fromDTO(userUpdateDTO);
         if(!userRepository.update(user)) {
-            throw new ServiceException("User object is not updated in database", userSaveDTO);
+            throw new ServiceException("User object is not updated in database", userUpdateDTO);
         }
     }
 

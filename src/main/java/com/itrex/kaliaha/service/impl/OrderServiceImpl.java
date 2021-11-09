@@ -1,7 +1,9 @@
 package com.itrex.kaliaha.service.impl;
 
+import com.itrex.kaliaha.converters.OrderConverter;
+import com.itrex.kaliaha.dto.OrderDishDTO;
 import com.itrex.kaliaha.dto.OrderListDTO;
-import com.itrex.kaliaha.dto.OrderUserDTO;
+import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
@@ -10,7 +12,6 @@ import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.OrderService;
-import com.itrex.kaliaha.util.DTOParser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,21 +28,21 @@ public class OrderServiceImpl implements OrderService {
         this.userRepository = userRepository;
     }
 
-    public OrderUserDTO findById(Long orderId) {
+    public OrderDTO findById(Long orderId) {
         Order order = orderRepository.findById(orderId);
         order.setUser(userRepository.findById(order.getUser().getId()));
 
         List<Dish> dishes = dishRepository.findAllDishesInOrderById(orderId);
-        return DTOParser.toDTO(order, dishes);
+        return OrderConverter.toDTO(order, dishes);
     }
 
     public List<OrderListDTO> findAll() {
         List<Order> orders = orderRepository.findAll();
-        return DTOParser.toOrderListDTO(orders);
+        return OrderConverter.toOrderListDTO(orders);
     }
 
-    public void add(OrderUserDTO orderDTO) throws ServiceException {
-        Order order = DTOParser.fromDTO(orderDTO);
+    public void add(OrderDTO orderDTO) throws ServiceException {
+        Order order = OrderConverter.fromDTO(orderDTO);
 
         if(orderRepository.add(order)) {
             orderDTO.setOrderId(order.getId());
@@ -50,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public void update(OrderUserDTO orderDTO) throws ServiceException {
-        Order order = DTOParser.fromDTO(orderDTO);
+    public void update(OrderDTO orderDTO) throws ServiceException {
+        Order order = OrderConverter.fromDTO(orderDTO);
         if(!orderRepository.update(order)) {
             throw new ServiceException("Order object is not updated in database", orderDTO);
         }
@@ -64,5 +65,21 @@ public class OrderServiceImpl implements OrderService {
         if(!orderRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("Order wasn't deleted", id);
         }
+    }
+
+    @Override
+    public boolean order(OrderDishDTO orderDishDTO) throws ServiceException {
+        if(!orderRepository.orderDish(orderDishDTO.getOrderId(), orderDishDTO.getDishId())) {
+            throw new ServiceException("Dish is not ordered", orderDishDTO);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteFromOrderDishById(OrderDishDTO orderDishDTO) throws ServiceException {
+        if(!orderRepository.deleteFromOrderDishById(orderDishDTO.getOrderId(), orderDishDTO.getDishId())) {
+            throw new ServiceException("Dish is not ordered", orderDishDTO);
+        }
+        return true;
     }
 }

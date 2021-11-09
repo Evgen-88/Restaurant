@@ -1,9 +1,7 @@
 package com.itrex.kaliaha.service.impl;
 
-import com.itrex.kaliaha.dto.DishDTO;
-import com.itrex.kaliaha.dto.DishIngredientDTO;
-import com.itrex.kaliaha.dto.DishListDTO;
-import com.itrex.kaliaha.dto.DishSaveDTO;
+import com.itrex.kaliaha.converters.DishConverter;
+import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
@@ -12,7 +10,6 @@ import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.CompositionRepository;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.DishService;
-import com.itrex.kaliaha.util.DTOParser;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,29 +25,28 @@ public class DishServiceImpl implements DishService {
     public DishServiceImpl(DishRepository dishRepository, CompositionRepository compositionRepository) {
         this.dishRepository = dishRepository;
         this.compositionRepository = compositionRepository;
-
     }
 
     public DishDTO findById(Long id) {
-        DishDTO dishDTO = DTOParser.toDTO(dishRepository.findById(id));
-        dishDTO.setIngredientList(collectIngredientsDTO(id));
+        DishDTO dishDTO = DishConverter.toDTO(dishRepository.findById(id));
+        dishDTO.setIngredientList(getIngredientList(id));
         return dishDTO;
     }
 
-    private List<DishIngredientDTO> collectIngredientsDTO(Long dishId) {
+    private List<DishIngredientDTO> getIngredientList(Long dishId) {
         List<Composition> compositions = dishRepository.getCompositionsByDishId(dishId);
         List<Ingredient> ingredients = compositions.stream()
                 .map(composition -> compositionRepository.getIngredientByCompositionId(composition.getId()))
                 .collect(Collectors.toList());
-        return DTOParser.toIngredientDTO(ingredients, compositions);
+        return DishConverter.toDishIngredientListDTO(ingredients, compositions);
     }
 
     public List<DishListDTO> findAll() {
-        return dishRepository.findAll().stream().map(DTOParser::toDishListDTO).collect(Collectors.toList());
+        return dishRepository.findAll().stream().map(DishConverter::toDishListDTO).collect(Collectors.toList());
     }
 
     public void add(DishSaveDTO dishSaveDTO) {
-        Dish dish = DTOParser.fromDTO(dishSaveDTO);
+        Dish dish = DishConverter.fromDTO(dishSaveDTO);
         dishRepository.add(dish);
         dishSaveDTO.setId(dish.getId());
         compositionRepository.addAll(collectCompositions(dish, dishSaveDTO.getIngredients()));
@@ -66,11 +62,11 @@ public class DishServiceImpl implements DishService {
         return compositions;
     }
 
-    public void update(DishSaveDTO dishSaveDTO) throws ServiceException {
-        Dish dish = DTOParser.fromDTO(dishSaveDTO);
+    public void update(DishUpdateDTO dishUpdateDTO) throws ServiceException {
+        Dish dish = DishConverter.fromDTO(dishUpdateDTO);
 
         if(!dishRepository.update(dish)) {
-            throw new ServiceException("Dish object is not updated to database", dishSaveDTO);
+            throw new ServiceException("Dish object is not updated to database", dishUpdateDTO);
         }
     }
 

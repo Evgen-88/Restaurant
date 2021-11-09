@@ -1,10 +1,10 @@
 package com.itrex.kaliaha.service.impl;
 
+import com.itrex.kaliaha.converters.RoleConverter;
 import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.repository.RoleRepository;
 import com.itrex.kaliaha.service.RoleService;
-import com.itrex.kaliaha.util.DTOParser;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDTO> findAll() {
         List<RoleDTO> rolesDTO = new ArrayList<>();
         for (Role role : roleRepository.findAll()) {
-            rolesDTO.add(DTOParser.toDTO(role));
+            rolesDTO.add(RoleConverter.toDTO(role));
         }
         return rolesDTO;
     }
