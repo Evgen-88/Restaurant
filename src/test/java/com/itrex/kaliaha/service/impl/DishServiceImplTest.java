@@ -1,9 +1,7 @@
 package com.itrex.kaliaha.service.impl;
 
-import com.itrex.kaliaha.dto.DishDTO;
-import com.itrex.kaliaha.dto.DishIngredientDTO;
-import com.itrex.kaliaha.dto.DishListDTO;
-import com.itrex.kaliaha.dto.DishSaveDTO;
+import com.itrex.kaliaha.converters.DishConverter;
+import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.Measurement;
@@ -89,23 +87,32 @@ class DishServiceImplTest extends BaseRepositoryTest {
     @Test
     void update() throws ServiceException {
         //given
-        DishSaveDTO expected = new DishSaveDTO();
-        expected.setId(1L);
-        expected.setDishGroup(DishGroup.SALAD);
-        expected.setPrice(5400);
-        expected.setDishName("фирменное блюдо");
-        expected.setImagePath("asd1");
-        expected.setDishDescription("delicious1");
-        Dish dish = dishRepository.findById(1L);
+        DishUpdateDTO expected = DishUpdateDTO.builder()
+                .id(1L)
+                .dishGroup(DishGroup.SALAD)
+                .dishName("фирменное блюдо")
+                .dishDescription("delicious")
+                .price(5400)
+                .imagePath("asd1")
+                .build();
 
-        Assertions.assertEquals(new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img"), dish);
+        Dish actual = dishRepository.findById(1L);
+
+        Assertions.assertEquals(new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img"), actual);
 
         //when
-        dishService.update(expected);
+        actual.setDishName("фирменное блюдо");
+        actual.setDishGroup(DishGroup.SALAD);
+        actual.setDishDescription("delicious");
+        actual.setPrice(5400);
+        actual.setImagePath("asd1");
+        DishUpdateDTO dishUpdateDTO = DishConverter.toUpdateDTO(actual);
+        dishService.update(dishUpdateDTO);
 
         //then
-        dish = dishRepository.findById(1L);
-        Assertions.assertEquals(new Dish(1L, "фирменное блюдо", 5400, DishGroup.SALAD, "delicious1", "asd1"), dish);
+        actual = dishRepository.findById(actual.getId());
+        Assertions.assertEquals(expected, DishConverter.toUpdateDTO(actual));
+        Assertions.assertEquals(expected, DishConverter.toUpdateDTO(dishRepository.findById(1L)));
     }
 
     @Test
