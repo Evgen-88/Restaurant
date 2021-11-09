@@ -9,24 +9,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
-    private static final String LAST_NAME_COLUMN = "lastName";
-    private static final String FIRST_NAME_COLUMN = "firstName";
-    private static final String LOGIN_COLUMN = "login";
-    private static final String PASSWORD_COLUMN = "password";
-    private static final String ADDRESS_COLUMN = "address";
-
     private static final String SELECT_ALL = "from User u";
-    private static final String UPDATE_QUERY = "update User set " +
-            "lastName = :lastName, firstName = :firstName, " +
-            "login = :login, password = :password, " +
-            "address = :address where id = :id";
 
     public UserRepositoryImpl(SessionFactory sessionFactory) {
         super(User.class, sessionFactory);
@@ -35,21 +24,6 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
-    }
-
-    @Override
-    protected String defineUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected void constructQuery(Query query, User user) {
-        query.setParameter(LAST_NAME_COLUMN, user.getLastName());
-        query.setParameter(FIRST_NAME_COLUMN, user.getFirstName());
-        query.setParameter(LOGIN_COLUMN, user.getLogin());
-        query.setParameter(PASSWORD_COLUMN, user.getPassword());
-        query.setParameter(ADDRESS_COLUMN, user.getAddress());
-        query.setParameter(ID_COLUMN, user.getId());
     }
 
     @Override

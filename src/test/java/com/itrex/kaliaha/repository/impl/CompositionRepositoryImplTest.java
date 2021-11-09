@@ -88,6 +88,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isUpdated);
         Assertions.assertEquals(expected, actual);
+        Composition composition = compositionRepository.findById(actual.getId());
         Assertions.assertEquals(expected, compositionRepository.findById(actual.getId()));
     }
 

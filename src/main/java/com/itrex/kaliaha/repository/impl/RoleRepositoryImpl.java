@@ -7,17 +7,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
-    private static final String ROLE_NAME_COLUMN = "roleName";
-
     private static final String SELECT_ALL = "from Role r";
-    private static final String UPDATE_QUERY = "update Role set " +
-            "roleName = :roleName where id = :id";
 
     public RoleRepositoryImpl(SessionFactory sessionFactory) {
         super(Role.class, sessionFactory);
@@ -26,17 +21,6 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
-    }
-
-    @Override
-    protected String defineUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected void constructQuery(Query query, Role role) {
-        query.setParameter(ROLE_NAME_COLUMN, role.getRoleName());
-        query.setParameter(ID_COLUMN, role.getId());
     }
 
     @Override

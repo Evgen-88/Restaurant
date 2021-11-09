@@ -5,12 +5,9 @@ import com.itrex.kaliaha.repository.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import javax.persistence.Query;
 import java.util.List;
 
 public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
-    public static final String ID_COLUMN = "id";
-
     private final Class<E> clazz;
     private final SessionFactory sessionFactory;
 
@@ -24,8 +21,6 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     }
 
     protected abstract String defineSelectAllQuery();
-
-    protected abstract String defineUpdateQuery();
 
     @Override
     public E findById(Long id) {
@@ -57,9 +52,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
-                Query query = session.createQuery(defineUpdateQuery());
-                constructQuery(query, e);
-                query.executeUpdate();
+                doUpdateOperations(session, e);
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
@@ -70,7 +63,9 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
         return false;
     }
 
-    protected abstract void constructQuery(Query query, E e);
+    protected void doUpdateOperations(Session session, E e) {
+        session.update(e);
+    }
 
     @Override
     public boolean delete(Long id) {

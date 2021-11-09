@@ -8,24 +8,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
-    private static final String DISH_NAME_COLUMN = "dishName";
-    private static final String PRICE_COLUMN = "price";
-    private static final String DISH_GROUP_COLUMN = "dishGroup";
-    private static final String DISH_DESCRIPTION_COLUMN = "dishDescription";
-    private static final String IMAGE_PATH_COLUMN = "imagePath";
-
     private static final String SELECT_ALL = "from Dish r";
-    private static final String UPDATE_QUERY = "update Dish set " +
-            "dishName = :dishName, price = :price, " +
-            "dishGroup = :dishGroup, dishDescription = :dishDescription, " +
-            "imagePath = :imagePath where id = :id";
-
 
     public DishRepositoryImpl(SessionFactory sessionFactory) {
         super(Dish.class, sessionFactory);
@@ -34,21 +22,6 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
-    }
-
-    @Override
-    protected String defineUpdateQuery() {
-        return UPDATE_QUERY;
-    }
-
-    @Override
-    protected void constructQuery(Query query, Dish dish) {
-        query.setParameter(DISH_NAME_COLUMN, dish.getDishName());
-        query.setParameter(PRICE_COLUMN, dish.getPrice());
-        query.setParameter(DISH_GROUP_COLUMN, dish.getDishGroup());
-        query.setParameter(DISH_DESCRIPTION_COLUMN, dish.getDishDescription());
-        query.setParameter(IMAGE_PATH_COLUMN, dish.getImagePath());
-        query.setParameter(ID_COLUMN, dish.getId());
     }
 
     @Override
