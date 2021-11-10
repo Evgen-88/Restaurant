@@ -13,17 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientRepositoryImplTest extends BaseRepositoryTest {
+    private final List<Ingredient> ingredients;
     @Autowired
     private IngredientRepository ingredientRepository;
-    private final List<Ingredient> ingredients;
 
     public IngredientRepositoryImplTest() {
         ingredients = new ArrayList<>() {{
-            add(new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM));
-            add(new Ingredient(2L, "Картошка", 300, 777, Measurement.KILOGRAM));
-            add(new Ingredient(3L, "Рис", 350, 1111, Measurement.KILOGRAM));
-            add(new Ingredient(4L, "Чеснок", 15, 500, Measurement.GRAM));
-            add(new Ingredient(5L, "Помидор", 13, 500, Measurement.GRAM));
+            add(Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build());
+            add(Ingredient.builder().id(2L).ingredientName("Картошка").price(300).remainder(777).measurement(Measurement.KILOGRAM).build());
+            add(Ingredient.builder().id(3L).ingredientName("Рис").price(350).remainder(1111).measurement(Measurement.KILOGRAM).build());
+            add(Ingredient.builder().id(4L).ingredientName("Чеснок").price(15).remainder(500).measurement(Measurement.GRAM).build());
+            add(Ingredient.builder().id(5L).ingredientName("Помидор").price(13).remainder(500).measurement(Measurement.GRAM).build());
         }};
     }
 
@@ -36,7 +36,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         Ingredient actual = ingredientRepository.findById(expected.getId());
 
         //then
-       Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         List<Ingredient> actual = ingredientRepository.findAll();
 
         //then
-       Assertions.assertEquals(ingredients, actual);
+        Assertions.assertEquals(ingredients, actual);
     }
 
     @Test
@@ -53,39 +53,38 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<Ingredient> expected = ingredientRepository.findAll();
 
-       Assertions.assertEquals(ingredients.size(), expected.size());
+        Assertions.assertEquals(ingredients.size(), expected.size());
 
         //when
-        Ingredient newActual = new Ingredient( "Петрушка", 8, 1500, Measurement.KILOGRAM);
+
+        Ingredient newActual = Ingredient.builder().ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
         boolean isAdded = ingredientRepository.add(newActual);
-        Ingredient newExpected = new Ingredient(6L, "Петрушка", 8, 1500, Measurement.KILOGRAM);
+        Ingredient newExpected = Ingredient.builder().id(6L).ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
         expected.add(newExpected);
 
         //then
         Assertions.assertTrue(isAdded);
-       Assertions.assertEquals(newExpected, newActual);
-       Assertions.assertEquals(newExpected, ingredientRepository.findById(newActual.getId()));
+        Assertions.assertEquals(newExpected, newActual);
+        Assertions.assertEquals(newExpected, ingredientRepository.findById(newActual.getId()));
     }
 
     @Test
     public void updateTest_validData_shouldUpdateIngredient() {
         //given
-        Ingredient expected = new Ingredient(1L, "Рыба", 120, 1550, Measurement.GRAM);
+        Ingredient expected = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
         Ingredient actual = ingredientRepository.findById(expected.getId());
 
-       Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
-        actual.setIngredientName("Рыба");
-        actual.setPrice(120);
-        actual.setRemainder(1550);
-        actual.setMeasurement(Measurement.GRAM);
+        actual = Ingredient.builder().id(expected.getId()).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
+
         boolean isUpdated = ingredientRepository.update(actual);
 
         //then
         Assertions.assertTrue(isUpdated);
-       Assertions.assertEquals(expected, actual);
-       Assertions.assertEquals(expected, ingredientRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, ingredientRepository.findById(actual.getId()));
     }
 
     @Test
@@ -94,8 +93,8 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         Ingredient expected = ingredients.get(0);
         Ingredient actual = ingredientRepository.findById(1L);
 
-       Assertions.assertEquals(expected, actual);
-       Assertions.assertEquals(3, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(3, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
 
         //when
         boolean isDeleted = ingredientRepository.delete(actual.getId());
@@ -103,7 +102,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(ingredientRepository.findById(1L));
-       Assertions.assertEquals(0, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
+        Assertions.assertEquals(0, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
     }
 
     @Test
@@ -112,6 +111,6 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         List<Composition> dishes = ingredientRepository.findAllCompositionsThatIncludeIngredientById(1L);
 
         //then
-       Assertions.assertEquals(3, dishes.size());
+        Assertions.assertEquals(3, dishes.size());
     }
 }

@@ -27,10 +27,10 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
     public UserRepositoryImplTest() {
         users = new ArrayList<>() {{
-            add(new User(1L, "Коляго", "Владислав", "kaliaha.vladzislav", "1111", "г.Витебск"));
-            add(new User(2L, "Молочко", "Юрий", "molochko.urey", "2222", "г.Хойники"));
-            add(new User(3L, "Рубанов", "Владислав", "rubanov", "3333", "г.Жлобин"));
-            add(new User(4L, "Петров", "Сергей", "petrov", "4444", "г.Москва"));
+            add(User.builder().id(1L).lastName("Коляго").firstName("Владислав").login("kaliaha.vladzislav").password("1111").address("г.Витебск").build());
+            add(User.builder().id(2L).lastName("Молочко").firstName("Юрий").login("molochko.urey").password("2222").address("г.Хойники").build());
+            add(User.builder().id(3L).lastName("Рубанов").firstName("Владислав").login("rubanov").password("3333").address("г.Жлобин").build());
+            add(User.builder().id(4L).lastName("Петров").firstName("Сергей").login("petrov").password("4444").address("г.Москва").build());
         }};
     }
 
@@ -67,16 +67,16 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<User> expected = userRepository.findAll();
         List<Role> roles = new ArrayList<>() {{
-            add(new Role(1L));
-            add(new Role(2L));
+            add(Role.builder().id(1L).build());
+            add(Role.builder().id(2L).build());
         }};
 
         Assertions.assertEquals(users.size(), expected.size());
 
         //when
-        User newActual = new User("Сидоров", "Александр", "suitor", "5555", "г.Минск");
+        User newActual = User.builder().lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").build();
         boolean isAdded = userRepository.add(newActual, roles);
-        User newExpected = new User(5L, "Сидоров", "Александр", "suitor", "5555", "г.Минск");
+        User newExpected = User.builder().id(5L).lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").build();
         expected.add(newExpected);
 
         //then
@@ -89,17 +89,13 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void updateTest_validData_shouldUpdateUser() {
         //given
-        User expected = new User(1L, "Updated Коляго", "Updated Владислав", "Updated kaliaha", "Updated 2222", "Updated г.Минск");
+        User expected = User.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha").password("Updated 2222").address("Updated г.Минск").build();
         User actual = userRepository.findById(expected.getId());
 
         Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
-        actual.setLastName("Updated Коляго");
-        actual.setFirstName("Updated Владислав");
-        actual.setLogin("Updated kaliaha");
-        actual.setPassword("Updated 2222");
-        actual.setAddress("Updated г.Минск");
+        actual = User.builder().id(expected.getId()).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha").password("Updated 2222").address("Updated г.Минск").build();
         boolean isUpdated = userRepository.update(actual);
 
         //then

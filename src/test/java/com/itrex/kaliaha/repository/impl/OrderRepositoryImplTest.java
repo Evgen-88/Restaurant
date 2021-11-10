@@ -17,25 +17,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRepositoryImplTest extends BaseRepositoryTest {
+    private final List<Order> orders;
     @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private DishRepository dishRepository;
 
-    private final List<Order> orders;
-
     public OrderRepositoryImplTest() {
         orders = new ArrayList<>() {{
-            add(new Order(1L, 1500, LocalDate.of(2021, 10, 21), "г. Минск", OrderStatus.COOKING, new User(1L)));
-            add(new Order(2L, 2800, LocalDate.of(2021, 10, 22), "г. Минск", OrderStatus.COOKING, new User(2L)));
-            add(new Order(3L, 1200, LocalDate.of(2021, 10, 23), "г. Витебск", OrderStatus.COOKING, new User(1L)));
-            add(new Order(4L, 1500, LocalDate.of(2021, 11, 24), "г. Минск", OrderStatus.NEW, new User(3L)));
-            add(new Order(5L, 2800, LocalDate.of(2021, 11, 25), "г. Минск", OrderStatus.NEW, new User(4L)));
-            add(new Order(6L, 1200, LocalDate.of(2021, 12, 26), "г. Витебск", OrderStatus.NEW, new User(1L)));
+            add(Order.builder().id(1L).price(1500).date(LocalDate.of(2021, 10, 21)).address("г. Минск").orderStatus(OrderStatus.COOKING).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(2L).price(2800).date(LocalDate.of(2021, 10, 22)).address("г. Минск").orderStatus(OrderStatus.COOKING).user(User.builder().id(2L).build()).build());
+            add(Order.builder().id(3L).price(1200).date(LocalDate.of(2021, 10, 23)).address("г. Витебск").orderStatus(OrderStatus.COOKING).user(User.builder().id(1L).build()).build());
+            add(Order.builder().id(4L).price(1500).date(LocalDate.of(2021, 11, 24)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(3L).build()).build());
+            add(Order.builder().id(5L).price(2800).date(LocalDate.of(2021, 11, 25)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(4L).build()).build());
+            add(Order.builder().id(6L).price(1200).date(LocalDate.of(2021, 12, 26)).address("г. Витебск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build());
         }};
     }
 
@@ -48,7 +45,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Order actual = orderRepository.findById(expected.getId());
 
         //then
-       Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -57,7 +54,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         List<Order> actual = orderRepository.findAll();
 
         //then
-       Assertions.assertEquals(orders, actual);
+        Assertions.assertEquals(orders, actual);
     }
 
     @Test
@@ -65,40 +62,37 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         //given
         List<Order> expected = orderRepository.findAll();
 
-       Assertions.assertEquals(orders.size(), expected.size());
+        Assertions.assertEquals(orders.size(), expected.size());
 
         //when
-        Order newActual = new Order(1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, new User(1L));
+        Order newActual = Order.builder().price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
         boolean isAdded = orderRepository.add(newActual);
-        Order newExpected = new Order(7L, 1500, LocalDate.of(2021, 12, 27), "г. Минск", OrderStatus.NEW, new User(1L));
+        Order newExpected = Order.builder().id(7L).price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
         expected.add(newExpected);
 
         //then
         Assertions.assertTrue(isAdded);
-       Assertions.assertEquals(newExpected, newActual);
-       Assertions.assertEquals(newExpected, orderRepository.findById(newActual.getId()));
+        Assertions.assertEquals(newExpected, newActual);
+        Assertions.assertEquals(newExpected, orderRepository.findById(newActual.getId()));
     }
 
     @Test
     public void updateTest_validData_shouldUpdateOrder() {
         //given
-        Order expected = new Order(1L, 1600, LocalDate.of(2021, 11, 1), "updated г. Минск", OrderStatus.COMPLETED, new User(1L));
+
+        Order expected = Order.builder().id(1L).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
         Order actual = orderRepository.findById(expected.getId());
 
-       Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
-        actual.setPrice(1600);
-        actual.setDate(LocalDate.of(2021, 11, 1));
-        actual.setAddress("updated г. Минск");
-        actual.setOrderStatus(OrderStatus.COMPLETED);
-        actual.setUser(new User(1L));
+        actual = Order.builder().id(expected.getId()).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
         boolean isUpdated = orderRepository.update(actual);
 
         //then
         Assertions.assertTrue(isUpdated);
-       Assertions.assertEquals(expected, actual);
-       Assertions.assertEquals(expected, orderRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, orderRepository.findById(actual.getId()));
     }
 
     @Test
@@ -107,8 +101,8 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Order expected = orders.get(0);
         Order actual = orderRepository.findById(1L);
 
-       Assertions.assertEquals(expected, actual);
-       Assertions.assertEquals(3, dishRepository.findAllDishesInOrderById(actual.getId()).size());
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(3, dishRepository.findAllDishesInOrderById(actual.getId()).size());
 
         //when
         boolean isDeleted = orderRepository.delete(actual.getId());
@@ -116,7 +110,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(orderRepository.findById(1L));
-       Assertions.assertEquals(0, dishRepository.findAllDishesInOrderById(actual.getId()).size());
+        Assertions.assertEquals(0, dishRepository.findAllDishesInOrderById(actual.getId()).size());
     }
 
     @Test
@@ -125,7 +119,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         List<Order> orders = orderRepository.findOrdersByUserId(1L);
 
         //then
-       Assertions.assertEquals(3, orders.size());
+        Assertions.assertEquals(3, orders.size());
     }
 
     @Test
@@ -136,17 +130,17 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Order actual = orders.get(0);
         List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(actual.getId());
 
-       Assertions.assertEquals(3, orders.size());
-       Assertions.assertEquals(1L, (long) actual.getId());
-       Assertions.assertEquals(3, orderedDishesExpected.size());
+        Assertions.assertEquals(3, orders.size());
+        Assertions.assertEquals(1L, (long) actual.getId());
+        Assertions.assertEquals(3, orderedDishesExpected.size());
 
         //when
-        boolean isOrdered = orderRepository.orderDish(actual.getId(),1L);
+        boolean isOrdered = orderRepository.orderDish(actual.getId(), 1L);
         orderedDishesExpected.add(dishRepository.findById(1L));
 
         //then
         Assertions.assertTrue(isOrdered);
-       Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
+        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
     }
 
     @Test
@@ -157,16 +151,16 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Order actual = orders.get(0);
         List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(actual.getId());
 
-       Assertions.assertEquals(3, orders.size());
-       Assertions.assertEquals(1L, (long) actual.getId());
-       Assertions.assertEquals(3, orderedDishesExpected.size());
+        Assertions.assertEquals(3, orders.size());
+        Assertions.assertEquals(1L, (long) actual.getId());
+        Assertions.assertEquals(3, orderedDishesExpected.size());
 
         //when
         Dish dishToDelete = orderedDishesExpected.remove(0);
-        boolean isDeleted = orderRepository.deleteFromOrderDishById(actual.getId(),dishToDelete.getId());
+        boolean isDeleted = orderRepository.deleteFromOrderDishById(actual.getId(), dishToDelete.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
-       Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
+        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
     }
 }

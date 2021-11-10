@@ -16,18 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DishRepositoryImplTest extends BaseRepositoryTest {
+    private final List<Dish> dishes;
     @Autowired
     private DishRepository dishRepository;
-
     @Autowired
     private OrderRepository orderRepository;
 
-    private final List<Dish> dishes;
     public DishRepositoryImplTest() {
         dishes = new ArrayList<>() {{
-            add(new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img"));
-            add(new Dish(2L, "Салат по-французски", 7, DishGroup.SALAD, "Невкусно", "photo1.img"));
-            add(new Dish(3L, "Макароны по-европейски", 11, DishGroup.DRINK, "Невероятно", "photo2.img"));
+            add(Dish.builder().id(1L).dishName("Картошка с грибами").price(2).dishGroup(DishGroup.HOT).dishDescription("Очень вкусно").imagePath("photo.img").build());
+            add(Dish.builder().id(2L).dishName("Салат по-французски").price(7).dishGroup(DishGroup.SALAD).dishDescription("Невкусно").imagePath("photo1.img").build());
+            add(Dish.builder().id(3L).dishName("Макароны по-европейски").price(11).dishGroup(DishGroup.DRINK).dishDescription("Невероятно").imagePath("photo2.img").build());
         }};
     }
 
@@ -60,9 +59,9 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertEquals(dishes.size(), expected.size());
 
         //when
-        Dish newActual = new Dish("Макароны по-немецки", 2, DishGroup.HOT, "Nice dish", "not image");
+        Dish newActual = Dish.builder().dishName("Макароны по-немецки").price(2).dishGroup(DishGroup.HOT).dishDescription("Nice dish").imagePath("not image").build();
         boolean isAdded = dishRepository.add(newActual);
-        Dish newExpected = new Dish(4L, "Макароны по-немецки", 2, DishGroup.HOT, "Nice dish", "not image");
+        Dish newExpected = Dish.builder().id(4L).dishName("Макароны по-немецки").price(2).dishGroup(DishGroup.HOT).dishDescription("Nice dish").imagePath("not image").build();
         expected.add(newExpected);
 
         //then
@@ -74,17 +73,13 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void updateTest_validData_shouldUpdateDish() {
         //given
-        Dish expected = new Dish(1L, "Шаньга", 3, DishGroup.DRINK, "Ужасно", "photo1111.img");
+        Dish expected = Dish.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
         Dish actual = dishRepository.findById(expected.getId());
 
         Assertions.assertEquals(expected.getId(), actual.getId());
 
         //when
-        actual.setDishName("Шаньга");
-        actual.setPrice(3);
-        actual.setDishGroup(DishGroup.DRINK);
-        actual.setDishDescription("Ужасно");
-        actual.setImagePath("photo1111.img");
+        actual = Dish.builder().id(expected.getId()).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
         boolean isUpdated = dishRepository.update(actual);
 
         //then

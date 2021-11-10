@@ -14,22 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompositionRepositoryImplTest extends BaseRepositoryTest {
+    private final List<Composition> compositions;
     @Autowired
     private CompositionRepositoryImpl compositionRepository;
 
-    private final List<Composition> compositions;
-
     public CompositionRepositoryImplTest() {
         compositions = new ArrayList<>() {{
-            add(new Composition(1L,new Dish(1L), new Ingredient(1L), 100));
-            add(new Composition(2L,new Dish(1L), new Ingredient(2L), 450));
-            add(new Composition(3L,new Dish(1L), new Ingredient(3L), 43));
-            add(new Composition(4L,new Dish(2L), new Ingredient(1L), 132));
-            add(new Composition(5L,new Dish(2L), new Ingredient(2L), 12));
-            add(new Composition(6L,new Dish(3L), new Ingredient(4L), 100));
-            add(new Composition(7L,new Dish(3L), new Ingredient(1L), 450));
-            add(new Composition(8L,new Dish(3L), new Ingredient(5L), 43));
-            add(new Composition(9L,new Dish(3L), new Ingredient(2L), 132));
+            add(Composition.builder().id(1L).dish(Dish.builder().id(1L).build()).ingredient(Ingredient.builder().id(1L).build()).quantity(100).build());
+            add(Composition.builder().id(2L).dish(Dish.builder().id(1L).build()).ingredient(Ingredient.builder().id(2L).build()).quantity(450).build());
+            add(Composition.builder().id(3L).dish(Dish.builder().id(1L).build()).ingredient(Ingredient.builder().id(3L).build()).quantity(43).build());
+            add(Composition.builder().id(4L).dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(1L).build()).quantity(132).build());
+            add(Composition.builder().id(5L).dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(2L).build()).quantity(12).build());
+            add(Composition.builder().id(6L).dish(Dish.builder().id(3L).build()).ingredient(Ingredient.builder().id(4L).build()).quantity(100).build());
+            add(Composition.builder().id(7L).dish(Dish.builder().id(3L).build()).ingredient(Ingredient.builder().id(1L).build()).quantity(450).build());
+            add(Composition.builder().id(8L).dish(Dish.builder().id(3L).build()).ingredient(Ingredient.builder().id(5L).build()).quantity(43).build());
+            add(Composition.builder().id(9L).dish(Dish.builder().id(3L).build()).ingredient(Ingredient.builder().id(2L).build()).quantity(132).build());
         }};
     }
 
@@ -62,9 +61,9 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertEquals(compositions.size(), expected.size());
 
         //when
-        Composition newActual = new Composition(new Dish(2L), new Ingredient(4L), 100);
+        Composition newActual = Composition.builder().dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(4L).build()).quantity(100).build();
         boolean isAdded = compositionRepository.add(newActual);
-        Composition newExpected = new Composition(10L, new Dish(2L), new Ingredient(4L), 100);
+        Composition newExpected = Composition.builder().id(10L).dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(4L).build()).quantity(100).build();
         expected.add(newExpected);
 
         //then
@@ -76,7 +75,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void updateTest_validData_shouldUpdateComposition() {
         //given
-        Composition expected = new Composition(1L, new Dish(1L), new Ingredient(1L), 200);
+        Composition expected = Composition.builder().id(1L).dish(Dish.builder().id(1L).build()).ingredient(Ingredient.builder().id(1L).build()).quantity(200).build();
         Composition actual = compositionRepository.findById(expected.getId());
 
         Assertions.assertEquals(expected.getId(), actual.getId());
@@ -110,7 +109,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
         //given
-        Dish expected = new Dish(1L, "Картошка с грибами", 2, DishGroup.HOT, "Очень вкусно", "photo.img");
+        Dish expected = Dish.builder().id(1L).dishName("Картошка с грибами").price(2).dishGroup(DishGroup.HOT).dishDescription("Очень вкусно").imagePath("photo.img").build();
 
         // when
         Dish actual = compositionRepository.getDishByCompositionId(1L);
@@ -122,7 +121,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
         //given
-        Ingredient expected = new Ingredient(1L, "Мясо", 800, 1500, Measurement.KILOGRAM);
+        Ingredient expected = Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build();
 
         // when
         Ingredient actual = compositionRepository.getIngredientByCompositionId(1L);
