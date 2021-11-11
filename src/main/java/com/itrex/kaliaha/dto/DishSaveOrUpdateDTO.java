@@ -18,7 +18,7 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class DishSaveDTO implements DTO {
+public class DishSaveOrUpdateDTO implements DTO {
     private Long id;
     private String dishName;
     private int price;

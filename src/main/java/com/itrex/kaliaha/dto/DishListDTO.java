@@ -19,4 +19,5 @@ public class DishListDTO implements DTO {
     private Long id;
     private String dishName;
     private int price;
+    private String imagePath;
 }

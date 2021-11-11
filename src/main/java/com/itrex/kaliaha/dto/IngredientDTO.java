@@ -16,7 +16,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class IngredientSaveDTO implements DTO {
+public class IngredientDTO implements DTO {
     private Long id;
     private String ingredientName;
     private int price;
