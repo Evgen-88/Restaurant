@@ -1,6 +1,7 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.OrderStatus;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -18,6 +19,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper=true)
 @Entity
 @Table(name = "user_order")
 public class Order extends BaseEntity<Long> {
@@ -38,6 +43,7 @@ public class Order extends BaseEntity<Long> {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "order_dish_link",
             joinColumns = @JoinColumn(name = "order_id"),
@@ -46,66 +52,14 @@ public class Order extends BaseEntity<Long> {
     @Fetch(FetchMode.SUBSELECT)
     private List<Dish> dishes = new ArrayList<>();
 
-    public Order() {}
-
-    public Order(int price, LocalDate date, String address, OrderStatus orderStatus,  User user) {
+    @Builder
+    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, User user, List<Dish> dishes) {
+        setId(id);
         this.price = price;
         this.date = date;
         this.address = address;
         this.orderStatus = orderStatus;
         this.user = user;
-    }
-
-    public Order(Long id, int price, LocalDate date, String address, OrderStatus orderStatus, User user) {
-        this(price, date, address, orderStatus, user);
-        super.setId(id);
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Dish> getDishes() {
-        return dishes;
-    }
-
-    public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
     }
 
@@ -150,17 +104,5 @@ public class Order extends BaseEntity<Long> {
         result = prime * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
         result = prime * result + (getUser()!= null && getUser().getId() != null ? getUser().getId().hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "id=" + getId() +
-                ", price=" + getPrice() +
-                ", date=" + getDate() +
-                ", address='" + getAddress() + '\'' +
-                ", orderStatus=" + getOrderStatus() +
-                ", userId=" + (user != null ? user.getId() : null) +
-                '}';
     }
 }

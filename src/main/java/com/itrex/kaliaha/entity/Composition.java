@@ -1,18 +1,30 @@
 package com.itrex.kaliaha.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper=true)
 @Entity
 @Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "dish_id")
     private Dish dish;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
@@ -20,40 +32,11 @@ public class Composition extends BaseEntity<Long>{
     @Column(name = "quantity")
     private int quantity;
 
-    public Composition() {}
-
-    public Composition(Dish dish, Ingredient ingredient, int quantity) {
-        this.dish = dish;
-        this.ingredient = ingredient;
-        this.quantity = quantity;
-    }
-
+    @Builder
     public Composition(Long id, Dish dish, Ingredient ingredient, int quantity) {
-        this(dish, ingredient, quantity);
-        super.setId(id);
-    }
-
-    public Dish getDish() {
-        return dish;
-    }
-
-    public void setDish(Dish dish) {
+        setId(id);
         this.dish = dish;
-    }
-
-    public Ingredient getIngredient() {
-        return ingredient;
-    }
-
-    public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -93,15 +76,5 @@ public class Composition extends BaseEntity<Long>{
                 && getIngredient().getId() != null ? getIngredient().getId().hashCode() : 0);
         result = prime * result + getQuantity();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "id=" + getId() +
-                "dishId=" + (dish != null ? dish.getId() : null) +
-                "ingredientId=" + (ingredient != null ? ingredient.getId() : null) +
-                ", quantity=" + getQuantity() +
-                "}";
     }
 }

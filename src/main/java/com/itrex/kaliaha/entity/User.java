@@ -1,5 +1,6 @@
 package com.itrex.kaliaha.entity;
 
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -14,6 +15,10 @@ import javax.persistence.JoinTable;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper=true)
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity<Long> {
@@ -32,87 +37,29 @@ public class User extends BaseEntity<Long> {
     @Column(name = "address")
     private String address;
 
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "user_role_link",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Fetch(FetchMode.SUBSELECT)
     private List<Role> roles = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
     private List<Order> orders = new ArrayList<>();
 
-    public User() {}
-
-    public User(Long id) {setId(id);}
-
-    public User(String lastName, String firstName, String login, String password, String address) {
+    @Builder
+    public User(Long id, String lastName, String firstName, String login, String password, String address, List<Role> roles, List<Order> orders) {
+        setId(id);
         this.lastName = lastName;
         this.firstName = firstName;
         this.login = login;
         this.password = password;
         this.address = address;
-    }
-
-    public User(Long id, String lastName, String firstName, String login, String password, String address) {
-        this(lastName, firstName, login, password, address);
-        super.setId(id);
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -157,17 +104,5 @@ public class User extends BaseEntity<Long> {
         result = prime * result + (getPassword() != null ? getPassword().hashCode() : 0);
         result = prime * result + (getAddress() != null ? getAddress().hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '{' +
-                "id=" + getId() +
-                ", lastName='" + getLastName() + '\'' +
-                ", firstName='" + getLastName() + '\'' +
-                ", login='" + getLogin() + '\'' +
-                ", password='" + getPassword() + '\'' +
-                ", address='" + getAddress() + '\'' +
-                '}';
     }
 }

@@ -1,6 +1,11 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.Measurement;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,6 +18,10 @@ import javax.persistence.OneToMany;
 
 import java.util.List;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper=true)
 @Entity
 @Table(name = "ingredient")
 public class Ingredient extends BaseEntity<Long> {
@@ -29,65 +38,18 @@ public class Ingredient extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private Measurement measurement;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "ingredient")
     @Fetch(FetchMode.SUBSELECT)
     private List<Composition> compositions;
 
-    public Ingredient() {}
-
-    public Ingredient(Long id) {
+    @Builder
+    public Ingredient(Long id, String ingredientName, int price, int remainder, Measurement measurement, List<Composition> compositions) {
         setId(id);
-    }
-
-    public Ingredient(String ingredientName, int price, int remainder, Measurement measurement) {
         this.ingredientName = ingredientName;
         this.price = price;
         this.remainder = remainder;
         this.measurement = measurement;
-    }
-
-    public Ingredient(Long id, String ingredientName, int price, int remainder, Measurement measurement) {
-        this(ingredientName, price, remainder, measurement);
-        setId(id);
-    }
-
-    public String getIngredientName() {
-        return ingredientName;
-    }
-
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getRemainder() {
-        return remainder;
-    }
-
-    public void setRemainder(int remainder) {
-        this.remainder = remainder;
-    }
-
-    public Measurement getMeasurement() {
-        return measurement;
-    }
-
-    public void setMeasurement(Measurement measurement) {
-        this.measurement = measurement;
-    }
-
-    public List<Composition> getCompositions() {
-        return compositions;
-    }
-
-    public void setCompositions(List<Composition> compositions) {
         this.compositions = compositions;
     }
 
@@ -122,16 +84,5 @@ public class Ingredient extends BaseEntity<Long> {
         result = prime * result + (getIngredientName() != null ? getIngredientName().hashCode() : 0);
         result = prime * result + (getMeasurement() != null ? getMeasurement().hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "id=" + getId() +
-                ", ingredientName='" + getIngredientName() + '\'' +
-                ", price=" + getPrice() +
-                ", remainder=" + getRemainder() +
-                ", measurement=" + getMeasurement() +
-                '}';
     }
 }

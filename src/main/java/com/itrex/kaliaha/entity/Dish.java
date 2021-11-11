@@ -1,6 +1,11 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.DishGroup;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -14,6 +19,10 @@ import javax.persistence.ManyToMany;
 
 import java.util.List;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper=true)
 @Entity
 @Table(name = "dish")
 public class Dish extends BaseEntity<Long> {
@@ -33,85 +42,24 @@ public class Dish extends BaseEntity<Long> {
     @Column(name = "image_path")
     private String imagePath;
 
+    @ToString.Exclude
     @ManyToMany(mappedBy = "dishes")
     private List<Order> orders;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "dish")
     @Fetch(FetchMode.SUBSELECT)
     private List<Composition> compositions;
 
-    public Dish() {}
-
-    public Dish(Long id) {
-        super.setId(id);
-    }
-
-    public Dish (String dishName, int price, DishGroup dishGroup, String dishDescription, String imagePath) {
+    @Builder
+    public Dish(Long id, String dishName, int price, DishGroup dishGroup, String dishDescription, String imagePath, List<Order> orders, List<Composition> compositions) {
+        setId(id);
         this.dishName = dishName;
         this.price = price;
         this.dishGroup = dishGroup;
         this.dishDescription = dishDescription;
         this.imagePath = imagePath;
-    }
-
-    public Dish(Long id, String dishName, int price, DishGroup dishGroup, String dishDescription, String imagePath) {
-        this(dishName, price, dishGroup, dishDescription, imagePath);
-        setId(id);
-    }
-
-    public String getDishName() {
-        return dishName;
-    }
-
-    public void setDishName(String dishName) {
-        this.dishName = dishName;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public DishGroup getDishGroup() {
-        return dishGroup;
-    }
-
-    public void setDishGroup(DishGroup dishGroup) {
-        this.dishGroup = dishGroup;
-    }
-
-    public String getDishDescription() {
-        return dishDescription;
-    }
-
-    public void setDishDescription(String description) {
-        this.dishDescription = description;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
         this.orders = orders;
-    }
-
-    public List<Composition> getCompositions() {
-        return compositions;
-    }
-
-    public void setCompositions(List<Composition> compositions) {
         this.compositions = compositions;
     }
 
@@ -154,17 +102,5 @@ public class Dish extends BaseEntity<Long> {
         result = prime * result + (getDishDescription() != null ? getDishDescription().hashCode() : 0);
         result = prime * result + (getImagePath() != null ? getImagePath().hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "id=" + getId() +
-                ", dishName='" + getDishName() + '\'' +
-                ", price=" + getPrice() +
-                ", group=" + getDishGroup() +
-                ", description='" + getDishDescription() + '\'' +
-                ", imagePath='" + getImagePath() + '\'' +
-                '}';
     }
 }
