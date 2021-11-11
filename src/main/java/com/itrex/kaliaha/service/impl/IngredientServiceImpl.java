@@ -1,7 +1,7 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.IngredientConverter;
-import com.itrex.kaliaha.dto.IngredientSaveDTO;
+import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
@@ -19,36 +19,31 @@ public class IngredientServiceImpl implements IngredientService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public IngredientSaveDTO findById(Long id) {
+    @Override
+    public IngredientDTO findById(Long id) {
         return IngredientConverter.toDTO(ingredientRepository.findById(id));
     }
 
-    public List<IngredientSaveDTO> findAll() {
+    @Override
+    public List<IngredientDTO> findAll() {
         return IngredientConverter.toIngredientListDTO(ingredientRepository.findAll());
     }
 
-    public void add(IngredientSaveDTO ingredientSaveDTO) throws ServiceException {
-        Ingredient ingredient = IngredientConverter.fromDTO(ingredientSaveDTO);
-
-        if(ingredientRepository.add(ingredient)) {
-            ingredientSaveDTO.setId(ingredient.getId());
-        } else {
-            throw new ServiceException("Ingredient object is not added to database", ingredientSaveDTO);
-        }
+    @Override
+    public IngredientDTO add(IngredientDTO ingredientDTO) throws ServiceException {
+        Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
+        ingredient = ingredientRepository.add(ingredient);
+        return IngredientConverter.toDTO(ingredient);
     }
 
-    public void update(IngredientSaveDTO ingredientSaveDTO) throws ServiceException {
-        Ingredient ingredient = IngredientConverter.fromDTO(ingredientSaveDTO);
-
-        if(!ingredientRepository.update(ingredient)) {
-            throw new ServiceException("Ingredient object is not updated in database", ingredientSaveDTO);
-        }
+    @Override
+    public IngredientDTO update(IngredientDTO ingredientDTO) throws ServiceException {
+        Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
+        return IngredientConverter.toDTO(ingredientRepository.update(ingredient));
     }
 
+    @Override
     public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(id == null) {
-            throw new InvalidIdParameterServiceException("id parameter shouldn't be null");
-        }
         if(!ingredientRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("Ingredient wasn't deleted", id);
         }

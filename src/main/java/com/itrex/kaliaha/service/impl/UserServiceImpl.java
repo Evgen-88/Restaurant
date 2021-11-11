@@ -14,6 +14,7 @@ import com.itrex.kaliaha.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,19 +25,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserListDTO findById(Long id) {
+    public UserDTO findById(Long id) {
         return UserConverter.toDTO(userRepository.findById(id));
-    }
-
-    @Override
-    public UserDTO findWithRolesAndOrdersById(Long id) {
-        return UserConverter.toUserDTO(userRepository.findWithRolesAndOrdersById(id));
     }
 
     @Override
     public List<UserListDTO> findAll() {
         List<User> users = userRepository.findAll();
-        return UserConverter.toUserListDTO(users);
+        return users.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
     }
 
     @Override

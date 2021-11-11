@@ -10,10 +10,9 @@ import com.itrex.kaliaha.exception.ServiceException;
 import java.util.List;
 
 public interface UserService {
-    UserListDTO findById(Long id);
+    UserDTO findById(Long id);
     List<UserListDTO> findAll();
     UserSaveDTO add(UserSaveDTO userSaveDTO);
     UserUpdateDTO update(UserUpdateDTO userUpdateDTO) throws ServiceException;
     void delete(Long id) throws InvalidIdParameterServiceException;
-    UserDTO findWithRolesAndOrdersById(Long id);
 }

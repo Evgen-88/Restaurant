@@ -1,16 +1,13 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.OrderConverter;
-import com.itrex.kaliaha.dto.OrderDishDTO;
 import com.itrex.kaliaha.dto.OrderListDTO;
 import com.itrex.kaliaha.dto.OrderDTO;
-import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
+import com.itrex.kaliaha.exception.DishIsNotOrderedException;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
-import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -19,66 +16,55 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final DishRepository dishRepository;
-    private final UserRepository userRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, DishRepository dishRepository, UserRepository userRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.dishRepository = dishRepository;
-        this.userRepository = userRepository;
     }
 
+    @Override
     public OrderDTO findById(Long orderId) {
-        Order order = orderRepository.findById(orderId);
-        order.setUser(userRepository.findById(order.getUser().getId()));
-
-        List<Dish> dishes = dishRepository.findAllDishesInOrderById(orderId);
-        return OrderConverter.toDTO(order, dishes);
+        return OrderConverter.toDTO(orderRepository.findById(orderId));
     }
 
+    @Override
     public List<OrderListDTO> findAll() {
         List<Order> orders = orderRepository.findAll();
         return OrderConverter.toOrderListDTO(orders);
     }
 
-    public void add(OrderDTO orderDTO) throws ServiceException {
-        Order order = OrderConverter.fromDTO(orderDTO);
-
-        if(orderRepository.add(order)) {
-            orderDTO.setOrderId(order.getId());
-        } else {
-            throw new ServiceException("Ingredient object is not added to database", orderDTO);
-        }
+    @Override
+    public OrderListDTO add(OrderListDTO orderDTO) throws ServiceException {
+        Order order = OrderConverter.fromListDTO(orderDTO);
+        order = orderRepository.add(order);
+        orderDTO.setOrderId(order.getId());
+        return orderDTO;
     }
 
-    public void update(OrderDTO orderDTO) throws ServiceException {
-        Order order = OrderConverter.fromDTO(orderDTO);
-        if(!orderRepository.update(order)) {
-            throw new ServiceException("Order object is not updated in database", orderDTO);
-        }
+    @Override
+    public OrderListDTO update(OrderListDTO orderDTO) throws ServiceException {
+        Order order = OrderConverter.fromListDTO(orderDTO);
+        return OrderConverter.toListDTO(orderRepository.update(order));
     }
 
+    @Override
     public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(id == null) {
-            throw new InvalidIdParameterServiceException("id parameter shouldn't be null");
-        }
         if(!orderRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("Order wasn't deleted", id);
         }
     }
 
     @Override
-    public boolean order(OrderDishDTO orderDishDTO) throws ServiceException {
-        if(!orderRepository.orderDish(orderDishDTO.getOrderId(), orderDishDTO.getDishId())) {
-            throw new ServiceException("Dish is not ordered", orderDishDTO);
+    public boolean orderDish(Long orderId, Long dishId) throws DishIsNotOrderedException {
+        if(!orderRepository.orderDish(orderId, dishId)) {
+            throw new DishIsNotOrderedException("Dish is not ordered", dishId);
         }
         return true;
     }
 
     @Override
-    public boolean deleteFromOrderDishById(OrderDishDTO orderDishDTO) throws ServiceException {
-        if(!orderRepository.deleteFromOrderDishById(orderDishDTO.getOrderId(), orderDishDTO.getDishId())) {
-            throw new ServiceException("Dish is not ordered", orderDishDTO);
+    public boolean deleteFromOrderDishById(Long orderId, Long dishId) throws DishIsNotOrderedException {
+        if(!orderRepository.deleteFromOrderDishById(orderId, dishId)) {
+            throw new DishIsNotOrderedException("Dish is not deleted from order", dishId);
         }
         return true;
     }

@@ -7,12 +7,10 @@ import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.CompositionRepository;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.DishService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,61 +18,47 @@ import java.util.stream.Collectors;
 @Service
 public class DishServiceImpl implements DishService {
     private final DishRepository dishRepository;
-    private final CompositionRepository compositionRepository;
 
-    public DishServiceImpl(DishRepository dishRepository, CompositionRepository compositionRepository) {
+    public DishServiceImpl(DishRepository dishRepository) {
         this.dishRepository = dishRepository;
-        this.compositionRepository = compositionRepository;
     }
 
+    @Override
     public DishDTO findById(Long id) {
-        DishDTO dishDTO = DishConverter.toDTO(dishRepository.findById(id));
-        dishDTO.setIngredientList(getIngredientList(id));
-        return dishDTO;
+        return DishConverter.toDTO(dishRepository.findById(id));
     }
 
-    private List<DishIngredientDTO> getIngredientList(Long dishId) {
-        List<Composition> compositions = dishRepository.getCompositionsByDishId(dishId);
-        List<Ingredient> ingredients = compositions.stream()
-                .map(composition -> compositionRepository.getIngredientByCompositionId(composition.getId()))
-                .collect(Collectors.toList());
-        return DishConverter.toDishIngredientListDTO(ingredients, compositions);
-    }
-
+    @Override
     public List<DishListDTO> findAll() {
         return dishRepository.findAll().stream().map(DishConverter::toDishListDTO).collect(Collectors.toList());
     }
 
-    public void add(DishSaveDTO dishSaveDTO) {
-        Dish dish = DishConverter.fromDTO(dishSaveDTO);
-        dishRepository.add(dish);
-        dishSaveDTO.setId(dish.getId());
-        compositionRepository.addAll(collectCompositions(dish, dishSaveDTO.getIngredients()));
+    @Override
+    public DishSaveOrUpdateDTO add(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
+        Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
+        dish = dishRepository.addWithCompositions(dish, getCompositionList(dish, dishSaveOrUpdateDTO.getIngredients()));
+        return DishConverter.saveOrUpdateDTO(dish);
     }
 
-    private List<Composition> collectCompositions(Dish dish, Map<Long, Integer> ingredients) {
-        List<Composition> compositions = new ArrayList<>();
-        for (Long ingredientId : ingredients.keySet()) {
-            Ingredient ingredient = new Ingredient(ingredientId);
-            int quantity = ingredients.get(ingredientId);
-            compositions.add(new Composition(dish, ingredient, quantity));
-        }
-        return compositions;
+    private List<Composition> getCompositionList(Dish dish, Map<Long, Integer> ingredients) {
+        return ingredients.keySet().stream()
+                .map(ingredientId -> Composition.builder()
+                        .dish(dish)
+                        .ingredient(Ingredient.builder().id(ingredientId).build())
+                        .quantity(ingredients.get(ingredientId))
+                        .build())
+                .collect(Collectors.toList());
     }
 
-    public void update(DishUpdateDTO dishUpdateDTO) throws ServiceException {
-        Dish dish = DishConverter.fromDTO(dishUpdateDTO);
-
-        if(!dishRepository.update(dish)) {
-            throw new ServiceException("Dish object is not updated to database", dishUpdateDTO);
-        }
+    @Override
+    public DishSaveOrUpdateDTO update(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) throws ServiceException {
+        Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
+        return DishConverter.saveOrUpdateDTO(dishRepository.update(dish));
     }
 
+    @Override
     public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(id == null) {
-            throw new InvalidIdParameterServiceException("id parameter shouldn't be null");
-        }
-        if(!dishRepository.delete(id)) {
+        if (!dishRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("Dish wasn't deleted", id);
         }
     }
