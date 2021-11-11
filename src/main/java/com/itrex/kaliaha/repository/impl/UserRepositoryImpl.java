@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String ADDRESS_COLUMN = "address";
 
     private static final String SELECT_BY_ID =
-            "from User u join fetch u.roles join fetch u.orders where u.id =:id";
+            "from User u left join fetch u.roles left join fetch u.orders where u.id =:id";
     private static final String SELECT_ALL = "from User u";
     private static final String UPDATE_QUERY = "update User set " +
             "lastName = :lastName, firstName = :firstName, login = :login, " +
@@ -40,9 +41,13 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     public User findById(Long id) {
         try (Session session = getSessionFactory().openSession()) {
-            return session.createQuery(SELECT_BY_ID, User.class)
-                    .setParameter(ID_COLUMN, id)
-                    .getSingleResult();
+            try {
+                return session.createQuery(SELECT_BY_ID, User.class)
+                        .setParameter(ID_COLUMN, id)
+                        .getSingleResult();
+            } catch (NoResultException ex) {
+                return null;
+            }
         }
     }
 

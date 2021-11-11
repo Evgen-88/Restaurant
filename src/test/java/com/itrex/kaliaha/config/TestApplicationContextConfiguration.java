@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ComponentScan("com.itrex.kaliaha")
+@ComponentScan("com.itrex.kaliaha.repository")
 @PropertySource("classpath:/db.properties")
 public class TestApplicationContextConfiguration {
     @Value("${database.url}")
