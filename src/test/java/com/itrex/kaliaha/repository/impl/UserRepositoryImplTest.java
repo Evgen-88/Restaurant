@@ -75,12 +75,12 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         User newActual = User.builder().lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").build();
-        boolean isAdded = userRepository.add(newActual, roles);
+        User addedUser = userRepository.add(newActual, roles);
         User newExpected = User.builder().id(5L).lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
+        Assertions.assertNotNull(addedUser.getId());
         Assertions.assertEquals(newExpected, newActual);
         Assertions.assertEquals(newExpected, userRepository.findById(newActual.getId()));
         Assertions.assertEquals(roles.size(), userRepository.findRolesByUserId(newActual.getId()).size());
@@ -96,12 +96,11 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         actual = User.builder().id(expected.getId()).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha").password("Updated 2222").address("Updated г.Минск").build();
-        boolean isUpdated = userRepository.update(actual);
+        User updatedUser = userRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, userRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedUser);
+        Assertions.assertEquals(expected, userRepository.findById(updatedUser.getId()));
     }
 
     @Test

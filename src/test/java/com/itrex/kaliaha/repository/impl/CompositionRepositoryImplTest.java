@@ -62,14 +62,14 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         Composition newActual = Composition.builder().dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(4L).build()).quantity(100).build();
-        boolean isAdded = compositionRepository.add(newActual);
+        Composition addedComposition = compositionRepository.add(newActual);
         Composition newExpected = Composition.builder().id(10L).dish(Dish.builder().id(2L).build()).ingredient(Ingredient.builder().id(4L).build()).quantity(100).build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newExpected, newActual);
-        Assertions.assertEquals(newExpected, compositionRepository.findById(newActual.getId()));
+        Assertions.assertNotNull(addedComposition.getId());
+        Assertions.assertEquals(newExpected, addedComposition);
+        Assertions.assertEquals(newExpected, compositionRepository.findById(addedComposition.getId()));
     }
 
     @Test
@@ -82,12 +82,11 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         actual.setQuantity(200);
-        boolean isUpdated = compositionRepository.update(actual);
+        Composition updatedComposition = compositionRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, compositionRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedComposition);
+        Assertions.assertEquals(expected, compositionRepository.findById(updatedComposition.getId()));
     }
 
     @Test

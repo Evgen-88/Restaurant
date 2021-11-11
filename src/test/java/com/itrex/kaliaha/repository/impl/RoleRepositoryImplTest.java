@@ -54,14 +54,14 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         Role newActual = Role.builder().roleName("check").build();
-        boolean isAdded = roleRepository.add(newActual);
+        Role addedRole = roleRepository.add(newActual);
         Role newExpected = Role.builder().id(4L).roleName("check").build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newExpected, newActual);
-        Assertions.assertEquals(newExpected, roleRepository.findById(newActual.getId()));
+        Assertions.assertNotNull(addedRole.getId());
+        Assertions.assertEquals(newExpected, addedRole);
+        Assertions.assertEquals(newExpected, roleRepository.findById(addedRole.getId()));
     }
 
     @Test
@@ -74,12 +74,11 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         actual = Role.builder().id(expected.getId()).roleName("middle admin").build();
-        boolean isUpdated = roleRepository.update(actual);
+        Role updatedRole = roleRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, roleRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedRole);
+        Assertions.assertEquals(expected, roleRepository.findById(updatedRole.getId()));
     }
 
     @Test

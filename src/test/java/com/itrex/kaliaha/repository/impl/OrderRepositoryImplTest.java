@@ -66,12 +66,12 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         Order newActual = Order.builder().price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
-        boolean isAdded = orderRepository.add(newActual);
+        Order addedOrder = orderRepository.add(newActual);
         Order newExpected = Order.builder().id(7L).price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
+        Assertions.assertNotNull(addedOrder.getId());
         Assertions.assertEquals(newExpected, newActual);
         Assertions.assertEquals(newExpected, orderRepository.findById(newActual.getId()));
     }
@@ -87,12 +87,11 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         actual = Order.builder().id(expected.getId()).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
-        boolean isUpdated = orderRepository.update(actual);
+        Order updatedOrder = orderRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, orderRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedOrder);
+        Assertions.assertEquals(expected, orderRepository.findById(updatedOrder.getId()));
     }
 
     @Test

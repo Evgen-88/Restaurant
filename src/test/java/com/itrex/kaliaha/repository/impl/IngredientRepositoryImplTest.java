@@ -58,14 +58,14 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //when
 
         Ingredient newActual = Ingredient.builder().ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
-        boolean isAdded = ingredientRepository.add(newActual);
+        Ingredient addedIngredient = ingredientRepository.add(newActual);
         Ingredient newExpected = Ingredient.builder().id(6L).ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newExpected, newActual);
-        Assertions.assertEquals(newExpected, ingredientRepository.findById(newActual.getId()));
+        Assertions.assertNotNull(addedIngredient.getId());
+        Assertions.assertEquals(newExpected, addedIngredient);
+        Assertions.assertEquals(newExpected, ingredientRepository.findById(addedIngredient.getId()));
     }
 
     @Test
@@ -79,12 +79,11 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //when
         actual = Ingredient.builder().id(expected.getId()).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
 
-        boolean isUpdated = ingredientRepository.update(actual);
+        Ingredient updatedIngredient = ingredientRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, ingredientRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedIngredient);
+        Assertions.assertEquals(expected, ingredientRepository.findById(updatedIngredient.getId()));
     }
 
     @Test

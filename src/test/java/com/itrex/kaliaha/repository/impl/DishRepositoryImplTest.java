@@ -60,14 +60,14 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         Dish newActual = Dish.builder().dishName("Макароны по-немецки").price(2).dishGroup(DishGroup.HOT).dishDescription("Nice dish").imagePath("not image").build();
-        boolean isAdded = dishRepository.add(newActual);
+        Dish addedDish = dishRepository.add(newActual);
         Dish newExpected = Dish.builder().id(4L).dishName("Макароны по-немецки").price(2).dishGroup(DishGroup.HOT).dishDescription("Nice dish").imagePath("not image").build();
         expected.add(newExpected);
 
         //then
-        Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(newExpected, newActual);
-        Assertions.assertEquals(newExpected, dishRepository.findById(newActual.getId()));
+        Assertions.assertNotNull(addedDish.getId());
+        Assertions.assertEquals(newExpected, addedDish);
+        Assertions.assertEquals(newExpected, dishRepository.findById(addedDish.getId()));
     }
 
     @Test
@@ -80,12 +80,11 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         actual = Dish.builder().id(expected.getId()).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
-        boolean isUpdated = dishRepository.update(actual);
+        Dish updatedDish = dishRepository.update(actual);
 
         //then
-        Assertions.assertTrue(isUpdated);
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected, dishRepository.findById(actual.getId()));
+        Assertions.assertEquals(expected, updatedDish);
+        Assertions.assertEquals(expected, dishRepository.findById(updatedDish.getId()));
     }
 
     @Test
