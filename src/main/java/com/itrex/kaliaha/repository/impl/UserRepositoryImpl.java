@@ -10,9 +10,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
@@ -74,7 +72,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
-                user.setRoles(roles);
+                user.setRoles(new HashSet<>(roles));
                 session.save(user);
                 session.getTransaction().commit();
             } catch (Exception ex) {
@@ -99,13 +97,13 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public List<Role> findRolesByUserId(Long userId) {
+    public Set<Role> findRolesByUserId(Long userId) {
         try (Session session = getSessionFactory().openSession()) {
             User user = session.get(User.class, userId);
             if (user != null) {
-                return new ArrayList<>(user.getRoles());
+                return new HashSet<>(user.getRoles());
             }
-            return new ArrayList<>();
+            return new HashSet<>();
         }
     }
 
@@ -126,7 +124,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         return false;
     }
 
-    private void deleteRoleFromUser(List<Role> roles, Long roleId) {
+    private void deleteRoleFromUser(Set<Role> roles, Long roleId) {
         for (Role role : roles) {
             if (Objects.equals(role.getId(), roleId)) {
                 roles.remove(role);

@@ -13,7 +13,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -44,7 +46,7 @@ public class User extends BaseEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @Fetch(FetchMode.SUBSELECT)
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
@@ -52,7 +54,7 @@ public class User extends BaseEntity<Long> {
     private List<Order> orders = new ArrayList<>();
 
     @Builder
-    public User(Long id, String lastName, String firstName, String login, String password, String address, List<Role> roles, List<Order> orders) {
+    public User(Long id, String lastName, String firstName, String login, String password, String address, Set<Role> roles, List<Order> orders) {
         setId(id);
         this.lastName = lastName;
         this.firstName = firstName;

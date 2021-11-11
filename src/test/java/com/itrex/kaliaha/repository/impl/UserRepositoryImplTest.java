@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class UserRepositoryImplTest extends BaseRepositoryTest {
     private final List<User> users;
@@ -133,7 +134,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         User user = userRepository.findById(1L);
 
         // when
-        List<Role> actual = userRepository.findRolesByUserId(user.getId());
+        Set<Role> actual = userRepository.findRolesByUserId(user.getId());
 
         //then
         Assertions.assertEquals(2, actual.size());
@@ -143,13 +144,14 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     public void deleteRoleFromUserByIdTest_validData_shouldDeleteUserRole() {
         //given
         User user = userRepository.findById(1L);
-        List<Role> userRolesExpected = userRepository.findRolesByUserId(user.getId());
+        Role role = Role.builder().id(1L).roleName("admin").build();
+        Set<Role> userRolesExpected = userRepository.findRolesByUserId(user.getId());
 
         Assertions.assertEquals(2, userRolesExpected.size());
 
         //when
-        Role roleToDelete = userRolesExpected.remove(1);
-        boolean isDeleted = userRepository.deleteRoleFromUserById(user.getId(), roleToDelete.getId());
+        userRolesExpected.remove(role);
+        boolean isDeleted = userRepository.deleteRoleFromUserById(user.getId(), role.getId());
 
         //then
         Assertions.assertTrue(isDeleted);

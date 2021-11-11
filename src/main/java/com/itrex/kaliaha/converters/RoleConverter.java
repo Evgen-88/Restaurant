@@ -4,6 +4,7 @@ import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RoleConverter {
@@ -15,6 +16,12 @@ public class RoleConverter {
     }
 
     public static List<RoleDTO> toRoleListDTO(List<Role> roles) {
+        return roles.stream()
+                .map(RoleConverter::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static List<RoleDTO> toRoleSetDTO(Set<Role> roles) {
         return roles.stream()
                 .map(RoleConverter::toDTO)
                 .collect(Collectors.toList());

@@ -15,7 +15,7 @@ public class UserConverter {
                 .login(user.getLogin())
                 .password(user.getPassword())
                 .address(user.getAddress())
-                .roles(RoleConverter.toRoleListDTO(user.getRoles()))
+                .roles(RoleConverter.toRoleSetDTO(user.getRoles()))
                 .orders(OrderConverter.toOrderListDTO(user.getOrders()))
                 .build();
     }
