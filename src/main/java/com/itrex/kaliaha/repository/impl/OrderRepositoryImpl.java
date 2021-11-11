@@ -18,6 +18,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     private static final String ADDRESS_COLUMN = "address";
     private static final String ORDER_STATUS_COLUMN = "orderStatus";
 
+    private static final String SELECT_BY_ID =
+            "from Order o join fetch o.user join fetch o.dishes where o.id=:id";
     private static final String SELECT_ALL = "from Order o";
     private static final String UPDATE_QUERY = "update Order set " +
             "price = :price, date = :date, address = :address, " +
@@ -30,6 +32,15 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
+    }
+
+    @Override
+    public Order findById(Long id) {
+        try(Session session = getSessionFactory().openSession())  {
+            return session.createQuery(SELECT_BY_ID, Order.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        }
     }
 
     @Override

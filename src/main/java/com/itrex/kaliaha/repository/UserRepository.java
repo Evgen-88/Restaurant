@@ -9,5 +9,4 @@ public interface UserRepository extends BaseRepository<User> {
     User add(User user, List<Role> roles);
     List<Role> findRolesByUserId(Long userId);
     boolean deleteRoleFromUserById(Long userId, Long roleId);
-    User findWithRolesAndOrdersById(Long userId);
 }

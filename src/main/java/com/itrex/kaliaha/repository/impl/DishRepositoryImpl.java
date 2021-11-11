@@ -13,6 +13,8 @@ import java.util.List;
 
 @Repository
 public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
+    private static final String SELECT_BY_ID =
+            "from Dish d join fetch d.compositions c join fetch c.ingredient where d.id =:id";
     private static final String SELECT_ALL = "from Dish r";
 
     public DishRepositoryImpl(SessionFactory sessionFactory) {
@@ -22,6 +24,15 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
+    }
+
+    @Override
+    public Dish findById(Long id) {
+        try (Session session = getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, Dish.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        }
     }
 
     @Override
@@ -98,6 +109,4 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
             session.save(composition);
         }
     }
-
-
 }

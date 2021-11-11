@@ -21,6 +21,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String PASSWORD_COLUMN = "password";
     private static final String ADDRESS_COLUMN = "address";
 
+    private static final String SELECT_BY_ID =
+            "from User u join fetch u.roles join fetch u.orders where u.id =:id";
     private static final String SELECT_ALL = "from User u";
     private static final String UPDATE_QUERY = "update User set " +
             "lastName = :lastName, firstName = :firstName, login = :login, " +
@@ -33,6 +35,15 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     protected String defineSelectAllQuery() {
         return SELECT_ALL;
+    }
+
+    @Override
+    public User findById(Long id) {
+        try (Session session = getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_BY_ID, User.class)
+                    .setParameter(ID_COLUMN, id)
+                    .getSingleResult();
+        }
     }
 
     @Override
@@ -116,16 +127,6 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
                 roles.remove(role);
                 break;
             }
-        }
-    }
-
-    @Override
-    public User findWithRolesAndOrdersById(Long userId) {
-        try (Session session = getSessionFactory().openSession()) {
-            User user = session.get(User.class, userId);
-            user.setOrders(new ArrayList<>(user.getOrders()));
-            user.setRoles(new ArrayList<>(user.getRoles()));
-            return user;
         }
     }
 }
