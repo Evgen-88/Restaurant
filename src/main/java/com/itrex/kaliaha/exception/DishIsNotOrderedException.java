@@ -1,6 +1,8 @@
 package com.itrex.kaliaha.exception;
 
-public class DishIsNotOrderedException extends Exception{
+public class DishIsNotOrderedException extends Exception {
+    private  Long dishId;
+
     public DishIsNotOrderedException() {
     }
 
@@ -14,5 +16,14 @@ public class DishIsNotOrderedException extends Exception{
 
     public DishIsNotOrderedException(Throwable cause) {
         super(cause);
+    }
+
+    public DishIsNotOrderedException(String message, Long dishId) {
+        super(message);
+        this.dishId = dishId;
+    }
+
+    public Long getDishId() {
+        return dishId;
     }
 }

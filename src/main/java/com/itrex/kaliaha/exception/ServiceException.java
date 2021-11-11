@@ -29,7 +29,7 @@ public class ServiceException extends Exception{
         this.dto = dto;
     }
 
-    public DTO getCompositionDTO() {
+    public DTO getDto() {
         return dto;
     }
 }
