@@ -20,28 +20,15 @@ public class RoleConverter {
                 .collect(Collectors.toList());
     }
 
-    public static Role fromDTO(RoleDTO roleDTO) {
-        Role role = new Role();
-        role.setId(roleDTO.getId());
-        role.setRoleName(roleDTO.getRoleName());
-        return role;
-    }
-
-    public static List<Role> fromRoleListDTO(List<RoleDTO> roles) {
-        return roles.stream()
+    public static List<Role> fromRoleListIdDTO(List<Long> rolesId) {
+        return rolesId.stream()
                 .map(RoleConverter::fromDTO)
                 .collect(Collectors.toList());
     }
 
     public static Role fromDTO(Long id) {
-        Role role = new Role();
-        role.setId(id);
-        return role;
-    }
-
-    public static List<Role> fromRoleListIdDTO(List<Long> rolesId) {
-        return rolesId.stream()
-                .map(RoleConverter::fromDTO)
-                .collect(Collectors.toList());
+        return Role.builder()
+                .id(id)
+                .build();
     }
 }

@@ -2,7 +2,6 @@ package com.itrex.kaliaha.converters;
 
 import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.dto.OrderListDTO;
-import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 
@@ -10,23 +9,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderConverter {
-    public static OrderDTO toDTO(Order order, List<Dish> dishes) {
+    public static OrderDTO toDTO(Order order) {
         return OrderDTO.builder()
                 .orderId(order.getId())
                 .price(order.getPrice())
                 .date(order.getDate())
                 .address(order.getAddress())
                 .orderStatus(order.getOrderStatus())
-                .orderedDishes(DishConverter.toDishListDTO(dishes))
-                .userListDTO(UserConverter.toDTO(order.getUser()))
+                .orderedDishes(DishConverter.toDishListDTO(order.getDishes()))
+                .userListDTO(UserConverter.toListDTO(order.getUser()))
                 .build();
     }
 
-
-
-    public static OrderListDTO toDTO(Order order) {
+    public static OrderListDTO toListDTO(Order order) {
         return OrderListDTO.builder()
-                .user(UserConverter.toDTO(order.getUser()))
+                .user(UserConverter.toListDTO(order.getUser()))
                 .orderId(order.getId())
                 .price(order.getPrice())
                 .date(order.getDate())
@@ -36,19 +33,17 @@ public class OrderConverter {
     }
 
     public static List<OrderListDTO> toOrderListDTO(List<Order> orders) {
-        return orders.stream()
-                .map(OrderConverter::toDTO)
-                .collect(Collectors.toList());
+        return orders.stream().map(OrderConverter::toListDTO).collect(Collectors.toList());
     }
 
-    public static Order fromDTO(OrderDTO orderDTO) {
-        Order order = new Order();
-        order.setId(orderDTO.getOrderId());
-        order.setDate(orderDTO.getDate());
-        order.setOrderStatus(orderDTO.getOrderStatus());
-        order.setAddress(orderDTO.getAddress());
-        order.setPrice(orderDTO.getPrice());
-        order.setUser(User.builder().id(orderDTO.getUserListDTO().getId()).build());
-        return order;
+    public static Order fromListDTO(OrderListDTO orderListDTO) {
+        return Order.builder()
+                .id(orderListDTO.getOrderId())
+                .date(orderListDTO.getDate())
+                .orderStatus(orderListDTO.getOrderStatus())
+                .address(orderListDTO.getAddress())
+                .price(orderListDTO.getPrice())
+                .user(User.builder().id(orderListDTO.getUser().getId()).build())
+                .build();
     }
 }
