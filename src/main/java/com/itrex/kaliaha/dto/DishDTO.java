@@ -25,5 +25,6 @@ public class DishDTO implements DTO {
     private DishGroup dishGroup;
     private String dishDescription;
     private String imagePath;
+
     private List<DishIngredientDTO> ingredientList;
 }
