@@ -1,11 +1,7 @@
 package com.itrex.kaliaha.converters;
 
-import com.itrex.kaliaha.dto.UserDTO;
-import com.itrex.kaliaha.dto.UserListDTO;
-import com.itrex.kaliaha.dto.UserSaveDTO;
-import com.itrex.kaliaha.dto.UserUpdateDTO;
-import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.Role;
+import com.itrex.kaliaha.dto.*;
+import com.itrex.kaliaha.entity.BaseEntity;
 import com.itrex.kaliaha.entity.User;
 
 import java.util.List;
@@ -26,7 +22,7 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserDTO toDTO(User user, List<Role> roles, List<Order> orders) {
+    public static UserDTO toUserDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .lastName(user.getLastName())
@@ -34,8 +30,31 @@ public class UserConverter {
                 .login(user.getLogin())
                 .password(user.getPassword())
                 .address(user.getAddress())
-                .roles(RoleConverter.toRoleListDTO(roles))
-                .orders(OrderConverter.toOrderListDTO(orders))
+                .roles(RoleConverter.toRoleListDTO(user.getRoles()))
+                .orders(OrderConverter.toOrderListDTO(user.getOrders()))
+                .build();
+    }
+
+    public static UserSaveDTO toSaveDTO(User user) {
+        return UserSaveDTO.builder()
+                .id(user.getId())
+                .lastName(user.getLastName())
+                .firstName(user.getFirstName())
+                .login(user.getLogin())
+                .password(user.getPassword())
+                .address(user.getAddress())
+                .rolesId(user.getRoles().stream().map(BaseEntity::getId).collect(Collectors.toList()))
+                .build();
+    }
+
+    public static UserUpdateDTO toUpdateDTO(User user) {
+        return UserUpdateDTO.builder()
+                .id(user.getId())
+                .lastName(user.getLastName())
+                .firstName(user.getFirstName())
+                .login(user.getLogin())
+                .password(user.getPassword())
+                .address(user.getAddress())
                 .build();
     }
 

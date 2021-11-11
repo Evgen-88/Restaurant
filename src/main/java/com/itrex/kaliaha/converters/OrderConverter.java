@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 public class OrderConverter {
     public static OrderDTO toDTO(Order order, List<Dish> dishes) {
         return OrderDTO.builder()
-                .userListDTO(UserConverter.toDTO(order.getUser()))
                 .orderId(order.getId())
                 .price(order.getPrice())
                 .date(order.getDate())
                 .address(order.getAddress())
                 .orderStatus(order.getOrderStatus())
                 .orderedDishes(DishConverter.toDishListDTO(dishes))
+                .userListDTO(UserConverter.toDTO(order.getUser()))
                 .build();
     }
 
@@ -48,7 +48,7 @@ public class OrderConverter {
         order.setOrderStatus(orderDTO.getOrderStatus());
         order.setAddress(orderDTO.getAddress());
         order.setPrice(orderDTO.getPrice());
-        order.setUser(new User(orderDTO.getUserListDTO().getId()));
+        order.setUser(User.builder().id(orderDTO.getUserListDTO().getId()).build());
         return order;
     }
 }

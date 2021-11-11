@@ -74,14 +74,13 @@ public class DishConverter {
     }
 
     public static Dish fromDTO(DishSaveDTO dishSaveDTO) {
-        Dish dish = new Dish();
-        dish.setId(dishSaveDTO.getId());
-        dish.setDishName(dishSaveDTO.getDishName());
-        dish.setPrice(dishSaveDTO.getPrice());
-        dish.setDishDescription(dishSaveDTO.getDishDescription());
-        dish.setDishGroup(dishSaveDTO.getDishGroup());
-        dish.setImagePath(dishSaveDTO.getImagePath());
-        return dish;
+        return Dish.builder()
+                .dishName(dishSaveDTO.getDishName())
+                .price(dishSaveDTO.getPrice())
+                .dishGroup(dishSaveDTO.getDishGroup())
+                .dishDescription(dishSaveDTO.getDishDescription())
+                .imagePath(dishSaveDTO.getImagePath())
+                .build();
     }
 
     public static DishUpdateDTO toUpdateDTO(Dish dish) {
@@ -96,13 +95,13 @@ public class DishConverter {
     }
 
     public static Dish fromDTO(DishUpdateDTO dishUpdateDTO) {
-        Dish dish = new Dish();
-        dish.setDishName(dishUpdateDTO.getDishName());
-        dish.setPrice(dishUpdateDTO.getPrice());
-        dish.setDishGroup(dishUpdateDTO.getDishGroup());
-        dish.setDishDescription(dishUpdateDTO.getDishDescription());
-        dish.setImagePath(dishUpdateDTO.getImagePath());
-        dish.setId(dishUpdateDTO.getId());
-        return dish;
+        return Dish.builder()
+                .id(dishUpdateDTO.getId())
+                .dishName(dishUpdateDTO.getDishName())
+                .price(dishUpdateDTO.getPrice())
+                .dishGroup(dishUpdateDTO.getDishGroup())
+                .dishDescription(dishUpdateDTO.getDishDescription())
+                .imagePath(dishUpdateDTO.getImagePath())
+                .build();
     }
 }
