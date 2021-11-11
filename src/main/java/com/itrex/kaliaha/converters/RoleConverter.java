@@ -21,10 +21,10 @@ public class RoleConverter {
                 .collect(Collectors.toList());
     }
 
-    public static List<RoleDTO> toRoleSetDTO(Set<Role> roles) {
+    public static Set<RoleDTO> toRoleSetDTO(Set<Role> roles) {
         return roles.stream()
                 .map(RoleConverter::toDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public static List<Role> fromRoleListIdDTO(List<Long> rolesId) {

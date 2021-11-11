@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +26,6 @@ public class UserDTO implements DTO {
     private String password;
     private String address;
 
-    private List<RoleDTO> roles;
+    private Set<RoleDTO> roles;
     private List<OrderListDTO> orders;
 }
