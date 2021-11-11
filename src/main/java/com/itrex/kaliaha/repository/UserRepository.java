@@ -6,7 +6,8 @@ import com.itrex.kaliaha.entity.User;
 import java.util.List;
 
 public interface UserRepository extends BaseRepository<User> {
-    boolean add(User user, List<Role> roles);
+    User add(User user, List<Role> roles);
     List<Role> findRolesByUserId(Long userId);
     boolean deleteRoleFromUserById(Long userId, Long roleId);
+    User findWithRolesAndOrdersById(Long userId);
 }

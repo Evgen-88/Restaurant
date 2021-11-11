@@ -10,4 +10,5 @@ public interface DishRepository extends BaseRepository<Dish> {
     List<Dish> findAllDishesInOrderById(Long orderId);
     List<Composition> getCompositionsByDishId(Long dishId);
     List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId);
+    Dish addWithCompositions(Dish dish, List<Composition> compositions);
 }

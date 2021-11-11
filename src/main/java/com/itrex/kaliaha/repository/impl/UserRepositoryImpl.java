@@ -15,7 +15,16 @@ import java.util.Objects;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
+    private static final String LAST_NAME_COLUMN = "lastName";
+    private static final String FIRST_NAME_COLUMN = "firstName";
+    private static final String LOGIN_COLUMN = "login";
+    private static final String PASSWORD_COLUMN = "password";
+    private static final String ADDRESS_COLUMN = "address";
+
     private static final String SELECT_ALL = "from User u";
+    private static final String UPDATE_QUERY = "update User set " +
+            "lastName = :lastName, firstName = :firstName, login = :login, " +
+            "password = :password, address = :address where id = :id";
 
     public UserRepositoryImpl(SessionFactory sessionFactory) {
         super(User.class, sessionFactory);
@@ -27,26 +36,37 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public boolean add(User user) {
+    protected void doUpdateOperations(Session session, User user) {
+        session.createQuery(UPDATE_QUERY)
+                .setParameter(ID_COLUMN, user.getId())
+                .setParameter(LAST_NAME_COLUMN, user.getLastName())
+                .setParameter(FIRST_NAME_COLUMN, user.getFirstName())
+                .setParameter(LOGIN_COLUMN, user.getLogin())
+                .setParameter(PASSWORD_COLUMN, user.getPassword())
+                .setParameter(ADDRESS_COLUMN, user.getAddress())
+                .executeUpdate();
+    }
+
+    @Override
+    public User add(User user) {
         throw new AddMethodUserRepositoryImplException("You can't use this method, " +
                 "you should add new user with add(User user, List<Role> roles) method");
     }
 
     @Override
-    public boolean add(User user, List<Role> roles) {
+    public User add(User user, List<Role> roles) {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 user.setRoles(roles);
                 session.save(user);
                 session.getTransaction().commit();
-                return true;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 session.getTransaction().rollback();
             }
         }
-        return false;
+        return user;
     }
 
     @Override
@@ -96,6 +116,16 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
                 roles.remove(role);
                 break;
             }
+        }
+    }
+
+    @Override
+    public User findWithRolesAndOrdersById(Long userId) {
+        try (Session session = getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            user.setOrders(new ArrayList<>(user.getOrders()));
+            user.setRoles(new ArrayList<>(user.getRoles()));
+            return user;
         }
     }
 }

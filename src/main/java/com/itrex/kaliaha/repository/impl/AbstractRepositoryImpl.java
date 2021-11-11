@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import java.util.List;
 
 public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
+    protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;
     private final SessionFactory sessionFactory;
 
@@ -37,30 +38,26 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     }
 
     @Override
-    public boolean add(E e) {
+    public E add(E e) {
         try (Session session = sessionFactory.openSession()) {
             session.save(e);
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            return e;
         }
-        return false;
     }
 
     @Override
-    public boolean update(E e) {
+    public E update(E e) {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 doUpdateOperations(session, e);
                 session.getTransaction().commit();
-                return true;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 session.getTransaction().rollback();
             }
         }
-        return false;
+        return e;
     }
 
     protected void doUpdateOperations(Session session, E e) {

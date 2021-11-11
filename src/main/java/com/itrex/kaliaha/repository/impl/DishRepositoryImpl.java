@@ -76,4 +76,28 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public Dish addWithCompositions(Dish dish, List<Composition> compositions) {
+        try (Session session = getSessionFactory().openSession()) {
+            try {
+                session.getTransaction().begin();
+                session.save(dish);
+                saveCompositions(session, compositions);
+                session.getTransaction().commit();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                session.getTransaction().rollback();
+            }
+        }
+        return dish;
+    }
+
+    public void saveCompositions(Session session, List<Composition> compositions) {
+        for (Composition composition : compositions) {
+            session.save(composition);
+        }
+    }
+
+
 }
