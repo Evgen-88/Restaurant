@@ -50,9 +50,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(id == null) {
-            throw new InvalidIdParameterServiceException("id parameter shouldn't be null");
-        }
         if(!userRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("User wasn't deleted", id);
         }
