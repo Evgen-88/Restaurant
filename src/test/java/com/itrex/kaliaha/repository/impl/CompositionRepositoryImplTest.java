@@ -6,6 +6,7 @@ import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
+import com.itrex.kaliaha.repository.CompositionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
 public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     private final List<Composition> compositions;
     @Autowired
-    private CompositionRepositoryImpl compositionRepository;
+    private CompositionRepository compositionRepository;
 
     public CompositionRepositoryImplTest() {
         compositions = new ArrayList<>() {{
