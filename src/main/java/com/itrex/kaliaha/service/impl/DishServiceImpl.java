@@ -36,8 +36,10 @@ public class DishServiceImpl implements DishService {
     @Override
     public DishSaveOrUpdateDTO add(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
         Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
-        dish = dishRepository.addWithCompositions(dish, getCompositionList(dish, dishSaveOrUpdateDTO.getIngredients()));
-        return DishConverter.saveOrUpdateDTO(dish);
+        List<Composition> compositions = getCompositionList(dish, dishSaveOrUpdateDTO.getIngredients());
+        dish = dishRepository.addWithCompositions(dish, compositions);
+        dishSaveOrUpdateDTO.setId(dish.getId());
+        return dishSaveOrUpdateDTO;
     }
 
     private List<Composition> getCompositionList(Dish dish, Map<Long, Integer> ingredients) {

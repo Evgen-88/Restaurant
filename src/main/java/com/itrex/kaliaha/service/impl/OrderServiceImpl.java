@@ -3,6 +3,7 @@ package com.itrex.kaliaha.service.impl;
 import com.itrex.kaliaha.converters.OrderConverter;
 import com.itrex.kaliaha.dto.OrderListDTO;
 import com.itrex.kaliaha.dto.OrderDTO;
+import com.itrex.kaliaha.dto.OrderSaveOrUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.exception.DishIsNotOrderedException;
 import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
@@ -33,17 +34,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderListDTO add(OrderListDTO orderDTO) throws ServiceException {
-        Order order = OrderConverter.fromListDTO(orderDTO);
+    public OrderSaveOrUpdateDTO add(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException {
+        Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
         order = orderRepository.add(order);
-        orderDTO.setOrderId(order.getId());
-        return orderDTO;
+        saveOrUpdateDTO.setOrderId(order.getId());
+        return saveOrUpdateDTO;
     }
 
     @Override
-    public OrderListDTO update(OrderListDTO orderDTO) throws ServiceException {
-        Order order = OrderConverter.fromListDTO(orderDTO);
-        return OrderConverter.toListDTO(orderRepository.update(order));
+    public OrderSaveOrUpdateDTO update(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException {
+        Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
+        return OrderConverter.toSaveOrUpdateDTO(orderRepository.update(order));
     }
 
     @Override
