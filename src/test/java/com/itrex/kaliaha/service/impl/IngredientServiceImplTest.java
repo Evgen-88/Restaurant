@@ -1,55 +1,91 @@
-//package com.itrex.kaliaha.service.impl;
-//
-//import com.itrex.kaliaha.enums.Measurement;
-//import com.itrex.kaliaha.repository.BaseRepositoryTest;
-//import com.itrex.kaliaha.repository.IngredientRepository;
-//import com.itrex.kaliaha.service.IngredientService;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//
-//import java.util.List;
-//
-//class IngredientServiceImplTest extends BaseRepositoryTest {
-//    @Autowired
-//    IngredientService ingredientService;
-//    @Autowired
-//    IngredientRepository ingredientRepository;
-//
-//    @Test
-//    void findById() {
-//        //given
-//        IngredientSaveDTO expected = new IngredientSaveDTO(1L, "Мясо", 800, 1500, Measurement.KILOGRAM);
-//
-//        //when
-//        IngredientSaveDTO actual = ingredientService.findById(1L);
-//
-//        //then
-//        Assertions.assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    void findAll() {
-//        //given
-//        int expectedCount = 5;
-//
-//        //when
-//        List<IngredientSaveDTO> actual = ingredientService.findAll();
-//
-//        //then
-//        Assertions.assertEquals(expectedCount, actual.size());
-//    }
-//
-//    @Test
-//    void add() {
-//
-//    }
-//
-//    @Test
-//    void update() {
-//    }
-//
-//    @Test
-//    void delete() {
-//    }
-//}
+package com.itrex.kaliaha.service.impl;
+
+import com.itrex.kaliaha.dto.IngredientDTO;
+import com.itrex.kaliaha.entity.Ingredient;
+import com.itrex.kaliaha.enums.Measurement;
+import com.itrex.kaliaha.exception.ServiceException;
+import com.itrex.kaliaha.repository.IngredientRepository;
+import com.itrex.kaliaha.service.BaseServiceTest;
+import com.itrex.kaliaha.service.IngredientService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+class IngredientServiceImplTest extends BaseServiceTest {
+    @Autowired
+    private IngredientService ingredientService;
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
+    @Test
+    void findById() {
+        //given
+        IngredientDTO expected = getIngredientsDTO().get(0);
+
+        // when
+        Mockito.when(ingredientRepository.findById(1L)).thenReturn(getIngredients().get(0));
+        IngredientDTO actual = ingredientService.findById(1L);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAll() {
+        //given
+        List<IngredientDTO> expected = getIngredientsDTO();
+
+        // when
+        Mockito.when(ingredientRepository.findAll()).thenReturn(getIngredients());
+        List<IngredientDTO> actual = ingredientService.findAll();
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void add() throws ServiceException {
+        //given
+        Mockito.when(ingredientRepository.findAll()).thenReturn(getIngredients());
+        List<IngredientDTO> actualList = ingredientService.findAll();
+
+        Assertions.assertEquals(5, actualList.size());
+
+        // when
+        IngredientDTO expected = IngredientDTO.builder().ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
+        Ingredient beforeAdd = Ingredient.builder().ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
+        Ingredient afterAdd = Ingredient.builder().id(6L).ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
+
+        Mockito.when(ingredientRepository.add(beforeAdd)).thenReturn(afterAdd);
+        IngredientDTO actual = ingredientService.add(expected);
+
+        //then
+        Assertions.assertNotNull(actual.getId());
+        expected.setId(6L);
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void update() throws ServiceException {
+        //given
+        IngredientDTO expected = IngredientDTO.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
+        Ingredient toUpdate = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
+
+        //when
+        Mockito.when(ingredientRepository.update(toUpdate)).thenReturn(toUpdate);
+        IngredientDTO actual = ingredientService.update(expected);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void delete() {
+        //given && when && then
+        Mockito.when(ingredientRepository.delete(1L)).thenReturn(true);
+        Assertions.assertDoesNotThrow(() -> ingredientService.delete(1L));
+    }
+}
