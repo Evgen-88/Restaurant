@@ -25,6 +25,7 @@ public class IngredientConverter {
 
     public static Ingredient fromDTO(IngredientDTO ingredientDTO) {
         return Ingredient.builder()
+                .id(ingredientDTO.getId())
                 .ingredientName(ingredientDTO.getIngredientName())
                 .remainder(ingredientDTO.getRemainder())
                 .price(ingredientDTO.getPrice())

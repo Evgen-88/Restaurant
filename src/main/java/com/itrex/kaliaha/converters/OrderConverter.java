@@ -2,6 +2,7 @@ package com.itrex.kaliaha.converters;
 
 import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.dto.OrderListDTO;
+import com.itrex.kaliaha.dto.OrderSaveOrUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 
@@ -36,14 +37,25 @@ public class OrderConverter {
         return orders.stream().map(OrderConverter::toListDTO).collect(Collectors.toList());
     }
 
-    public static Order fromListDTO(OrderListDTO orderListDTO) {
+    public static OrderSaveOrUpdateDTO toSaveOrUpdateDTO(Order order) {
+        return OrderSaveOrUpdateDTO.builder()
+                .userId(order.getUser().getId())
+                .orderId(order.getId())
+                .price(order.getPrice())
+                .date(order.getDate())
+                .address(order.getAddress())
+                .orderStatus(order.getOrderStatus())
+                .build();
+    }
+
+    public static Order toSaveOrUpdateDTO(OrderSaveOrUpdateDTO saveOrUpdateDTO) {
         return Order.builder()
-                .id(orderListDTO.getOrderId())
-                .date(orderListDTO.getDate())
-                .orderStatus(orderListDTO.getOrderStatus())
-                .address(orderListDTO.getAddress())
-                .price(orderListDTO.getPrice())
-                .user(User.builder().id(orderListDTO.getUser().getId()).build())
+                .id(saveOrUpdateDTO.getOrderId())
+                .price(saveOrUpdateDTO.getPrice())
+                .date(saveOrUpdateDTO.getDate())
+                .address(saveOrUpdateDTO.getAddress())
+                .orderStatus(saveOrUpdateDTO.getOrderStatus())
+                .user(User.builder().id(saveOrUpdateDTO.getUserId()).build())
                 .build();
     }
 }
