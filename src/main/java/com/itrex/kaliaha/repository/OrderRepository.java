@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface OrderRepository extends BaseRepository<Order> {
     List<Order> findOrdersByUserId(Long userId);
-    boolean orderDish(Long orderId, Long dishId);
+    boolean bookDish(Long orderId, Long dishId);
     boolean deleteFromOrderDishById(Long orderId, Long dishId);
 }

@@ -122,7 +122,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void orderDishTest_validData_shouldAddDishToOrder() {
+    public void bookDishTest_validData_shouldAddDishToOrder() {
         //given
         User user = userRepository.findById(1L);
         List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
@@ -134,7 +134,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertEquals(3, orderedDishesExpected.size());
 
         //when
-        boolean isOrdered = orderRepository.orderDish(actual.getId(), 1L);
+        boolean isOrdered = orderRepository.bookDish(actual.getId(), 1L);
         orderedDishesExpected.add(dishRepository.findById(1L));
 
         //then

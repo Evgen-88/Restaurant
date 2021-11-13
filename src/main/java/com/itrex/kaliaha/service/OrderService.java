@@ -15,6 +15,6 @@ public interface OrderService {
     OrderSaveOrUpdateDTO add(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
     OrderSaveOrUpdateDTO update(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
     void delete(Long id) throws InvalidIdParameterServiceException;
-    boolean orderDish(Long orderId, Long dishId) throws ServiceException, DishIsNotOrderedException;
+    boolean bookDish(Long orderId, Long dishId) throws ServiceException, DishIsNotOrderedException;
     boolean deleteFromOrderDishById(Long orderId, Long dishId) throws DishIsNotOrderedException;
 }

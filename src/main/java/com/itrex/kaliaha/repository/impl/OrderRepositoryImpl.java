@@ -71,7 +71,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public boolean orderDish(Long orderId, Long dishId) {
+    public boolean bookDish(Long orderId, Long dishId) {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();

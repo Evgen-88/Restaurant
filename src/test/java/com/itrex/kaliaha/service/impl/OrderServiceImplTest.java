@@ -114,8 +114,8 @@ class OrderServiceImplTest extends BaseServiceTest {
     @Test
     void orderDish() {
         //given && when && then
-        Mockito.when(orderRepository.orderDish(1L, 1L)).thenReturn(true);
-        Assertions.assertDoesNotThrow(() -> orderService.orderDish(1L, 1L));
+        Mockito.when(orderRepository.bookDish(1L, 1L)).thenReturn(true);
+        Assertions.assertDoesNotThrow(() -> orderService.bookDish(1L, 1L));
     }
 
     @Test
