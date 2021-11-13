@@ -1,4 +1,4 @@
-package com.itrex.kaliaha.service;
+package com.itrex.kaliaha.config;
 
 import com.itrex.kaliaha.repository.*;
 import org.mockito.Mockito;
