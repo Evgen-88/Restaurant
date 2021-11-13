@@ -67,10 +67,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     public void addTest_validData_shouldAddNewUserWithRoles() {
         //given
         List<User> expected = userRepository.findAll();
-        List<Role> roles = new ArrayList<>() {{
-            add(Role.builder().id(1L).build());
-            add(Role.builder().id(2L).build());
-        }};
+        List<Role> roles = new ArrayList<>() {{add(Role.builder().id(1L).build());add(Role.builder().id(2L).build());}};
 
         Assertions.assertEquals(users.size(), expected.size());
 
