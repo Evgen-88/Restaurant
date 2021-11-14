@@ -1,9 +1,9 @@
 package com.itrex.kaliaha.repository.impl;
 
+import com.itrex.kaliaha.entity.Dish;
+import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
-import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.exception.AddMethodUserRepositoryImplException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
@@ -138,7 +138,23 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteRoleFromUserByIdTest_validData_shouldDeleteUserRole() {
+    public void addRoleToUserTest_validData_shouldAddRoleToUser() {
+        //given
+        User user = userRepository.findById(2L);
+        Set<Role> actual = userRepository.findRolesByUserId(user.getId());
+
+        Assertions.assertEquals(1, actual.size());
+
+        //when
+        boolean isAdded = userRepository.addRoleToUser(2L, 1L);
+
+        //then
+        Assertions.assertTrue(isAdded);
+        Assertions.assertEquals(2, userRepository.findRolesByUserId(2L).size());
+    }
+
+    @Test
+    public void deleteRoleFromUserTest_validData_shouldDeleteUserRole() {
         //given
         User user = userRepository.findById(1L);
         Role role = Role.builder().id(1L).roleName("admin").build();
@@ -148,7 +164,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         userRolesExpected.remove(role);
-        boolean isDeleted = userRepository.deleteRoleFromUserById(user.getId(), role.getId());
+        boolean isDeleted = userRepository.deleteRoleFromUser(user.getId(), role.getId());
 
         //then
         Assertions.assertTrue(isDeleted);

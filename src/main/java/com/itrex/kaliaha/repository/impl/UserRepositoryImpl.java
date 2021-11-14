@@ -108,7 +108,25 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public boolean deleteRoleFromUserById(Long userId, Long roleId) {
+    public boolean addRoleToUser(Long userId, Long roleId) {
+        try (Session session = getSessionFactory().openSession()) {
+            try {
+                session.getTransaction().begin();
+                User user = session.get(User.class, userId);
+                Role role = session.get(Role.class, roleId);
+                user.getRoles().add(role);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                session.getTransaction().rollback();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteRoleFromUser(Long userId, Long roleId) {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
