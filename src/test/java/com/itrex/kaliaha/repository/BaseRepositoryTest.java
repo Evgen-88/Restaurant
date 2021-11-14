@@ -2,7 +2,6 @@ package com.itrex.kaliaha.repository;
 
 import com.itrex.kaliaha.config.TestApplicationContextConfiguration;
 import org.flywaydb.core.Flyway;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,9 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.DishConverter;
-import com.itrex.kaliaha.dto.*;
+import com.itrex.kaliaha.dto.DishDTO;
+import com.itrex.kaliaha.dto.DishListDTO;
+import com.itrex.kaliaha.dto.DishSaveOrUpdateDTO;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
