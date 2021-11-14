@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean bookDish(Long orderId, Long dishId) throws DishIsNotOrderedException {
-        if(!orderRepository.bookDish(orderId, dishId)) {
+        if(!orderRepository.addDishToOrder(orderId, dishId)) {
             throw new DishIsNotOrderedException("Dish is not ordered", dishId);
         }
         return true;
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean deleteFromOrderDishById(Long orderId, Long dishId) throws DishIsNotOrderedException {
-        if(!orderRepository.deleteFromOrderDishById(orderId, dishId)) {
+        if(!orderRepository.deleteDishFromOrder(orderId, dishId)) {
             throw new DishIsNotOrderedException("Dish is not deleted from order", dishId);
         }
         return true;

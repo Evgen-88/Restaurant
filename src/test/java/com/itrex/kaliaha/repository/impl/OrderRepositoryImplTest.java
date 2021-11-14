@@ -122,44 +122,40 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void bookDishTest_validData_shouldAddDishToOrder() {
+    public void addDishToOrderTest_validData_shouldAddDishToOrder() {
         //given
         User user = userRepository.findById(1L);
         List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
-        Order actual = orders.get(0);
-        List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(actual.getId());
+        List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(1L);
 
         Assertions.assertEquals(3, orders.size());
-        Assertions.assertEquals(1L, (long) actual.getId());
         Assertions.assertEquals(3, orderedDishesExpected.size());
 
         //when
-        boolean isOrdered = orderRepository.bookDish(actual.getId(), 1L);
+        boolean isOrdered = orderRepository.addDishToOrder(1L, 1L);
         orderedDishesExpected.add(dishRepository.findById(1L));
 
         //then
         Assertions.assertTrue(isOrdered);
-        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
+        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(1L));
     }
 
     @Test
-    public void deleteFromOrderDishByIdTest_validData_shouldDeleteDishInOrder() {
+    public void deleteDishFromOrderTest_validData_shouldDeleteDishInOrder() {
         //given
         User user = userRepository.findById(1L);
         List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
-        Order actual = orders.get(0);
-        List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(actual.getId());
+        List<Dish> orderedDishesExpected = dishRepository.findAllDishesInOrderById(1L);
 
         Assertions.assertEquals(3, orders.size());
-        Assertions.assertEquals(1L, (long) actual.getId());
         Assertions.assertEquals(3, orderedDishesExpected.size());
 
         //when
         Dish dishToDelete = orderedDishesExpected.remove(0);
-        boolean isDeleted = orderRepository.deleteFromOrderDishById(actual.getId(), dishToDelete.getId());
+        boolean isDeleted = orderRepository.deleteDishFromOrder(1L, dishToDelete.getId());
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(actual.getId()));
+        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(1L));
     }
 }

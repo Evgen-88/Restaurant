@@ -21,7 +21,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String ADDRESS_COLUMN = "address";
 
     private static final String SELECT_BY_ID =
-            "from User u left join fetch u.roles left join fetch u.orders where u.id =:id";
+            "from User u left join fetch u.orders left join fetch u.roles where u.id =:id";
     private static final String SELECT_ALL = "from User u";
     private static final String UPDATE_QUERY = "update User set " +
             "lastName = :lastName, firstName = :firstName, login = :login, " +
@@ -90,7 +90,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         session.delete(user);
     }
 
-    private void deleteOrderLinks(Session session, List<Order> orders) {
+    private void deleteOrderLinks(Session session, Set<Order> orders) {
         for (Order order : orders) {
             session.delete(order);
         }

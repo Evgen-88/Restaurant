@@ -32,9 +32,9 @@ class UserServiceImplTest extends BaseServiceTest {
             add(getRoles().get(0));
             add(getRoles().get(1));
         }};
-        List<Order> orders = getOrders().stream()
+        Set<Order> orders = getOrders().stream()
                 .filter(order -> order.getUser().getId() == 1L)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         User user = getUsers().get(0);
         user.setRoles(roles);
         user.setOrders(orders);

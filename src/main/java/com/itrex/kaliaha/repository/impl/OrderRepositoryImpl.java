@@ -71,7 +71,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public boolean bookDish(Long orderId, Long dishId) {
+    public boolean addDishToOrder(Long orderId, Long dishId) {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -89,7 +89,7 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public boolean deleteFromOrderDishById(Long orderId, Long dishId) {
+    public boolean deleteDishFromOrder(Long orderId, Long dishId) {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();

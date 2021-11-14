@@ -4,6 +4,7 @@ import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.BaseEntity;
 import com.itrex.kaliaha.entity.User;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class UserConverter {
@@ -16,7 +17,7 @@ public class UserConverter {
                 .password(user.getPassword())
                 .address(user.getAddress())
                 .roles(RoleConverter.toRoleSetDTO(user.getRoles()))
-                .orders(OrderConverter.toOrderListDTO(user.getOrders()))
+                .orders(OrderConverter.toListUserOrderListDTO(new ArrayList<>(user.getOrders())))
                 .build();
     }
 

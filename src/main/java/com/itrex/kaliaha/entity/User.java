@@ -12,9 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -51,10 +49,10 @@ public class User extends BaseEntity<Long> {
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     @Builder
-    public User(Long id, String lastName, String firstName, String login, String password, String address, Set<Role> roles, List<Order> orders) {
+    public User(Long id, String lastName, String firstName, String login, String password, String address, Set<Role> roles, Set<Order> orders) {
         setId(id);
         this.lastName = lastName;
         this.firstName = firstName;
