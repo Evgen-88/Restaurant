@@ -18,7 +18,7 @@ class RoleServiceImplTest extends BaseServiceTest {
     private RoleRepository roleRepository;
 
     @Test
-    void findAll() {
+    void findAllTest_shouldReturnAllRoleDTO() {
         //given
         List<RoleDTO> expected = getListRoleDTO();
 

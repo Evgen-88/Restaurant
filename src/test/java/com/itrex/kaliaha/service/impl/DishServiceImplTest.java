@@ -44,7 +44,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findById() {
+    void findByIdTest_shouldReturnDishDTO() {
         //given
         DishDTO expected = getDishDTOExpected();
 
@@ -57,7 +57,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAll() {
+    void findAllTest_shouldReturnAllDishListDTO() {
         //given
         List<DishListDTO> expected = getListDishListDTO();
 
@@ -70,7 +70,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void add() {
+    void addTest_shouldAddNewDish() {
         //given
         Mockito.when(dishRepository.findAll()).thenReturn(getDishes());
         List<DishListDTO> actualList = dishService.findAll();
@@ -103,7 +103,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void update() throws ServiceException {
+    void updateTest_shouldUpdateDish() throws ServiceException {
         //given
         DishSaveOrUpdateDTO expected = DishSaveOrUpdateDTO.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
         Dish toUpdate = Dish.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
@@ -117,7 +117,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void delete() {
+    void deleteTest_shouldDeleteDish() {
         //given && when && then
         Mockito.when(dishRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> dishService.delete(1L));

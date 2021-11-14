@@ -21,7 +21,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     private IngredientRepository ingredientRepository;
 
     @Test
-    void findById() {
+    void findByIdTest_shouldReturnIngredientDTO() {
         //given
         IngredientDTO expected = getIngredientsDTO().get(0);
 
@@ -34,7 +34,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAll() {
+    void findAllTest_shouldReturnAllIngredientDTO() {
         //given
         List<IngredientDTO> expected = getIngredientsDTO();
 
@@ -47,7 +47,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void add() throws ServiceException {
+    void addTest_shouldAddNewIngredient() throws ServiceException {
         //given
         Mockito.when(ingredientRepository.findAll()).thenReturn(getIngredients());
         List<IngredientDTO> actualList = ingredientService.findAll();
@@ -69,7 +69,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void update() throws ServiceException {
+    void updateTest_shouldUpdateIngredient() throws ServiceException {
         //given
         IngredientDTO expected = IngredientDTO.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
         Ingredient toUpdate = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
@@ -83,7 +83,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void delete() {
+    void deleteTest_shouldDeleteDish() {
         //given && when && then
         Mockito.when(ingredientRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> ingredientService.delete(1L));

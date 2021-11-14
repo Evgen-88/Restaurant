@@ -105,6 +105,4 @@ public abstract class BaseServiceTest {
             add(IngredientDTO.builder().id(5L).ingredientName("Помидор").price(13).remainder(500).measurement(Measurement.GRAM).build());
         }};
     }
-
-
 }
