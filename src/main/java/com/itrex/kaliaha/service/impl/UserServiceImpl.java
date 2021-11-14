@@ -54,4 +54,18 @@ public class UserServiceImpl implements UserService {
             throw new InvalidIdParameterServiceException("User wasn't deleted", id);
         }
     }
+
+    @Override
+    public void addRoleToUser(Long userId, Long roleId) throws InvalidIdParameterServiceException {
+        if(!userRepository.addRoleToUser(userId, roleId)) {
+            throw new InvalidIdParameterServiceException("Role wasn't added to user", roleId);
+        }
+    }
+
+    @Override
+    public void deleteRoleFromUser(Long userId, Long roleId) throws InvalidIdParameterServiceException {
+        if(!userRepository.deleteRoleFromUser(userId, roleId)) {
+            throw new InvalidIdParameterServiceException("Role wasn't deleted from user", roleId);
+        }
+    }
 }

@@ -15,4 +15,6 @@ public interface UserService {
     UserSaveDTO add(UserSaveDTO userSaveDTO);
     UserUpdateDTO update(UserUpdateDTO userUpdateDTO) throws ServiceException;
     void delete(Long id) throws InvalidIdParameterServiceException;
+    void addRoleToUser(Long userId, Long roleId) throws InvalidIdParameterServiceException;
+    void deleteRoleFromUser(Long userId, Long roleId) throws InvalidIdParameterServiceException;
 }

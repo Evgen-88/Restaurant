@@ -1,7 +1,10 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.UserConverter;
-import com.itrex.kaliaha.dto.*;
+import com.itrex.kaliaha.dto.UserDTO;
+import com.itrex.kaliaha.dto.UserListDTO;
+import com.itrex.kaliaha.dto.UserSaveDTO;
+import com.itrex.kaliaha.dto.UserUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
@@ -11,7 +14,6 @@ import com.itrex.kaliaha.service.BaseServiceTest;
 import com.itrex.kaliaha.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,7 +48,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findById() {
+    void findByIdTest_shouldReturnUserDTO() {
         //given
         UserDTO expected = getUserDTOExpected();
 
@@ -59,7 +61,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAllTest_validData_shouldReturnAllExistingUsers() {
+    void findAllTest_shouldReturnAllUserListDTO() {
         //given
         List<UserListDTO> expected = getListUserListDTO();
 
@@ -72,7 +74,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void add() {
+    void addTest_shouldAddNewUser() {
         //given
         Mockito.when(userRepository.findAll()).thenReturn(getUsers());
         List<UserListDTO> actualList = userService.findAll();
@@ -103,7 +105,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void update() throws ServiceException {
+    void updateTest_shouldUpdateUser() throws ServiceException {
         //given
         UserUpdateDTO expected = UserUpdateDTO.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha.vladzislav").password("Updated 2222").address("Updated г.Витебск").build();
         User toUpdate = User.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha.vladzislav").password("Updated 2222").address("Updated г.Витебск").build();
@@ -117,9 +119,23 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void delete() {
+    void deleteTest_shouldDeleteUser() {
         //given && when && then
         Mockito.when(userRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userRepository.delete(1L));
+    }
+
+    @Test
+    void addRoleToUserTest_shouldAddRoleToUser() {
+        //given && when && then
+        Mockito.when(userRepository.addRoleToUser(2L, 1L)).thenReturn(true);
+        Assertions.assertDoesNotThrow(() -> userService.addRoleToUser(2L, 1L));
+    }
+
+    @Test
+    void deleteRoleFromUserTest_shouldDeleteRoleFromUser() {
+        //given && when && then
+        Mockito.when(userRepository.deleteRoleFromUser(1L, 2L)).thenReturn(true);
+        Assertions.assertDoesNotThrow(() -> userService.deleteRoleFromUser(1L, 2L));
     }
 }
