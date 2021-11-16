@@ -11,13 +11,13 @@ import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.enums.OrderStatus;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = TestServiceConfiguration.class)
 public abstract class BaseServiceTest {
     public List<User> getUsers() {

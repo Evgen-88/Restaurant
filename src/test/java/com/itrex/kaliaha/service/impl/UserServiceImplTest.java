@@ -11,11 +11,11 @@ import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class UserServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private UserService userService;
-    @Autowired
+    @InjectMocks
+    private UserServiceImpl userService;
+    @Mock
     private UserRepository userRepository;
 
     public User getUserFindById() {

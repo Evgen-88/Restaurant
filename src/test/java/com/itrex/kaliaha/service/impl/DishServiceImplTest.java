@@ -11,11 +11,11 @@ import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.DishService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 class DishServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private DishService dishService;
-    @Autowired
+    @InjectMocks
+    private DishServiceImpl dishService;
+    @Mock
     private DishRepository dishRepository;
 
     public Dish getDishFindById() {

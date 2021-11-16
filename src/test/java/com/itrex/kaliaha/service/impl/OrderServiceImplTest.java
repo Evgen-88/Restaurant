@@ -11,20 +11,20 @@ import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.OrderService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 class OrderServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private OrderService orderService;
-    @Autowired
+    @InjectMocks
+    private OrderServiceImpl orderService;
+    @Mock
     private OrderRepository orderRepository;
 
     public Order getOrderFindById() {
