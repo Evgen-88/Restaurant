@@ -10,11 +10,6 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("com.itrex.kaliaha.service")
 public class TestServiceConfiguration {
     @Bean
-    public CompositionRepository compositionRepository() {
-        return Mockito.mock(CompositionRepository.class);
-    }
-
-    @Bean
     public DishRepository dishRepository() {
         return Mockito.mock(DishRepository.class);
     }

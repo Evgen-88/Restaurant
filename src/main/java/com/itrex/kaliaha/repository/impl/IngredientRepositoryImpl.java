@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient> implements IngredientRepository {
     private static final String SELECT_ALL = "from Ingredient i";
+    private static final String SELECT_INGREDIENT_BY_COMPOSITION_ID =
+            "from Ingredient i left join fetch i.compositions c where c.id=:id";
 
     public IngredientRepositoryImpl(SessionFactory sessionFactory) {
         super(Ingredient.class, sessionFactory);
@@ -45,5 +47,14 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
             }
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public Ingredient getIngredientByCompositionId(Long compositionId) {
+        try(Session session = getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_INGREDIENT_BY_COMPOSITION_ID, Ingredient.class)
+                    .setParameter(ID_COLUMN, compositionId)
+                    .getSingleResult();
+        }
     }
 }

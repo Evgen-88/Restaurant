@@ -3,10 +3,8 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
-import com.itrex.kaliaha.enums.DishGroup;
-import com.itrex.kaliaha.enums.Measurement;
+import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.CompositionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,7 @@ import java.util.List;
 public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     private final List<Composition> compositions;
     @Autowired
-    private CompositionRepository compositionRepository;
+    private BaseRepository<Composition> compositionRepository;
 
     public CompositionRepositoryImplTest() {
         compositions = new ArrayList<>() {{
@@ -104,29 +102,5 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(compositionRepository.findById(actual.getId()));
-    }
-
-    @Test
-    public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
-        //given
-        Dish expected = Dish.builder().id(1L).dishName("Картошка с грибами").price(2).dishGroup(DishGroup.HOT).dishDescription("Очень вкусно").imagePath("photo.img").build();
-
-        // when
-        Dish actual = compositionRepository.getDishByCompositionId(1L);
-
-        //then
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
-        //given
-        Ingredient expected = Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build();
-
-        // when
-        Ingredient actual = compositionRepository.getIngredientByCompositionId(1L);
-
-        //then
-        Assertions.assertEquals(expected, actual);
     }
 }

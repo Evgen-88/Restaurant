@@ -6,11 +6,7 @@ import lombok.Setter;
 import lombok.Builder;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
@@ -20,12 +16,12 @@ import javax.persistence.JoinColumn;
 @Table(name = "composition")
 public class Composition extends BaseEntity<Long>{
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id")
     private Dish dish;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 

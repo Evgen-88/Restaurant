@@ -135,4 +135,16 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertEquals(4, orders.size());
     }
+
+    @Test
+    public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+        //given
+        Dish expected = Dish.builder().id(1L).dishName("Картошка с грибами").price(2).dishGroup(DishGroup.HOT).dishDescription("Очень вкусно").imagePath("photo.img").build();
+
+        // when
+        Dish actual = dishRepository.getDishByCompositionId(1L);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
 }

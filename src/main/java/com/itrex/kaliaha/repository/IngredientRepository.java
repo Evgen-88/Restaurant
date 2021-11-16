@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface IngredientRepository extends BaseRepository<Ingredient>{
     List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId);
+    Ingredient getIngredientByCompositionId(Long compositionId);
 }

@@ -17,6 +17,8 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     private static final String SELECT_BY_ID =
             "from Dish d left join fetch d.compositions c left join fetch c.ingredient where d.id =:id";
     private static final String SELECT_ALL = "from Dish r";
+    private static final String SELECT_DISH_BY_COMPOSITION_ID =
+            "from Dish d left join fetch d.compositions c where c.id=:id";
 
     public DishRepositoryImpl(SessionFactory sessionFactory) {
         super(Dish.class, sessionFactory);
@@ -112,6 +114,15 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     public void saveCompositions(Session session, List<Composition> compositions) {
         for (Composition composition : compositions) {
             session.save(composition);
+        }
+    }
+
+    @Override
+    public Dish getDishByCompositionId(Long compositionId) {
+        try(Session session = getSessionFactory().openSession()) {
+            return session.createQuery(SELECT_DISH_BY_COMPOSITION_ID, Dish.class)
+                    .setParameter(ID_COLUMN, compositionId)
+                    .getSingleResult();
         }
     }
 }

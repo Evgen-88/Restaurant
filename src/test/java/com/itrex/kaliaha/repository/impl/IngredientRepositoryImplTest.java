@@ -112,4 +112,16 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertEquals(3, dishes.size());
     }
+
+    @Test
+    public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+        //given
+        Ingredient expected = Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build();
+
+        // when
+        Ingredient actual = ingredientRepository.getIngredientByCompositionId(1L);
+
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
 }
