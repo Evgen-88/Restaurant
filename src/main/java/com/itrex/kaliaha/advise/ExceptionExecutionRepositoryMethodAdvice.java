@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class ExceptionExecutionRepositoryMethodAdvice {
-    private static final String MESSAGE = "\n\nRepository method: %s  with arguments %s throws %s: %s";
+    private static final String MESSAGE = "\n\nRepository method: {}  with arguments {} throws {}: {}";
 
     @AfterThrowing(pointcut = "execution(* com.itrex.kaliaha.repository.*.*(..))", throwing = "ex")
     public void methodLoggingException(JoinPoint joinPoint, Exception ex) {
@@ -23,7 +23,6 @@ public class ExceptionExecutionRepositoryMethodAdvice {
         String exception = ex.getClass().getSimpleName();
         String exceptionMessage = ex.getMessage();
 
-        log.error(String.format(MESSAGE, methodName, arguments, exception, exceptionMessage));
-        ex.printStackTrace();
+        log.error(MESSAGE, methodName, arguments, exception, exceptionMessage, ex);
     }
 }

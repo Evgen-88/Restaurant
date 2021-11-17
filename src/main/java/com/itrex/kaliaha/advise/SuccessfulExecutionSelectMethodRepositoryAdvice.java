@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class SuccessfulExecutionSelectMethodRepositoryAdvice {
-    private static final String METHOD_RESULT = "\n\nREPOSITORY METHOD: %s%s was successfully completed\nresult:%s\n";
+    private static final String METHOD_RESULT = "\n\nREPOSITORY METHOD: {}{} was successfully completed\nresult:{}\n";
 
     @AfterReturning(pointcut = "execution(* com.itrex.kaliaha.repository.*.find*(..)) " +
                     "|| execution(* com.itrex.kaliaha.repository.*.get*(..))", returning = "entity"
@@ -20,6 +20,6 @@ public class SuccessfulExecutionSelectMethodRepositoryAdvice {
     public void methodLoggingFindResult(JoinPoint joinPoint, Object entity) {
         String methodName = joinPoint.getSignature().getName();
         String arg = Arrays.toString(joinPoint.getArgs());
-        log.info(String.format(METHOD_RESULT, methodName, arg, entity));
+        log.info(METHOD_RESULT, methodName, arg, entity);
     }
 }
