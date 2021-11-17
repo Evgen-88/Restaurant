@@ -10,7 +10,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
@@ -22,6 +25,11 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
 
     private static final String SELECT_BY_ID =
             "from User u left join fetch u.orders left join fetch u.roles where u.id =:id";
+    private static final String SELECT_ROLES_BY_USER_ID =
+            "from Role r left join fetch r.users u where u.id =:id";
+    private static final String SELECT_USERS_BY_ROLE_ID =
+            "from User u left join fetch u.roles r where r.id =:id";
+
     private static final String SELECT_ALL = "from User u";
     private static final String UPDATE_QUERY = "update User set " +
             "lastName = :lastName, firstName = :firstName, login = :login, " +
@@ -143,22 +151,27 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     @Override
     public List<User> findAllUsersWhoHaveRoleById(Long roleId) {
         try (Session session = getSessionFactory().openSession()) {
-            Role role = session.get(Role.class, roleId);
-            if (role != null) {
-                return new ArrayList<>(role.getUsers());
+            try {
+                return session.createQuery(SELECT_USERS_BY_ROLE_ID, User.class)
+                        .setParameter(ID_COLUMN, roleId)
+                        .list();
+            } catch (NoResultException ex) {
+                return null;
             }
         }
-        return new ArrayList<>();
     }
 
     @Override
     public Set<Role> findRolesByUserId(Long userId) {
         try (Session session = getSessionFactory().openSession()) {
-            User user = session.get(User.class, userId);
-            if (user != null) {
-                return new HashSet<>(user.getRoles());
+            try {
+                return new HashSet<>(
+                        session.createQuery(SELECT_ROLES_BY_USER_ID, Role.class)
+                                .setParameter(ID_COLUMN, userId)
+                                .list());
+            } catch (NoResultException ex) {
+                return null;
             }
-            return new HashSet<>();
         }
     }
 }

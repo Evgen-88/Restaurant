@@ -2,14 +2,12 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.OrderRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -23,6 +21,9 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
             "from Order o join fetch o.user left join fetch o.dishes where o.id=:id";
     private static final String SELECT_ORDERS_BY_DISH_ID =
             "from Order o left join fetch o.dishes d where d.id=:id";
+    private static final String SELECT_ORDERS_BY_USER_ID =
+            "from Order o left join fetch o.user u where u.id=:id";
+
     private static final String SELECT_ALL = "from Order o";
     private static final String UPDATE_QUERY = "update Order set " +
             "price = :price, date = :date, address = :address, " +
@@ -64,14 +65,15 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     @Override
     public List<Order> findOrdersByUserId(Long userId) {
         try (Session session = getSessionFactory().openSession()) {
-            User user = session.get(User.class, userId);
-            if (user != null) {
-                return new ArrayList<>(user.getOrders());
+            try {
+                return session.createQuery(SELECT_ORDERS_BY_USER_ID, Order.class)
+                        .setParameter(ID_COLUMN, userId)
+                        .list();
+            } catch (NoResultException ex) {
+                return null;
             }
         }
-        return new ArrayList<>();
     }
-
 
     @Override
     public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
