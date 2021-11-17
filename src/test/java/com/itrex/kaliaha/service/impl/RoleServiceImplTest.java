@@ -1,7 +1,8 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.dto.RoleDTO;
-import com.itrex.kaliaha.repository.RoleRepository;
+import com.itrex.kaliaha.entity.Role;
+import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class RoleServiceImplTest extends BaseServiceTest {
     @InjectMocks
     private RoleServiceImpl roleService;
     @Mock
-    private RoleRepository roleRepository;
+    private BaseRepository<Role> roleRepository;
 
     @Test
     void findAllTest_shouldReturnAllRoleDTO() {

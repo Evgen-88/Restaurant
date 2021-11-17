@@ -2,8 +2,8 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.RoleRepository;
 import com.itrex.kaliaha.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final List<Role> roles;
     @Autowired
-    private RoleRepository roleRepository;
+    private BaseRepository<Role> roleRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -102,17 +101,5 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(roleRepository.findById(2L));
         Assertions.assertEquals(0, userRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
-    }
-
-    @Test
-    public void findRolesByUserIdTest_validData_shouldReturnUserRoles() {
-        //given
-        User user = userRepository.findById(1L);
-
-        // when
-        Set<Role> actual = roleRepository.findRolesByUserId(user.getId());
-
-        //then
-        Assertions.assertEquals(2, actual.size());
     }
 }

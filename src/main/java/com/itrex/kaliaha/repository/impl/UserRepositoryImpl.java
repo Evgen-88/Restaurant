@@ -150,4 +150,15 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public Set<Role> findRolesByUserId(Long userId) {
+        try (Session session = getSessionFactory().openSession()) {
+            User user = session.get(User.class, userId);
+            if (user != null) {
+                return new HashSet<>(user.getRoles());
+            }
+            return new HashSet<>();
+        }
+    }
 }
