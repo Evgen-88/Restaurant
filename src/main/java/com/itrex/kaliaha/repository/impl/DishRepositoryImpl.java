@@ -119,6 +119,8 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
             return session.createQuery(SELECT_DISH_BY_COMPOSITION_ID, Dish.class)
                     .setParameter(ID_COLUMN, compositionId)
                     .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
         }
     }
 }
