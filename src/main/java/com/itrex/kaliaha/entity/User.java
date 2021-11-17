@@ -1,16 +1,19 @@
 package com.itrex.kaliaha.entity;
 
-import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,17 +41,15 @@ public class User extends BaseEntity<Long> {
     private String address;
 
     @ToString.Exclude
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role_link",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @Fetch(FetchMode.SUBSELECT)
     private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
     @Builder

@@ -6,15 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.EnumType;
-import javax.persistence.OneToMany;
+import javax.persistence.Enumerated;
 
 import java.util.List;
 
@@ -39,8 +38,7 @@ public class Ingredient extends BaseEntity<Long> {
     private Measurement measurement;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "ingredient")
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
     private List<Composition> compositions;
 
     @Builder

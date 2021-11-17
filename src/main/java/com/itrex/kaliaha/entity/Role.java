@@ -1,11 +1,16 @@
 package com.itrex.kaliaha.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +26,7 @@ public class Role extends BaseEntity<Long> {
     private String roleName;
 
     @ToString.Exclude
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
 
     @Builder
