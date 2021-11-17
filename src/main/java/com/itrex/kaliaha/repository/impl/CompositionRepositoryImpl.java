@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository(value = "compositionRepository")
 public class CompositionRepositoryImpl extends AbstractRepositoryImpl<Composition> {
     private static final String QUANTITY_COLUMN = "quantity";
 

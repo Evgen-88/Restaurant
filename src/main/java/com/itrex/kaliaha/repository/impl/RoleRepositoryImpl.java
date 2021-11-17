@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository(value = "roleRepository")
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements BaseRepository<Role> {
     private static final String SELECT_ALL = "from Role r";
 
