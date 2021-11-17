@@ -7,7 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -15,6 +15,8 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
     private static final String SELECT_ALL = "from Ingredient i";
     private static final String SELECT_INGREDIENT_BY_COMPOSITION_ID =
             "from Ingredient i left join fetch i.compositions c where c.id=:id";
+    private static final String SELECT_COMPOSITIONS_BY_INGREDIENT_ID =
+            "from Composition c left join fetch c.ingredient i where i.id=:id";
 
     public IngredientRepositoryImpl(SessionFactory sessionFactory) {
         super(Ingredient.class, sessionFactory);
@@ -41,12 +43,12 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
     @Override
     public List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId) {
         try(Session session = getSessionFactory().openSession()) {
-            Ingredient ingredient = session.get(Ingredient.class, ingredientId);
-            if(ingredient != null) {
-                return new ArrayList<>(ingredient.getCompositions());
-            }
+            return session.createQuery(SELECT_COMPOSITIONS_BY_INGREDIENT_ID, Composition.class)
+                    .setParameter(ID_COLUMN, ingredientId)
+                    .list();
+        } catch (NoResultException ex) {
+            return null;
         }
-        return new ArrayList<>();
     }
 
     @Override
@@ -55,6 +57,8 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
             return session.createQuery(SELECT_INGREDIENT_BY_COMPOSITION_ID, Ingredient.class)
                     .setParameter(ID_COLUMN, compositionId)
                     .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
         }
     }
 }
