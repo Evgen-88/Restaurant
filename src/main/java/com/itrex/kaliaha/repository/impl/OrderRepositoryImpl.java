@@ -21,6 +21,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
 
     private static final String SELECT_BY_ID =
             "from Order o join fetch o.user left join fetch o.dishes where o.id=:id";
+    private static final String SELECT_ORDERS_BY_DISH_ID =
+            "from Order o left join fetch o.dishes d where d.id=:id";
     private static final String SELECT_ALL = "from Order o";
     private static final String UPDATE_QUERY = "update Order set " +
             "price = :price, date = :date, address = :address, " +
@@ -68,6 +70,20 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
             }
         }
         return new ArrayList<>();
+    }
+
+
+    @Override
+    public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
+        try (Session session = getSessionFactory().openSession()) {
+            try {
+                return session.createQuery(SELECT_ORDERS_BY_DISH_ID, Order.class)
+                        .setParameter(ID_COLUMN, dishId)
+                        .list();
+            } catch (NoResultException ex) {
+                return null;
+            }
+        }
     }
 
     @Override

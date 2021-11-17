@@ -121,6 +121,16 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertEquals(3, orders.size());
     }
 
+
+    @Test
+    public void findAllOrdersThatIncludeDishByDishIdTest_validData_shouldFindOrdersThatIncludeDish() {
+        //given && when
+        List<Order> orders = orderRepository.findAllOrdersThatIncludeDishByDishId(1L);
+
+        //then
+        Assertions.assertEquals(4, orders.size());
+    }
+
     @Test
     public void addDishToOrderTest_validData_shouldAddDishToOrder() {
         //given
@@ -133,11 +143,10 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         boolean isOrdered = orderRepository.addDishToOrder(1L, 1L);
-        orderedDishesExpected.add(dishRepository.findById(1L));
 
         //then
         Assertions.assertTrue(isOrdered);
-        Assertions.assertEquals(orderedDishesExpected, dishRepository.findAllDishesInOrderById(1L));
+        Assertions.assertEquals(4, dishRepository.findAllDishesInOrderById(1L).size());
     }
 
     @Test

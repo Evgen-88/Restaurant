@@ -1,21 +1,21 @@
 package com.itrex.kaliaha.entity;
 
 import com.itrex.kaliaha.enums.DishGroup;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import java.util.List;
 
@@ -43,12 +43,11 @@ public class Dish extends BaseEntity<Long> {
     private String imagePath;
 
     @ToString.Exclude
-    @ManyToMany(mappedBy = "dishes")
+    @ManyToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
     private List<Order> orders;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "dish")
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "dish", fetch = FetchType.LAZY)
     private List<Composition> compositions;
 
     @Builder

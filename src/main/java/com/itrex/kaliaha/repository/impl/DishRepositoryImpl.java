@@ -9,16 +9,19 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
     private static final String SELECT_BY_ID =
             "from Dish d left join fetch d.compositions c left join fetch c.ingredient where d.id =:id";
-    private static final String SELECT_ALL = "from Dish r";
     private static final String SELECT_DISH_BY_COMPOSITION_ID =
             "from Dish d left join fetch d.compositions c where c.id=:id";
+    private static final String SELECT_DISHES_BY_ORDER_ID =
+            "from Dish d left join fetch d.orders o where o.id=:id";
+    private static final String SELECT_COMPOSITIONS_BY_DISH_ID =
+            "from Composition c left join fetch c.dish d where d.id=:id";
+    private static final String SELECT_ALL = "from Dish r";
 
     public DishRepositoryImpl(SessionFactory sessionFactory) {
         super(Dish.class, sessionFactory);
@@ -65,34 +68,27 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     @Override
     public List<Dish> findAllDishesInOrderById(Long orderId) {
         try (Session session = getSessionFactory().openSession()) {
-            Order order = session.get(Order.class, orderId);
-            if (order != null) {
-                return new ArrayList<>(order.getDishes());
+            try {
+                return session.createQuery(SELECT_DISHES_BY_ORDER_ID, Dish.class)
+                        .setParameter(ID_COLUMN, orderId)
+                        .list();
+            } catch (NoResultException ex) {
+                return null;
             }
         }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
-        try (Session session = getSessionFactory().openSession()) {
-            Dish dish = session.get(Dish.class, dishId);
-            if (dish != null) {
-                return new ArrayList<>(dish.getOrders());
-            }
-        }
-        return new ArrayList<>();
     }
 
     @Override
     public List<Composition> getCompositionsByDishId(Long dishId) {
         try (Session session = getSessionFactory().openSession()) {
-            Dish dish = session.get(Dish.class, dishId);
-            if (dish != null) {
-                return new ArrayList<>(dish.getCompositions());
+            try {
+                return session.createQuery(SELECT_COMPOSITIONS_BY_DISH_ID, Composition.class)
+                        .setParameter(ID_COLUMN, dishId)
+                        .list();
+            } catch (NoResultException ex) {
+                return null;
             }
         }
-        return new ArrayList<>();
     }
 
     @Override

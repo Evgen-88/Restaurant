@@ -2,7 +2,6 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
-import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
@@ -93,7 +92,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         Dish actual = dishRepository.findById(1L);
 
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(4, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
+        Assertions.assertEquals(4, orderRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
         Assertions.assertEquals(3, dishRepository.getCompositionsByDishId(actual.getId()).size());
 
         //when
@@ -102,17 +101,14 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(dishRepository.findById(1L));
-        Assertions.assertEquals(0, dishRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
+        Assertions.assertEquals(0, orderRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
         Assertions.assertEquals(0, dishRepository.getCompositionsByDishId(actual.getId()).size());
     }
 
     @Test
     public void findAllDishesInOrderByIdTest_validData_shouldFindAllDishesInOrder() {
-        //given
-        Order order = orderRepository.findById(1L);
-
-        //when
-        List<Dish> orderedDishes = dishRepository.findAllDishesInOrderById(order.getId());
+        //given && //when
+        List<Dish> orderedDishes = dishRepository.findAllDishesInOrderById(1L);
 
         //then
         Assertions.assertEquals(3, orderedDishes.size());
@@ -125,15 +121,6 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertEquals(3, dishCompositions.size());
-    }
-
-    @Test
-    public void findAllOrdersThatIncludeDishByDishIdTest_validData_shouldFindOrdersThatIncludeDish() {
-        //given && when
-        List<Order> orders = dishRepository.findAllOrdersThatIncludeDishByDishId(1L);
-
-        //then
-        Assertions.assertEquals(4, orders.size());
     }
 
     @Test
