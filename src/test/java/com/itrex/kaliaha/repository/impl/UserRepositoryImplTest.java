@@ -5,10 +5,7 @@ import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.AddMethodUserRepositoryImplException;
-import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.DishRepository;
-import com.itrex.kaliaha.repository.OrderRepository;
-import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,8 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     private OrderRepository orderRepository;
     @Autowired
     private DishRepository dishRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public UserRepositoryImplTest() {
         users = new ArrayList<>() {{
@@ -81,7 +80,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         Assertions.assertNotNull(addedUser.getId());
         Assertions.assertEquals(newExpected, newActual);
         Assertions.assertEquals(newExpected, userRepository.findById(newActual.getId()));
-        Assertions.assertEquals(roles.size(), userRepository.findRolesByUserId(newActual.getId()).size());
+        Assertions.assertEquals(roles.size(), roleRepository.findRolesByUserId(newActual.getId()).size());
     }
 
     @Test
@@ -110,7 +109,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         List<Dish> orderedDishes = dishRepository.findAllDishesInOrderById(actualOrders.get(0).getId());
 
         Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(2, userRepository.findRolesByUserId(actual.getId()).size());
+        Assertions.assertEquals(2, roleRepository.findRolesByUserId(actual.getId()).size());
         Assertions.assertEquals(3, actualOrders.size());
 
         //when
@@ -119,29 +118,26 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(userRepository.findById(1L));
-        Assertions.assertEquals(0, userRepository.findRolesByUserId(actual.getId()).size());
+        Assertions.assertEquals(0, roleRepository.findRolesByUserId(actual.getId()).size());
         Assertions.assertEquals(0, orderRepository.findOrdersByUserId(actual.getId()).size());
         Assertions.assertNotNull(dishRepository.findById(orderedDishes.get(0).getId()));
         Assertions.assertNotNull(dishRepository.findById(orderedDishes.get(1).getId()));
     }
 
     @Test
-    public void findRolesByUserIdTest_validData_shouldReturnUserRoles() {
-        //given
-        User user = userRepository.findById(1L);
-
-        // when
-        Set<Role> actual = userRepository.findRolesByUserId(user.getId());
+    public void findAllUsersWhoHaveRoleByIdTest_validData_shouldReturnAllExistingRoles() {
+        //given && when
+        List<User> actual = userRepository.findAllUsersWhoHaveRoleById(2L);
 
         //then
-        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(3, actual.size());
     }
 
     @Test
     public void addRoleToUserTest_validData_shouldAddRoleToUser() {
         //given
         User user = userRepository.findById(2L);
-        Set<Role> actual = userRepository.findRolesByUserId(user.getId());
+        Set<Role> actual = roleRepository.findRolesByUserId(user.getId());
 
         Assertions.assertEquals(1, actual.size());
 
@@ -150,7 +146,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isAdded);
-        Assertions.assertEquals(2, userRepository.findRolesByUserId(2L).size());
+        Assertions.assertEquals(2, roleRepository.findRolesByUserId(2L).size());
     }
 
     @Test
@@ -158,7 +154,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //given
         User user = userRepository.findById(1L);
         Role role = Role.builder().id(1L).roleName("admin").build();
-        Set<Role> userRolesExpected = userRepository.findRolesByUserId(user.getId());
+        Set<Role> userRolesExpected = roleRepository.findRolesByUserId(user.getId());
 
         Assertions.assertEquals(2, userRolesExpected.size());
 
@@ -168,6 +164,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertEquals(userRolesExpected, userRepository.findRolesByUserId(user.getId()));
+        Assertions.assertEquals(userRolesExpected, roleRepository.findRolesByUserId(user.getId()));
     }
 }

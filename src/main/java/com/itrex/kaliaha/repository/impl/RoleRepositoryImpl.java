@@ -7,8 +7,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements RoleRepository {
@@ -35,13 +36,13 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
     }
 
     @Override
-    public List<User> findAllUsersWhoHaveRoleById(Long roleId) {
+    public Set<Role> findRolesByUserId(Long userId) {
         try (Session session = getSessionFactory().openSession()) {
-            Role role = session.get(Role.class, roleId);
-            if (role != null) {
-                return new ArrayList<>(role.getUsers());
+            User user = session.get(User.class, userId);
+            if (user != null) {
+                return new HashSet<>(user.getRoles());
             }
+            return new HashSet<>();
         }
-        return new ArrayList<>();
     }
 }

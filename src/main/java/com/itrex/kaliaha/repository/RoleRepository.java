@@ -1,10 +1,9 @@
 package com.itrex.kaliaha.repository;
 
 import com.itrex.kaliaha.entity.Role;
-import com.itrex.kaliaha.entity.User;
 
-import java.util.List;
+import java.util.Set;
 
 public interface RoleRepository extends BaseRepository<Role>{
-    List<User> findAllUsersWhoHaveRoleById(Long roleId);
+    Set<Role> findRolesByUserId(Long userId);
 }

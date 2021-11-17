@@ -4,17 +4,21 @@ import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.RoleRepository;
+import com.itrex.kaliaha.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
     private final List<Role> roles;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public RoleRepositoryImplTest() {
         roles = new ArrayList<>() {{
@@ -86,7 +90,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         //given
         Role expected = roles.get(1);
         Role actual = roleRepository.findById(2L);
-        List<User> users = roleRepository.findAllUsersWhoHaveRoleById(actual.getId());
+        List<User> users = userRepository.findAllUsersWhoHaveRoleById(actual.getId());
 
         Assertions.assertEquals(expected, actual);
         Assertions.assertEquals(3, users.size());
@@ -97,15 +101,18 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertTrue(isDeleted);
         Assertions.assertNull(roleRepository.findById(2L));
-        Assertions.assertEquals(0, roleRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
+        Assertions.assertEquals(0, userRepository.findAllUsersWhoHaveRoleById(actual.getId()).size());
     }
 
     @Test
-    public void findAllUsersWhoHaveRoleByIdTest_validData_shouldReturnAllExistingRoles() {
-        //given && when
-        List<User> actual = roleRepository.findAllUsersWhoHaveRoleById(2L);
+    public void findRolesByUserIdTest_validData_shouldReturnUserRoles() {
+        //given
+        User user = userRepository.findById(1L);
+
+        // when
+        Set<Role> actual = roleRepository.findRolesByUserId(user.getId());
 
         //then
-        Assertions.assertEquals(3, actual.size());
+        Assertions.assertEquals(2, actual.size());
     }
 }
