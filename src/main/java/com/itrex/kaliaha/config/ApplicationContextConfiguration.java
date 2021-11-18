@@ -1,14 +1,22 @@
 package com.itrex.kaliaha.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.PropertyConfigurator;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
+@Slf4j
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan("com.itrex.kaliaha")
@@ -32,6 +40,10 @@ public class ApplicationContextConfiguration {
     private String showSql;
     @Value("${hibernate.format_sql}")
     private String formatSql;
+    @Value("${logging.profile.info}")
+    private String loggingProfileInfo;
+    @Value("${logging.profile.debug}")
+    private String loggingProfileDebug;
 
 
     @Bean(initMethod = "migrate")
@@ -73,5 +85,17 @@ public class ApplicationContextConfiguration {
         properties.setProperty("show_sql", showSql);
         properties.setProperty("format_sql", formatSql);
         return properties;
+    }
+
+    @Bean
+    @Profile("info")
+    public void configureLoggingInfo() {
+        PropertyConfigurator.configure(loggingProfileInfo);
+    }
+
+    @Bean
+    @Profile("debug")
+    public void configureLoggingDebug() {
+        PropertyConfigurator.configure(loggingProfileDebug);
     }
 }
