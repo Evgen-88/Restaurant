@@ -6,18 +6,19 @@ import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
+import com.itrex.kaliaha.service.IngredientService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
 class IngredientServiceImplTest extends BaseServiceTest {
-    @InjectMocks
-    private IngredientServiceImpl ingredientService;
-    @Mock
+    @Autowired
+    private IngredientService ingredientService;
+    @MockBean
     private IngredientRepository ingredientRepository;
 
     @Test

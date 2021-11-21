@@ -4,18 +4,19 @@ import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
+import com.itrex.kaliaha.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
 class RoleServiceImplTest extends BaseServiceTest {
-    @InjectMocks
-    private RoleServiceImpl roleService;
-    @Mock
+    @Autowired
+    private RoleService roleService;
+    @MockBean
     private BaseRepository<Role> roleRepository;
 
     @Test

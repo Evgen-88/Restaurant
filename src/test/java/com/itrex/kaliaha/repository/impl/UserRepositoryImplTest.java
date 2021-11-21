@@ -55,7 +55,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void addTest_validData_shouldThrowException() {
-        Assertions.assertThrowsExactly(AddMethodUserRepositoryImplException.class,
+        Assertions.assertThrows(AddMethodUserRepositoryImplException.class,
                 () -> userRepository.add(new User())
         );
     }
