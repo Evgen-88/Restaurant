@@ -1,6 +1,5 @@
 package com.itrex.kaliaha.service;
 
-import com.itrex.kaliaha.config.TestServiceConfiguration;
 import com.itrex.kaliaha.converters.DishConverter;
 import com.itrex.kaliaha.converters.OrderConverter;
 import com.itrex.kaliaha.converters.RoleConverter;
@@ -10,15 +9,12 @@ import com.itrex.kaliaha.entity.*;
 import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.enums.OrderStatus;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
+@SpringBootTest
 public abstract class BaseServiceTest {
     public List<User> getUsers() {
         return new ArrayList<>() {{
