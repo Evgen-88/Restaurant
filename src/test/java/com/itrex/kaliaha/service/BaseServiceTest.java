@@ -10,11 +10,13 @@ import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.enums.OrderStatus;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public abstract class BaseServiceTest {
     public List<User> getUsers() {
         return new ArrayList<>() {{

@@ -11,21 +11,21 @@ import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.OrderService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.when;
+
 class OrderServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private OrderService orderService;
-    @MockBean
+    @InjectMocks
+    private OrderServiceImpl orderService;
+    @Mock
     private OrderRepository orderRepository;
 
     public Order getOrderFindById() {
@@ -50,7 +50,7 @@ class OrderServiceImplTest extends BaseServiceTest {
         OrderDTO expected = getOrderDTO();
 
         // when
-        Mockito.when(orderRepository.findById(1L)).thenReturn(getOrderFindById());
+        when(orderRepository.findById(1L)).thenReturn(getOrderFindById());
         OrderDTO actual = orderService.findById(1L);
 
         //then
@@ -63,7 +63,7 @@ class OrderServiceImplTest extends BaseServiceTest {
         List<OrderListDTO> expected = getListOrderListDTO();
 
         // when
-        Mockito.when(orderRepository.findAll()).thenReturn(getOrders());
+        when(orderRepository.findAll()).thenReturn(getOrders());
         List<OrderListDTO> actual = orderService.findAll();
 
         //then
@@ -73,7 +73,7 @@ class OrderServiceImplTest extends BaseServiceTest {
     @Test
     void addTest_shouldAddNewOrder() throws ServiceException {
         //given
-        Mockito.when(orderRepository.findAll()).thenReturn(getOrders());
+        when(orderRepository.findAll()).thenReturn(getOrders());
         List<OrderListDTO> actualList = orderService.findAll();
 
         Assertions.assertEquals(5, actualList.size());
@@ -84,7 +84,7 @@ class OrderServiceImplTest extends BaseServiceTest {
         Order beforeAdd = Order.builder().price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
         Order afterAdd = Order.builder().id(6L).price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
 
-        Mockito.when(orderRepository.add(beforeAdd)).thenReturn(afterAdd);
+        when(orderRepository.add(beforeAdd)).thenReturn(afterAdd);
         OrderSaveOrUpdateDTO actual = orderService.add(expected);
 
         //then
@@ -100,7 +100,7 @@ class OrderServiceImplTest extends BaseServiceTest {
         Order toUpdate = Order.builder().id(1L).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
 
         //when
-        Mockito.when(orderRepository.update(toUpdate)).thenReturn(toUpdate);
+        when(orderRepository.update(toUpdate)).thenReturn(toUpdate);
         OrderSaveOrUpdateDTO actual = orderService.update(expected);
 
         //then
@@ -110,21 +110,21 @@ class OrderServiceImplTest extends BaseServiceTest {
     @Test
     void deleteTest_shouldDeleteDish() {
         //given && when && then
-        Mockito.when(orderRepository.delete(1L)).thenReturn(true);
+        when(orderRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> orderService.delete(1L));
     }
 
     @Test
     void addDishToOrderTest_shouldAddDishToOrder() {
         //given && when && then
-        Mockito.when(orderRepository.addDishToOrder(1L, 1L)).thenReturn(true);
+        when(orderRepository.addDishToOrder(1L, 1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> orderService.addDishToOrder(1L, 1L));
     }
 
     @Test
     void deleteFromOrderDishByIdTest_shouldDeleteDishFromOrder() {
         //given && when && then
-        Mockito.when(orderRepository.deleteDishFromOrder(1L, 1L)).thenReturn(true);
+        when(orderRepository.deleteDishFromOrder(1L, 1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> orderService.deleteDishFromOrder(1L, 1L));
     }
 }

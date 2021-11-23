@@ -11,22 +11,22 @@ import com.itrex.kaliaha.enums.DishGroup;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.DishService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.when;
+
 class DishServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private DishService dishService;
-    @MockBean
+    @InjectMocks
+    private DishServiceImpl dishService;
+    @Mock
     private DishRepository dishRepository;
 
     public Dish getDishFindById() {
@@ -50,7 +50,7 @@ class DishServiceImplTest extends BaseServiceTest {
         DishDTO expected = getDishDTOExpected();
 
         // when
-        Mockito.when(dishRepository.findById(1L)).thenReturn(getDishFindById());
+        when(dishRepository.findById(1L)).thenReturn(getDishFindById());
         DishDTO actual = dishService.findById(1L);
 
         //then
@@ -63,7 +63,7 @@ class DishServiceImplTest extends BaseServiceTest {
         List<DishListDTO> expected = getListDishListDTO();
 
         // when
-        Mockito.when(dishRepository.findAll()).thenReturn(getDishes());
+        when(dishRepository.findAll()).thenReturn(getDishes());
         List<DishListDTO> actual = dishService.findAll();
 
         //then
@@ -73,7 +73,7 @@ class DishServiceImplTest extends BaseServiceTest {
     @Test
     void addTest_shouldAddNewDish() {
         //given
-        Mockito.when(dishRepository.findAll()).thenReturn(getDishes());
+        when(dishRepository.findAll()).thenReturn(getDishes());
         List<DishListDTO> actualList = dishService.findAll();
 
         Assertions.assertEquals(3, actualList.size());
@@ -94,7 +94,7 @@ class DishServiceImplTest extends BaseServiceTest {
         Dish afterAdd =  DishConverter.fromDTO(expected);
         afterAdd.setId(4L);
 
-        Mockito.when(dishRepository.addWithCompositions(beforeAdd, compositions)).thenReturn(afterAdd);
+        when(dishRepository.addWithCompositions(beforeAdd, compositions)).thenReturn(afterAdd);
         DishSaveOrUpdateDTO actual = dishService.add(expected);
 
         //then
@@ -110,7 +110,7 @@ class DishServiceImplTest extends BaseServiceTest {
         Dish toUpdate = Dish.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
 
         //when
-        Mockito.when(dishRepository.update(toUpdate)).thenReturn(toUpdate);
+        when(dishRepository.update(toUpdate)).thenReturn(toUpdate);
         DishSaveOrUpdateDTO actual = dishService.update(expected);
 
         //then
@@ -120,7 +120,7 @@ class DishServiceImplTest extends BaseServiceTest {
     @Test
     void deleteTest_shouldDeleteDish() {
         //given && when && then
-        Mockito.when(dishRepository.delete(1L)).thenReturn(true);
+        when(dishRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> dishService.delete(1L));
     }
 }

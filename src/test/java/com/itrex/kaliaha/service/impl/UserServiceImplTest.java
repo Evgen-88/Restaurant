@@ -11,12 +11,10 @@ import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
-import com.itrex.kaliaha.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,10 +22,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.mockito.Mockito.when;
+
 class UserServiceImplTest extends BaseServiceTest {
-    @Autowired
-    private UserService userService;
-    @MockBean
+    @InjectMocks
+    private UserServiceImpl userService;
+    @Mock
     private UserRepository userRepository;
 
     public User getUserFindById() {
@@ -54,7 +54,7 @@ class UserServiceImplTest extends BaseServiceTest {
         UserDTO expected = getUserDTOExpected();
 
         // when
-        Mockito.when(userRepository.findById(1L)).thenReturn(getUserFindById());
+        when(userRepository.findById(1L)).thenReturn(getUserFindById());
         UserDTO actual = userService.findById(1L);
 
         //then
@@ -67,7 +67,7 @@ class UserServiceImplTest extends BaseServiceTest {
         List<UserListDTO> expected = getListUserListDTO();
 
         // when
-        Mockito.when(userRepository.findAll()).thenReturn(getUsers());
+        when(userRepository.findAll()).thenReturn(getUsers());
         List<UserListDTO> actual = userService.findAll();
 
         //then
@@ -77,7 +77,7 @@ class UserServiceImplTest extends BaseServiceTest {
     @Test
     void addTest_shouldAddNewUser() {
         //given
-        Mockito.when(userRepository.findAll()).thenReturn(getUsers());
+        when(userRepository.findAll()).thenReturn(getUsers());
         List<UserListDTO> actualList = userService.findAll();
 
         Assertions.assertEquals(2, actualList.size());
@@ -96,7 +96,7 @@ class UserServiceImplTest extends BaseServiceTest {
         User beforeAdd = User.builder().lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").build();
         User afterAdd = User.builder().id(3L).lastName("Сидоров").firstName("Александр").login("suitor").password("5555").address("г.Минск").roles(new HashSet<>(roles)).build();
 
-        Mockito.when(userRepository.add(beforeAdd, roles)).thenReturn(afterAdd);
+        when(userRepository.add(beforeAdd, roles)).thenReturn(afterAdd);
         UserSaveDTO actual = userService.add(expected);
 
         //then
@@ -112,7 +112,7 @@ class UserServiceImplTest extends BaseServiceTest {
         User toUpdate = User.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha.vladzislav").password("Updated 2222").address("Updated г.Витебск").build();
 
         //when
-        Mockito.when(userRepository.update(toUpdate)).thenReturn(toUpdate);
+        when(userRepository.update(toUpdate)).thenReturn(toUpdate);
         UserUpdateDTO actual = userService.update(expected);
 
         //then
@@ -122,21 +122,21 @@ class UserServiceImplTest extends BaseServiceTest {
     @Test
     void deleteTest_shouldDeleteUser() {
         //given && when && then
-        Mockito.when(userRepository.delete(1L)).thenReturn(true);
+        when(userRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userRepository.delete(1L));
     }
 
     @Test
     void addRoleToUserTest_shouldAddRoleToUser() {
         //given && when && then
-        Mockito.when(userRepository.addRoleToUser(2L, 1L)).thenReturn(true);
+        when(userRepository.addRoleToUser(2L, 1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userService.addRoleToUser(2L, 1L));
     }
 
     @Test
     void deleteRoleFromUserTest_shouldDeleteRoleFromUser() {
         //given && when && then
-        Mockito.when(userRepository.deleteRoleFromUser(1L, 2L)).thenReturn(true);
+        when(userRepository.deleteRoleFromUser(1L, 2L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userService.deleteRoleFromUser(1L, 2L));
     }
 }
