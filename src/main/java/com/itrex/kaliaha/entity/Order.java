@@ -44,7 +44,7 @@ public class Order extends BaseEntity<Long> {
     private OrderStatus orderStatus;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
