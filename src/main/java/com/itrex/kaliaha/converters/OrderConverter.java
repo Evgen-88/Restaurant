@@ -7,6 +7,7 @@ import com.itrex.kaliaha.dto.UserOrderListDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class OrderConverter {
                 .userId(order.getUser().getId())
                 .orderId(order.getId())
                 .price(order.getPrice())
-                .date(order.getDate())
+                .date(Date.valueOf(order.getDate()))
                 .address(order.getAddress())
                 .orderStatus(order.getOrderStatus())
                 .build();
@@ -53,7 +54,7 @@ public class OrderConverter {
         return Order.builder()
                 .id(saveOrUpdateDTO.getOrderId())
                 .price(saveOrUpdateDTO.getPrice())
-                .date(saveOrUpdateDTO.getDate())
+                .date(saveOrUpdateDTO.getDate().toLocalDate())
                 .address(saveOrUpdateDTO.getAddress())
                 .orderStatus(saveOrUpdateDTO.getOrderStatus())
                 .user(User.builder().id(saveOrUpdateDTO.getUserId()).build())

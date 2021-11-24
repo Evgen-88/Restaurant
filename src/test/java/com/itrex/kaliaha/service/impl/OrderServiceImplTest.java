@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ class OrderServiceImplTest extends BaseServiceTest {
         Assertions.assertEquals(5, actualList.size());
 
         // when
-        OrderSaveOrUpdateDTO expected = OrderSaveOrUpdateDTO.builder().price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).userId(1L).build();
+        OrderSaveOrUpdateDTO expected = OrderSaveOrUpdateDTO.builder().price(1500).date(Date.valueOf(LocalDate.of(2021, 12, 27))).address("г. Минск").orderStatus(OrderStatus.NEW).userId(1L).build();
 
         Order beforeAdd = Order.builder().price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
         Order afterAdd = Order.builder().id(6L).price(1500).date(LocalDate.of(2021, 12, 27)).address("г. Минск").orderStatus(OrderStatus.NEW).user(User.builder().id(1L).build()).build();
@@ -96,7 +97,7 @@ class OrderServiceImplTest extends BaseServiceTest {
     @Test
     void updateTest_shouldUpdateOrder() throws ServiceException {
         //given
-        OrderSaveOrUpdateDTO expected = OrderSaveOrUpdateDTO.builder().orderId(1L).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).userId(1L).build();
+        OrderSaveOrUpdateDTO expected = OrderSaveOrUpdateDTO.builder().orderId(1L).price(1600).date(Date.valueOf(LocalDate.of(2021, 11, 1))).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).userId(1L).build();
         Order toUpdate = Order.builder().id(1L).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
 
         //when
