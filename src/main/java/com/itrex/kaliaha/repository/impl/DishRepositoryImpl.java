@@ -3,12 +3,11 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.DishRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -33,14 +32,14 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     }
 
     @Override
-    public Dish findById(Long id) {
+    public Dish findById(Long id) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_BY_ID, Dish.class)
                         .setParameter(ID_COLUMN, id)
                         .getSingleResult();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
@@ -66,45 +65,45 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     }
 
     @Override
-    public List<Dish> findAllDishesInOrderById(Long orderId) {
+    public List<Dish> findAllDishesInOrderById(Long orderId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_DISHES_BY_ORDER_ID, Dish.class)
                         .setParameter(ID_COLUMN, orderId)
                         .list();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
 
     @Override
-    public List<Composition> getCompositionsByDishId(Long dishId) {
+    public List<Composition> getCompositionsByDishId(Long dishId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_COMPOSITIONS_BY_DISH_ID, Composition.class)
                         .setParameter(ID_COLUMN, dishId)
                         .list();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
 
     @Override
-    public Dish addWithCompositions(Dish dish, List<Composition> compositions) {
+    public Dish addWithCompositions(Dish dish, List<Composition> compositions) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
                 session.save(dish);
                 saveCompositions(session, compositions);
                 session.getTransaction().commit();
+                return dish;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
-        return dish;
     }
 
     public void saveCompositions(Session session, List<Composition> compositions) {
@@ -114,13 +113,13 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
     }
 
     @Override
-    public Dish getDishByCompositionId(Long compositionId) {
+    public Dish getDishByCompositionId(Long compositionId) throws RepositoryException {
         try(Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_DISH_BY_COMPOSITION_ID, Dish.class)
                     .setParameter(ID_COLUMN, compositionId)
                     .getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 }

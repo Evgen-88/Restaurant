@@ -3,7 +3,7 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
-import com.itrex.kaliaha.exception.AddMethodUserRepositoryImplException;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,14 +45,14 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(Long id) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_BY_ID, User.class)
                         .setParameter(ID_COLUMN, id)
                         .getSingleResult();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
@@ -70,13 +70,13 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public User add(User user) {
-        throw new AddMethodUserRepositoryImplException("You can't use this method, " +
+    public User add(User user) throws RepositoryException {
+        throw new RepositoryException("You can't use this method, " +
                 "you should add new user with add(User user, List<Role> roles) method");
     }
 
     @Override
-    public User add(User user, List<Role> roles) {
+    public User add(User user, List<Role> roles) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -84,8 +84,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
                 session.save(user);
                 session.getTransaction().commit();
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
         return user;
@@ -105,7 +105,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public boolean addRoleToUser(Long userId, Long roleId) {
+    public boolean addRoleToUser(Long userId, Long roleId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -115,15 +115,14 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
-        return false;
     }
 
     @Override
-    public boolean deleteRoleFromUser(Long userId, Long roleId) {
+    public boolean deleteRoleFromUser(Long userId, Long roleId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -132,11 +131,10 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
-        return false;
     }
 
     private void deleteRoleFromUser(Set<Role> roles, Long roleId) {
@@ -149,28 +147,28 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public List<User> findAllUsersWhoHaveRoleById(Long roleId) {
+    public List<User> findAllUsersWhoHaveRoleById(Long roleId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_USERS_BY_ROLE_ID, User.class)
                         .setParameter(ID_COLUMN, roleId)
                         .list();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
 
     @Override
-    public Set<Role> findRolesByUserId(Long userId) {
+    public Set<Role> findRolesByUserId(Long userId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return new HashSet<>(
                         session.createQuery(SELECT_ROLES_BY_USER_ID, Role.class)
                                 .setParameter(ID_COLUMN, userId)
                                 .list());
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }

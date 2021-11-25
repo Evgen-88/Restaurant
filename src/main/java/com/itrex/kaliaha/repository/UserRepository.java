@@ -2,14 +2,15 @@ package com.itrex.kaliaha.repository;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.exception.RepositoryException;
 
 import java.util.List;
 import java.util.Set;
 
 public interface UserRepository extends BaseRepository<User> {
-    User add(User user, List<Role> roles);
-    Set<Role> findRolesByUserId(Long userId);
-    List<User> findAllUsersWhoHaveRoleById(Long roleId);
-    boolean addRoleToUser(Long userId, Long roleId);
-    boolean deleteRoleFromUser(Long userId, Long roleId);
+    User add(User user, List<Role> roles) throws RepositoryException;
+    Set<Role> findRolesByUserId(Long userId) throws RepositoryException;
+    List<User> findAllUsersWhoHaveRoleById(Long roleId) throws RepositoryException;
+    boolean addRoleToUser(Long userId, Long roleId) throws RepositoryException;
+    boolean deleteRoleFromUser(Long userId, Long roleId) throws RepositoryException;
 }

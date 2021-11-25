@@ -1,6 +1,7 @@
 package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.BaseEntity;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,40 +25,46 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     protected abstract String defineSelectAllQuery();
 
     @Override
-    public E findById(Long id) {
+    public E findById(Long id) throws RepositoryException {
         try (Session session = sessionFactory.openSession()) {
             return session.get(clazz, id);
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public List<E> findAll() {
+    public List<E> findAll() throws RepositoryException {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(defineSelectAllQuery(), clazz).list();
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public E add(E e) {
+    public E add(E e) throws RepositoryException {
         try (Session session = sessionFactory.openSession()) {
             session.save(e);
             return e;
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public E update(E e) {
+    public E update(E e) throws RepositoryException {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
                 doUpdateOperations(session, e);
                 session.getTransaction().commit();
+                return e;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
-        return e;
     }
 
     protected void doUpdateOperations(Session session, E e) {
@@ -65,7 +72,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(Long id) throws RepositoryException {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.getTransaction().begin();
@@ -73,10 +80,9 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
-            return false;
         }
     }
 

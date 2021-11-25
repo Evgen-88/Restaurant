@@ -2,6 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,24 +42,24 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
     }
 
     @Override
-    public List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId) {
+    public List<Composition> findAllCompositionsThatIncludeIngredientById(Long ingredientId) throws RepositoryException {
         try(Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_COMPOSITIONS_BY_INGREDIENT_ID, Composition.class)
                     .setParameter(ID_COLUMN, ingredientId)
                     .list();
-        } catch (NoResultException ex) {
-            return null;
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public Ingredient getIngredientByCompositionId(Long compositionId) {
+    public Ingredient getIngredientByCompositionId(Long compositionId) throws RepositoryException {
         try(Session session = getSessionFactory().openSession()) {
             return session.createQuery(SELECT_INGREDIENT_BY_COMPOSITION_ID, Ingredient.class)
                     .setParameter(ID_COLUMN, compositionId)
                     .getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
+        } catch (Exception ex) {
+            throw new RepositoryException(ex.getMessage(), ex.getCause());
         }
     }
 }

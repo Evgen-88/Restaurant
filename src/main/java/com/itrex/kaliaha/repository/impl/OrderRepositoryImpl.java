@@ -2,6 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.OrderRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -39,14 +40,14 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public Order findById(Long id) {
+    public Order findById(Long id) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_BY_ID, Order.class)
                         .setParameter(ID_COLUMN, id)
                         .getSingleResult();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
@@ -63,33 +64,33 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
     }
 
     @Override
-    public List<Order> findOrdersByUserId(Long userId) {
+    public List<Order> findOrdersByUserId(Long userId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_ORDERS_BY_USER_ID, Order.class)
                         .setParameter(ID_COLUMN, userId)
                         .list();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
 
     @Override
-    public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) {
+    public List<Order> findAllOrdersThatIncludeDishByDishId(Long dishId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 return session.createQuery(SELECT_ORDERS_BY_DISH_ID, Order.class)
                         .setParameter(ID_COLUMN, dishId)
                         .list();
-            } catch (NoResultException ex) {
-                return null;
+            } catch (Exception ex) {
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
         }
     }
 
     @Override
-    public boolean addDishToOrder(Long orderId, Long dishId) {
+    public boolean addDishToOrder(Long orderId, Long dishId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -99,15 +100,14 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
-            return false;
         }
     }
 
     @Override
-    public boolean deleteDishFromOrder(Long orderId, Long dishId) {
+    public boolean deleteDishFromOrder(Long orderId, Long dishId) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
@@ -117,10 +117,9 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
                 session.getTransaction().commit();
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
                 session.getTransaction().rollback();
+                throw new RepositoryException(ex.getMessage(), ex.getCause());
             }
-            return false;
         }
     }
 }
