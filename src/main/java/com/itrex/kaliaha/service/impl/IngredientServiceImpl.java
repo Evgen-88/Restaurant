@@ -3,7 +3,6 @@ package com.itrex.kaliaha.service.impl;
 import com.itrex.kaliaha.converters.IngredientConverter;
 import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.entity.Ingredient;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.service.IngredientService;
@@ -20,32 +19,50 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientDTO findById(Long id) {
-        return IngredientConverter.toDTO(ingredientRepository.findById(id));
+    public IngredientDTO findById(Long id) throws ServiceException {
+        try {
+            return IngredientConverter.toDTO(ingredientRepository.findById(id));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public List<IngredientDTO> findAll() {
-        return IngredientConverter.toIngredientListDTO(ingredientRepository.findAll());
+    public List<IngredientDTO> findAll() throws ServiceException {
+        try {
+            return IngredientConverter.toIngredientListDTO(ingredientRepository.findAll());
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
     public IngredientDTO add(IngredientDTO ingredientDTO) throws ServiceException {
-        Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
-        ingredient = ingredientRepository.add(ingredient);
-        return IngredientConverter.toDTO(ingredient);
+        try {
+            Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
+            ingredient = ingredientRepository.add(ingredient);
+            return IngredientConverter.toDTO(ingredient);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
     public IngredientDTO update(IngredientDTO ingredientDTO) throws ServiceException {
-        Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
-        return IngredientConverter.toDTO(ingredientRepository.update(ingredient));
+        try {
+            Ingredient ingredient = IngredientConverter.fromDTO(ingredientDTO);
+            return IngredientConverter.toDTO(ingredientRepository.update(ingredient));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(!ingredientRepository.delete(id)) {
-            throw new InvalidIdParameterServiceException("Ingredient wasn't deleted", id);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return ingredientRepository.delete(id);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
     }
 }

@@ -5,8 +5,6 @@ import com.itrex.kaliaha.dto.OrderListDTO;
 import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.dto.OrderSaveOrUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
-import com.itrex.kaliaha.exception.DishIsNotOrderedException;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.OrderRepository;
 import com.itrex.kaliaha.service.OrderService;
@@ -23,51 +21,70 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findById(Long orderId) {
-        return OrderConverter.toDTO(orderRepository.findById(orderId));
+    public OrderDTO findById(Long orderId) throws ServiceException {
+        try {
+            return OrderConverter.toDTO(orderRepository.findById(orderId));
+        }  catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public List<OrderListDTO> findAll() {
-        List<Order> orders = orderRepository.findAll();
-        return OrderConverter.toOrderListDTO(orders);
+    public List<OrderListDTO> findAll() throws ServiceException {
+        try {
+            List<Order> orders = orderRepository.findAll();
+            return OrderConverter.toOrderListDTO(orders);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
     public OrderSaveOrUpdateDTO add(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException {
-        Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
-        order = orderRepository.add(order);
-        saveOrUpdateDTO.setOrderId(order.getId());
-        return saveOrUpdateDTO;
+        try {
+            Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
+            order = orderRepository.add(order);
+            saveOrUpdateDTO.setOrderId(order.getId());
+            return saveOrUpdateDTO;
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
     public OrderSaveOrUpdateDTO update(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException {
-        Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
-        return OrderConverter.toSaveOrUpdateDTO(orderRepository.update(order));
+        try {
+            Order order = OrderConverter.toSaveOrUpdateDTO(saveOrUpdateDTO);
+            return OrderConverter.toSaveOrUpdateDTO(orderRepository.update(order));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public boolean delete(Long id) throws InvalidIdParameterServiceException {
-        if(!orderRepository.delete(id)) {
-            throw new InvalidIdParameterServiceException("Order wasn't deleted", id);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return orderRepository.delete(id);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
-        return true;
     }
 
     @Override
-    public boolean addDishToOrder(Long orderId, Long dishId) throws DishIsNotOrderedException {
-        if(!orderRepository.addDishToOrder(orderId, dishId)) {
-            throw new DishIsNotOrderedException("Dish is not ordered", dishId);
+    public boolean addDishToOrder(Long orderId, Long dishId) throws ServiceException {
+        try {
+            return orderRepository.addDishToOrder(orderId, dishId);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
-        return true;
     }
 
     @Override
-    public boolean deleteDishFromOrder(Long orderId, Long dishId) throws DishIsNotOrderedException {
-        if(!orderRepository.deleteDishFromOrder(orderId, dishId)) {
-            throw new DishIsNotOrderedException("Dish is not deleted from order", dishId);
+    public boolean deleteDishFromOrder(Long orderId, Long dishId) throws ServiceException {
+        try {
+            return orderRepository.deleteDishFromOrder(orderId, dishId);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
-        return true;
     }
 }

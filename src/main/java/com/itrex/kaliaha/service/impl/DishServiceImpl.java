@@ -5,7 +5,6 @@ import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.DishService;
@@ -24,22 +23,34 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public DishDTO findById(Long id) {
-        return DishConverter.toDTO(dishRepository.findById(id));
+    public DishDTO findById(Long id) throws ServiceException {
+        try {
+            return DishConverter.toDTO(dishRepository.findById(id));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public List<DishListDTO> findAll() {
-        return dishRepository.findAll().stream().map(DishConverter::toDishListDTO).collect(Collectors.toList());
+    public List<DishListDTO> findAll() throws ServiceException {
+        try {
+            return dishRepository.findAll().stream().map(DishConverter::toDishListDTO).collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public DishSaveOrUpdateDTO add(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
-        Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
-        List<Composition> compositions = getCompositionList(dish, dishSaveOrUpdateDTO.getIngredients());
-        dish = dishRepository.addWithCompositions(dish, compositions);
-        dishSaveOrUpdateDTO.setId(dish.getId());
-        return dishSaveOrUpdateDTO;
+    public DishSaveOrUpdateDTO add(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) throws ServiceException {
+        try {
+            Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
+            List<Composition> compositions = getCompositionList(dish, dishSaveOrUpdateDTO.getIngredients());
+            dish = dishRepository.addWithCompositions(dish, compositions);
+            dishSaveOrUpdateDTO.setId(dish.getId());
+            return dishSaveOrUpdateDTO;
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     private List<Composition> getCompositionList(Dish dish, Map<Long, Integer> ingredients) {
@@ -54,14 +65,20 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public DishSaveOrUpdateDTO update(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) throws ServiceException {
-        Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
-        return DishConverter.saveOrUpdateDTO(dishRepository.update(dish));
+        try {
+            Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
+            return DishConverter.saveOrUpdateDTO(dishRepository.update(dish));
+        }  catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public void delete(Long id) throws InvalidIdParameterServiceException {
-        if (!dishRepository.delete(id)) {
-            throw new InvalidIdParameterServiceException("Dish wasn't deleted", id);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return dishRepository.delete(id);
+        }  catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
     }
 }

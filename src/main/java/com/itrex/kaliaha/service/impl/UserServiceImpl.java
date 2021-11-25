@@ -7,7 +7,6 @@ import com.itrex.kaliaha.dto.UserListDTO;
 import com.itrex.kaliaha.dto.UserSaveDTO;
 import com.itrex.kaliaha.dto.UserUpdateDTO;
 import com.itrex.kaliaha.entity.User;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.UserService;
@@ -25,47 +24,70 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long id) {
-        return UserConverter.toDTO(userRepository.findById(id));
+    public UserDTO findById(Long id) throws ServiceException {
+        try {
+            return UserConverter.toDTO(userRepository.findById(id));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public List<UserListDTO> findAll() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
+    public List<UserListDTO> findAll() throws ServiceException {
+        try {
+            List<User> users = userRepository.findAll();
+            return users.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
-    public UserSaveDTO add(UserSaveDTO userSaveDTO) {
-        User user = UserConverter.fromDTO(userSaveDTO);
-        user = userRepository.add(user, RoleConverter.fromRoleListIdDTO(userSaveDTO.getRolesId()));
-        return UserConverter.toSaveDTO(user);
+    public UserSaveDTO add(UserSaveDTO userSaveDTO) throws ServiceException {
+        try {
+            User user = UserConverter.fromDTO(userSaveDTO);
+            user = userRepository.add(user, RoleConverter.fromRoleListIdDTO(userSaveDTO.getRolesId()));
+            return UserConverter.toSaveDTO(user);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Override
     public UserUpdateDTO update(UserUpdateDTO userUpdateDTO) throws ServiceException {
-        User user = UserConverter.fromDTO(userUpdateDTO);
-        return UserConverter.toUpdateDTO(userRepository.update(user));
-    }
-
-    @Override
-    public void delete(Long id) throws InvalidIdParameterServiceException {
-        if(!userRepository.delete(id)) {
-            throw new InvalidIdParameterServiceException("User wasn't deleted", id);
+        try {
+            User user = UserConverter.fromDTO(userUpdateDTO);
+            return UserConverter.toUpdateDTO(userRepository.update(user));
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public void addRoleToUser(Long userId, Long roleId) throws InvalidIdParameterServiceException {
-        if(!userRepository.addRoleToUser(userId, roleId)) {
-            throw new InvalidIdParameterServiceException("Role wasn't added to user", roleId);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return userRepository.delete(id);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public void deleteRoleFromUser(Long userId, Long roleId) throws InvalidIdParameterServiceException {
-        if(!userRepository.deleteRoleFromUser(userId, roleId)) {
-            throw new InvalidIdParameterServiceException("Role wasn't deleted from user", roleId);
+    public boolean addRoleToUser(Long userId, Long roleId) throws ServiceException {
+        try {
+            return userRepository.addRoleToUser(userId, roleId);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
+        }
+
+    }
+
+    @Override
+    public boolean deleteRoleFromUser(Long userId, Long roleId) throws ServiceException {
+        try {
+            return userRepository.deleteRoleFromUser(userId, roleId);
+        } catch (Exception ex) {
+            throw new ServiceException(ex.getMessage(), ex.getCause());
         }
     }
 }
