@@ -48,10 +48,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void delete(Long id) throws InvalidIdParameterServiceException {
+    public boolean delete(Long id) throws InvalidIdParameterServiceException {
         if(!orderRepository.delete(id)) {
             throw new InvalidIdParameterServiceException("Order wasn't deleted", id);
         }
+        return true;
     }
 
     @Override

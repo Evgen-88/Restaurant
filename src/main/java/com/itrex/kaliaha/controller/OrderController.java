@@ -6,13 +6,16 @@ import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -32,28 +35,48 @@ public class OrderController {
         return orderService.findAll();
     }
 
-    @PostMapping(params = {"price", "date", "address", "orderStatus", "userId"})
-    public OrderSaveOrUpdateDTO addOrder(OrderSaveOrUpdateDTO orderSaveOrUpdateDTO) throws ServiceException {
-        return orderService.add(orderSaveOrUpdateDTO);
+    @PostMapping
+    public ResponseEntity<?> addOrder(@RequestBody OrderSaveOrUpdateDTO orderSaveOrUpdateDTO) {
+        try {
+            return new ResponseEntity<>(orderService.add(orderSaveOrUpdateDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PutMapping(params = {"orderId", "price", "date", "address", "orderStatus", "userId"})
-    public OrderSaveOrUpdateDTO updateOrder(OrderSaveOrUpdateDTO orderSaveOrUpdateDTO) throws ServiceException {
-        return orderService.update(orderSaveOrUpdateDTO);
+    @PutMapping
+    public ResponseEntity<?> updateOrder(@RequestBody OrderSaveOrUpdateDTO orderSaveOrUpdateDTO) {
+        try {
+            return new ResponseEntity<>(orderService.update(orderSaveOrUpdateDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) throws InvalidIdParameterServiceException {
-        orderService.delete(id);
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(orderService.delete(id), HttpStatus.OK);
+        } catch (InvalidIdParameterServiceException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping(params = {"orderId", "dishId"})
-    public void addDishToOrder(Long orderId, Long dishId) throws ServiceException, DishIsNotOrderedException {
-        orderService.addDishToOrder(orderId, dishId);
+    @PutMapping("/{orderId}/dishes/{dishId}")
+    public ResponseEntity<?> addDishToOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
+        try {
+            return new ResponseEntity<>(orderService.addDishToOrder(orderId, dishId), HttpStatus.OK);
+        } catch (ServiceException | DishIsNotOrderedException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @DeleteMapping("/{orderId}/{dishId}")
-    public void deleteDishFromOrder(@PathVariable Long orderId, @PathVariable Long dishId) throws DishIsNotOrderedException {
-        orderService.deleteDishFromOrder(orderId, dishId);
+    @DeleteMapping("/{orderId}/dishes/{dishId}")
+    public ResponseEntity<?> deleteDishFromOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
+        try {
+            return new ResponseEntity<>(orderService.deleteDishFromOrder(orderId, dishId), HttpStatus.OK);
+        } catch (DishIsNotOrderedException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

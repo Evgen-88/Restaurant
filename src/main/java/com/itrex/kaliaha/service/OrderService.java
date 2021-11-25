@@ -14,7 +14,7 @@ public interface OrderService {
     List<OrderListDTO>findAll();
     OrderSaveOrUpdateDTO add(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
     OrderSaveOrUpdateDTO update(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
-    void delete(Long id) throws InvalidIdParameterServiceException;
+    boolean delete(Long id) throws InvalidIdParameterServiceException;
     boolean addDishToOrder(Long orderId, Long dishId) throws ServiceException, DishIsNotOrderedException;
     boolean deleteDishFromOrder(Long orderId, Long dishId) throws DishIsNotOrderedException;
 }
