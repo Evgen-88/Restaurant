@@ -8,6 +8,7 @@ import com.itrex.kaliaha.dto.UserUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
@@ -49,7 +50,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findByIdTest_shouldReturnUserDTO() {
+    void findByIdTest_shouldReturnUserDTO() throws RepositoryException, ServiceException {
         //given
         UserDTO expected = getUserDTOExpected();
 
@@ -62,7 +63,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAllTest_shouldReturnAllUserListDTO() {
+    void findAllTest_shouldReturnAllUserListDTO() throws RepositoryException, ServiceException {
         //given
         List<UserListDTO> expected = getListUserListDTO();
 
@@ -75,7 +76,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void addTest_shouldAddNewUser() {
+    void addTest_shouldAddNewUser() throws RepositoryException, ServiceException {
         //given
         when(userRepository.findAll()).thenReturn(getUsers());
         List<UserListDTO> actualList = userService.findAll();
@@ -106,7 +107,7 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void updateTest_shouldUpdateUser() throws ServiceException {
+    void updateTest_shouldUpdateUser() throws ServiceException, RepositoryException {
         //given
         UserUpdateDTO expected = UserUpdateDTO.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha.vladzislav").password("Updated 2222").address("Updated г.Витебск").build();
         User toUpdate = User.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha.vladzislav").password("Updated 2222").address("Updated г.Витебск").build();
@@ -120,21 +121,21 @@ class UserServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteUser() {
+    void deleteTest_shouldDeleteUser() throws RepositoryException {
         //given && when && then
         when(userRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userRepository.delete(1L));
     }
 
     @Test
-    void addRoleToUserTest_shouldAddRoleToUser() {
+    void addRoleToUserTest_shouldAddRoleToUser() throws RepositoryException {
         //given && when && then
         when(userRepository.addRoleToUser(2L, 1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userService.addRoleToUser(2L, 1L));
     }
 
     @Test
-    void deleteRoleFromUserTest_shouldDeleteRoleFromUser() {
+    void deleteRoleFromUserTest_shouldDeleteRoleFromUser() throws RepositoryException {
         //given && when && then
         when(userRepository.deleteRoleFromUser(1L, 2L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> userService.deleteRoleFromUser(1L, 2L));

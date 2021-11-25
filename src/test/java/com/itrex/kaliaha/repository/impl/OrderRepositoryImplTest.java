@@ -4,6 +4,7 @@ import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
@@ -37,7 +38,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnOrderById() {
+    public void findByIdTest_validData_shouldReturnOrderById() throws RepositoryException {
         //given
         Order expected = orders.get(0);
 
@@ -49,7 +50,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingOrders() {
+    public void findAllTest_validData_shouldReturnAllExistingOrders() throws RepositoryException {
         //given && //when
         List<Order> actual = orderRepository.findAll();
 
@@ -58,7 +59,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_validData_shouldAddOrder() {
+    public void addTest_validData_shouldAddOrder() throws RepositoryException {
         //given
         List<Order> expected = orderRepository.findAll();
 
@@ -77,7 +78,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_validData_shouldUpdateOrder() {
+    public void updateTest_validData_shouldUpdateOrder() throws RepositoryException {
         //given
 
         Order expected = Order.builder().id(1L).price(1600).date(LocalDate.of(2021, 11, 1)).address("updated г. Минск").orderStatus(OrderStatus.COMPLETED).user(User.builder().id(1L).build()).build();
@@ -95,7 +96,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_validData_shouldDeleteOrder() {
+    public void deleteTest_validData_shouldDeleteOrder() throws RepositoryException {
         //given
         Order expected = orders.get(0);
         Order actual = orderRepository.findById(1L);
@@ -108,12 +109,12 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(orderRepository.findById(1L));
+        Assertions.assertThrows(RepositoryException.class, () -> orderRepository.findById(1L));
         Assertions.assertEquals(0, dishRepository.findAllDishesInOrderById(actual.getId()).size());
     }
 
     @Test
-    public void findOrdersByUserIdTest_validData_shouldReturnListUserOrders() {
+    public void findOrdersByUserIdTest_validData_shouldReturnListUserOrders() throws RepositoryException {
         //given && when
         List<Order> orders = orderRepository.findOrdersByUserId(1L);
 
@@ -123,7 +124,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
 
 
     @Test
-    public void findAllOrdersThatIncludeDishByDishIdTest_validData_shouldFindOrdersThatIncludeDish() {
+    public void findAllOrdersThatIncludeDishByDishIdTest_validData_shouldFindOrdersThatIncludeDish() throws RepositoryException {
         //given && when
         List<Order> orders = orderRepository.findAllOrdersThatIncludeDishByDishId(1L);
 
@@ -132,7 +133,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addDishToOrderTest_validData_shouldAddDishToOrder() {
+    public void addDishToOrderTest_validData_shouldAddDishToOrder() throws RepositoryException {
         //given
         User user = userRepository.findById(1L);
         List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
@@ -150,7 +151,7 @@ public class OrderRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteDishFromOrderTest_validData_shouldDeleteDishInOrder() {
+    public void deleteDishFromOrderTest_validData_shouldDeleteDishInOrder() throws RepositoryException {
         //given
         User user = userRepository.findById(1L);
         List<Order> orders = orderRepository.findOrdersByUserId(user.getId());

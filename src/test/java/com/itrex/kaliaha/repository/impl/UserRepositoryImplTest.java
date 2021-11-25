@@ -4,7 +4,7 @@ import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
-import com.itrex.kaliaha.exception.AddMethodUserRepositoryImplException;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnUserById() {
+    public void findByIdTest_validData_shouldReturnUserById() throws RepositoryException {
         //given
         User expected = users.get(0);
 
@@ -45,7 +45,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingUsers() {
+    public void findAllTest_validData_shouldReturnAllExistingUsers() throws RepositoryException {
         //given && when
         List<User> actual = userRepository.findAll();
 
@@ -55,13 +55,13 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void addTest_validData_shouldThrowException() {
-        Assertions.assertThrows(AddMethodUserRepositoryImplException.class,
+        Assertions.assertThrows(RepositoryException.class,
                 () -> userRepository.add(new User())
         );
     }
 
     @Test
-    public void addTest_validData_shouldAddNewUserWithRoles() {
+    public void addTest_validData_shouldAddNewUserWithRoles() throws RepositoryException {
         //given
         List<User> expected = userRepository.findAll();
         List<Role> roles = new ArrayList<>() {{add(Role.builder().id(1L).build());add(Role.builder().id(2L).build());}};
@@ -82,7 +82,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_validData_shouldUpdateUser() {
+    public void updateTest_validData_shouldUpdateUser() throws RepositoryException {
         //given
         User expected = User.builder().id(1L).lastName("Updated Коляго").firstName("Updated Владислав").login("Updated kaliaha").password("Updated 2222").address("Updated г.Минск").build();
         User actual = userRepository.findById(expected.getId());
@@ -99,7 +99,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_validData_shouldDeleteUser() {
+    public void deleteTest_validData_shouldDeleteUser() throws RepositoryException {
         //given
         User expected = users.get(0);
         User actual = userRepository.findById(1L);
@@ -115,7 +115,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(userRepository.findById(1L));
+        Assertions.assertThrows(RepositoryException.class, () -> userRepository.findById(1L));
         Assertions.assertEquals(0, userRepository.findRolesByUserId(actual.getId()).size());
         Assertions.assertEquals(0, orderRepository.findOrdersByUserId(actual.getId()).size());
         Assertions.assertNotNull(dishRepository.findById(orderedDishes.get(0).getId()));
@@ -123,7 +123,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllUsersWhoHaveRoleByIdTest_validData_shouldReturnAllExistingRoles() {
+    public void findAllUsersWhoHaveRoleByIdTest_validData_shouldReturnAllExistingRoles() throws RepositoryException {
         //given && when
         List<User> actual = userRepository.findAllUsersWhoHaveRoleById(2L);
 
@@ -132,7 +132,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addRoleToUserTest_validData_shouldAddRoleToUser() {
+    public void addRoleToUserTest_validData_shouldAddRoleToUser() throws RepositoryException {
         //given
         User user = userRepository.findById(2L);
         Set<Role> actual = userRepository.findRolesByUserId(user.getId());
@@ -148,7 +148,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteRoleFromUserTest_validData_shouldDeleteUserRole() {
+    public void deleteRoleFromUserTest_validData_shouldDeleteUserRole() throws RepositoryException {
         //given
         User user = userRepository.findById(1L);
         Role role = Role.builder().id(1L).roleName("admin").build();
@@ -166,7 +166,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findRolesByUserIdTest_validData_shouldReturnUserRoles() {
+    public void findRolesByUserIdTest_validData_shouldReturnUserRoles() throws RepositoryException {
         //given
         User user = userRepository.findById(1L);
 

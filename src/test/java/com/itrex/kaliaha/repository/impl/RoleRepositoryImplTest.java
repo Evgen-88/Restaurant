@@ -2,6 +2,7 @@ package com.itrex.kaliaha.repository.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.UserRepository;
@@ -28,7 +29,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnExistRoleById() {
+    public void findByIdTest_validData_shouldReturnExistRoleById() throws RepositoryException {
         //given
         Role expected = roles.get(0);
 
@@ -40,7 +41,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingRoles() {
+    public void findAllTest_validData_shouldReturnAllExistingRoles() throws RepositoryException {
         //given && when
         List<Role> actual = roleRepository.findAll();
 
@@ -49,7 +50,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_validData_shouldReturnNewRole() {
+    public void addTest_validData_shouldReturnNewRole() throws RepositoryException {
         //given
         List<Role> expected = roleRepository.findAll();
 
@@ -68,7 +69,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_shouldUpdateRole() {
+    public void updateTest_shouldUpdateRole() throws RepositoryException {
         //given
         Role expected = Role.builder().id(1L).roleName("middle admin").build();
         Role actual = roleRepository.findById(1L);
@@ -85,7 +86,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_shouldDeleteRole() {
+    public void deleteTest_shouldDeleteRole() throws RepositoryException {
         //given
         Role expected = roles.get(1);
         Role actual = roleRepository.findById(2L);

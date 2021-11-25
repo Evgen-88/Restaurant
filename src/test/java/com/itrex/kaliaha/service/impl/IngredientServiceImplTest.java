@@ -3,6 +3,7 @@ package com.itrex.kaliaha.service.impl;
 import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
@@ -22,7 +23,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     private IngredientRepository ingredientRepository;
 
     @Test
-    void findByIdTest_shouldReturnIngredientDTO() {
+    void findByIdTest_shouldReturnIngredientDTO() throws RepositoryException, ServiceException {
         //given
         IngredientDTO expected = getIngredientsDTO().get(0);
 
@@ -35,7 +36,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAllTest_shouldReturnAllIngredientDTO() {
+    void findAllTest_shouldReturnAllIngredientDTO() throws RepositoryException, ServiceException {
         //given
         List<IngredientDTO> expected = getIngredientsDTO();
 
@@ -48,7 +49,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void addTest_shouldAddNewIngredient() throws ServiceException {
+    void addTest_shouldAddNewIngredient() throws ServiceException, RepositoryException {
         //given
         when(ingredientRepository.findAll()).thenReturn(getIngredients());
         List<IngredientDTO> actualList = ingredientService.findAll();
@@ -70,7 +71,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void updateTest_shouldUpdateIngredient() throws ServiceException {
+    void updateTest_shouldUpdateIngredient() throws ServiceException, RepositoryException {
         //given
         IngredientDTO expected = IngredientDTO.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
         Ingredient toUpdate = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
@@ -84,7 +85,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteDish() {
+    void deleteTest_shouldDeleteDish() throws RepositoryException {
         //given && when && then
         when(ingredientRepository.delete(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow(() -> ingredientService.delete(1L));

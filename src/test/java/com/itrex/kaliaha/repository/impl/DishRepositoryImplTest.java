@@ -3,6 +3,7 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.enums.DishGroup;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.repository.OrderRepository;
@@ -29,7 +30,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnDishById() {
+    public void findByIdTest_validData_shouldReturnDishById() throws RepositoryException {
         //given
         Dish expected = dishes.get(0);
 
@@ -41,7 +42,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingDishes() {
+    public void findAllTest_validData_shouldReturnAllExistingDishes() throws RepositoryException {
         //given && //when
         List<Dish> actual = dishRepository.findAll();
 
@@ -50,7 +51,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_validData_shouldAddDish() {
+    public void addTest_validData_shouldAddDish() throws RepositoryException {
         //given
         List<Dish> expected = dishRepository.findAll();
 
@@ -69,7 +70,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_validData_shouldUpdateDish() {
+    public void updateTest_validData_shouldUpdateDish() throws RepositoryException {
         //given
         Dish expected = Dish.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
         Dish actual = dishRepository.findById(expected.getId());
@@ -86,7 +87,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_validData_shouldDeleteDish() {
+    public void deleteTest_validData_shouldDeleteDish() throws RepositoryException {
         //given
         Dish expected = dishes.get(0);
         Dish actual = dishRepository.findById(1L);
@@ -100,13 +101,13 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(dishRepository.findById(1L));
+        Assertions.assertThrows(RepositoryException.class, () -> dishRepository.findById(1L));
         Assertions.assertEquals(0, orderRepository.findAllOrdersThatIncludeDishByDishId(actual.getId()).size());
         Assertions.assertEquals(0, dishRepository.getCompositionsByDishId(actual.getId()).size());
     }
 
     @Test
-    public void findAllDishesInOrderByIdTest_validData_shouldFindAllDishesInOrder() {
+    public void findAllDishesInOrderByIdTest_validData_shouldFindAllDishesInOrder() throws RepositoryException {
         //given && //when
         List<Dish> orderedDishes = dishRepository.findAllDishesInOrderById(1L);
 
@@ -115,7 +116,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void getCompositionsByDishIdTest_validData_shouldFindDishCompositions() {
+    public void getCompositionsByDishIdTest_validData_shouldFindDishCompositions() throws RepositoryException {
         //given && when
         List<Composition> dishCompositions = dishRepository.getCompositionsByDishId(1L);
 
@@ -124,7 +125,7 @@ public class DishRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+    public void getDishByCompositionIdTest_validData_shouldFindDishThatContainsComposition() throws RepositoryException {
         //given
         Dish expected = Dish.builder().id(1L).dishName("Картошка с грибами").price(2).dishGroup(DishGroup.HOT).dishDescription("Очень вкусно").imagePath("photo.img").build();
 

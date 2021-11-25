@@ -3,6 +3,7 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import com.itrex.kaliaha.repository.IngredientRepository;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +29,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnIngredientById() {
+    public void findByIdTest_validData_shouldReturnIngredientById() throws RepositoryException {
         //given
         Ingredient expected = ingredients.get(0);
 
@@ -40,7 +41,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingIngredients() {
+    public void findAllTest_validData_shouldReturnAllExistingIngredients() throws RepositoryException {
         //given && when
         List<Ingredient> actual = ingredientRepository.findAll();
 
@@ -49,7 +50,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_validData_shouldAddIngredient() {
+    public void addTest_validData_shouldAddIngredient() throws RepositoryException {
         //given
         List<Ingredient> expected = ingredientRepository.findAll();
 
@@ -69,7 +70,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_validData_shouldUpdateIngredient() {
+    public void updateTest_validData_shouldUpdateIngredient() throws RepositoryException {
         //given
         Ingredient expected = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
         Ingredient actual = ingredientRepository.findById(expected.getId());
@@ -87,7 +88,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_validData_shouldDeleteIngredient() {
+    public void deleteTest_validData_shouldDeleteIngredient() throws RepositoryException {
         //given
         Ingredient expected = ingredients.get(0);
         Ingredient actual = ingredientRepository.findById(1L);
@@ -105,7 +106,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllCompositionsThatIncludeIngredientByIdTest_validData_shouldFindCompositionsThanIncludeIngredient() {
+    public void findAllCompositionsThatIncludeIngredientByIdTest_validData_shouldFindCompositionsThanIncludeIngredient() throws RepositoryException {
         //given && when
         List<Composition> dishes = ingredientRepository.findAllCompositionsThatIncludeIngredientById(1L);
 
@@ -114,7 +115,7 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() {
+    public void getIngredientByCompositionIdTest_validData_shouldFindDishThatContainsComposition() throws RepositoryException {
         //given
         Ingredient expected = Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build();
 

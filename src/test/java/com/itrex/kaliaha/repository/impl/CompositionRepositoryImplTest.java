@@ -3,6 +3,7 @@ package com.itrex.kaliaha.repository.impl;
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
+import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByIdTest_validData_shouldReturnCompositionById() {
+    public void findByIdTest_validData_shouldReturnCompositionById() throws RepositoryException {
         //given
         Composition expected = compositions.get(0);
 
@@ -44,7 +45,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findAllTest_validData_shouldReturnAllExistingCompositions() {
+    public void findAllTest_validData_shouldReturnAllExistingCompositions() throws RepositoryException {
         //given && when
         List<Composition> actual = compositionRepository.findAll();
 
@@ -53,7 +54,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addTest_validData_shouldAddComposition() {
+    public void addTest_validData_shouldAddComposition() throws RepositoryException {
         //given
         List<Composition> expected = compositionRepository.findAll();
 
@@ -72,7 +73,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void updateTest_validData_shouldUpdateComposition() {
+    public void updateTest_validData_shouldUpdateComposition() throws RepositoryException {
         //given
         Composition expected = Composition.builder().id(1L).dish(Dish.builder().id(1L).build()).ingredient(Ingredient.builder().id(1L).build()).quantity(200).build();
         Composition actual = compositionRepository.findById(expected.getId());
@@ -89,7 +90,7 @@ public class CompositionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void deleteTest_validData_shouldDeleteComposition() {
+    public void deleteTest_validData_shouldDeleteComposition() throws RepositoryException {
         //given
         Composition expected = compositions.get(0);
         Composition actual = compositionRepository.findById(1L);

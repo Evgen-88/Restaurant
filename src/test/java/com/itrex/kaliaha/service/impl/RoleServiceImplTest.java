@@ -2,6 +2,8 @@ package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
+import com.itrex.kaliaha.exception.RepositoryException;
+import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.repository.BaseRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +22,7 @@ class RoleServiceImplTest extends BaseServiceTest {
     private BaseRepository<Role> roleRepository;
 
     @Test
-    void findAllTest_shouldReturnAllRoleDTO() {
+    void findAllTest_shouldReturnAllRoleDTO() throws ServiceException, RepositoryException {
         //given
         List<RoleDTO> expected = getListRoleDTO();
 
