@@ -67,7 +67,9 @@ public class DishServiceImpl implements DishService {
     public DishSaveOrUpdateDTO update(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) throws ServiceException {
         try {
             Dish dish = DishConverter.fromDTO(dishSaveOrUpdateDTO);
-            return DishConverter.saveOrUpdateDTO(dishRepository.update(dish));
+            DishSaveOrUpdateDTO updated = DishConverter.saveOrUpdateDTO(dishRepository.update(dish));
+            updated.setIngredients(dishSaveOrUpdateDTO.getIngredients());
+            return updated;
         }  catch (Exception ex) {
             throw new ServiceException(ex.getMessage(), ex.getCause());
         }
