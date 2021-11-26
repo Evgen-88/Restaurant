@@ -1,8 +1,6 @@
 package com.itrex.kaliaha.controller;
 
 import com.itrex.kaliaha.dto.*;
-import com.itrex.kaliaha.exception.DishIsNotOrderedException;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +15,28 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-public class OrderController {
+public class OrderController extends AbstractController{
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public OrderDTO getOrderById(@PathVariable Long id) {
-        return orderService.findById(id);
+    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(orderService.findById(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @GetMapping
-    public List<OrderListDTO> getOrders() {
-        return orderService.findAll();
+    public ResponseEntity<?> getOrders() {
+        try {
+            return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @PostMapping
@@ -40,7 +44,7 @@ public class OrderController {
         try {
             return new ResponseEntity<>(orderService.add(orderSaveOrUpdateDTO), HttpStatus.OK);
         } catch (ServiceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            return getResponseEntityForException(ex);
         }
     }
 
@@ -49,7 +53,7 @@ public class OrderController {
         try {
             return new ResponseEntity<>(orderService.update(orderSaveOrUpdateDTO), HttpStatus.OK);
         } catch (ServiceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            return getResponseEntityForException(ex);
         }
     }
 
@@ -57,8 +61,8 @@ public class OrderController {
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(orderService.delete(id), HttpStatus.OK);
-        } catch (InvalidIdParameterServiceException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
         }
     }
 
@@ -66,8 +70,8 @@ public class OrderController {
     public ResponseEntity<?> addDishToOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
         try {
             return new ResponseEntity<>(orderService.addDishToOrder(orderId, dishId), HttpStatus.OK);
-        } catch (ServiceException | DishIsNotOrderedException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
         }
     }
 
@@ -75,8 +79,8 @@ public class OrderController {
     public ResponseEntity<?> deleteDishFromOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
         try {
             return new ResponseEntity<>(orderService.deleteDishFromOrder(orderId, dishId), HttpStatus.OK);
-        } catch (DishIsNotOrderedException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
         }
     }
 }

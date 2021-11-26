@@ -1,48 +1,68 @@
 package com.itrex.kaliaha.controller;
 
 import com.itrex.kaliaha.dto.IngredientDTO;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.IngredientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/ingredients")
 @RequiredArgsConstructor
-public class IngredientController {
+public class IngredientController extends AbstractController {
     private final IngredientService ingredientService;
 
     @GetMapping("/{id}")
-    public IngredientDTO getIngredientById(@PathVariable Long id) {
-        return ingredientService.findById(id);
+    public ResponseEntity<?> getIngredientById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(ingredientService.findById(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @GetMapping
-    public List<IngredientDTO> getIngredients() {
-        return ingredientService.findAll();
+    public ResponseEntity<?> getIngredients() {
+        try {
+            return new ResponseEntity<>(ingredientService.findAll(), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PostMapping(params = {"ingredientName", "price", "remainder", "measurement"})
-    public IngredientDTO addIngredient(IngredientDTO ingredientDTO) throws ServiceException {
-        return ingredientService.add(ingredientDTO);
+    @PostMapping
+    public ResponseEntity<?> addIngredient(@RequestBody IngredientDTO ingredientDTO) {
+        try {
+            return new ResponseEntity<>(ingredientService.add(ingredientDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PutMapping(params = {"id", "ingredientName", "price", "remainder", "measurement"})
-    public IngredientDTO updateIngredient(IngredientDTO ingredientDTO) throws ServiceException {
-        return ingredientService.update(ingredientDTO);
+    @PutMapping
+    public ResponseEntity<?> updateIngredient(@RequestBody IngredientDTO ingredientDTO) {
+        try {
+            return new ResponseEntity<>(ingredientService.update(ingredientDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteIngredient(@PathVariable Long id) throws InvalidIdParameterServiceException {
-        ingredientService.delete(id);
+    public ResponseEntity<?> deleteIngredient(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(ingredientService.delete(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 }

@@ -1,58 +1,86 @@
 package com.itrex.kaliaha.controller;
 
 import com.itrex.kaliaha.dto.*;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController extends AbstractController{
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable Long id) {
-        return userService.findById(id);
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @GetMapping
-    public List<UserListDTO> getUsers() {
-        return userService.findAll();
+    public ResponseEntity<?> getUsers() {
+        try {
+            return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PostMapping(params = {"lastName", "firstName", "login", "password", "address", "rolesId"})
-    public UserSaveDTO addUser(UserSaveDTO userSaveDTO) {
-        return userService.add(userSaveDTO);
+    @PostMapping
+    public ResponseEntity<?> addUser(@RequestBody UserSaveDTO user) {
+        try {
+            return new ResponseEntity<>(userService.add(user), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PutMapping(params = {"id", "lastName", "firstName", "login", "password", "address"})
-    public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) throws ServiceException {
-        return userService.update(userUpdateDTO);
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        try {
+            return new ResponseEntity<>(userService.update(userUpdateDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) throws InvalidIdParameterServiceException {
-        userService.delete(id);
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PostMapping("/{userId}/{roleId}")
-    public void addRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) throws InvalidIdParameterServiceException {
-        userService.addRoleToUser(userId, roleId);
+    @DeleteMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<?> deleteRoleFromUser(@PathVariable long userId, @PathVariable long roleId) {
+        try {
+            return new ResponseEntity<>(userService.deleteRoleFromUser(userId, roleId), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @DeleteMapping("/{userId}/{roleId}")
-    public void deleteRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) throws InvalidIdParameterServiceException {
-        userService.deleteRoleFromUser(userId, roleId);
+    @PutMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<?> addRoleToUser(@PathVariable long userId, @PathVariable long roleId) {
+        try {
+            return new ResponseEntity<>(userService.addRoleToUser(userId, roleId), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 }

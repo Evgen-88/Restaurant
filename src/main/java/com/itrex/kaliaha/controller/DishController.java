@@ -1,51 +1,69 @@
 package com.itrex.kaliaha.controller;
 
-import com.itrex.kaliaha.dto.DishDTO;
-import com.itrex.kaliaha.dto.DishListDTO;
 import com.itrex.kaliaha.dto.DishSaveOrUpdateDTO;
-import com.itrex.kaliaha.exception.InvalidIdParameterServiceException;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.DishService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/dishes")
 @RequiredArgsConstructor
-public class DishController {
+public class DishController extends AbstractController{
     private final DishService dishService;
 
     @GetMapping("/{id}")
-    public DishDTO getDishById(@PathVariable Long id) {
-        return dishService.findById(id);
+    public ResponseEntity<?> getDishById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(dishService.findById(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @GetMapping
-    public List<DishListDTO> getDishes() {
-        return dishService.findAll();
+    public ResponseEntity<?> getDishes() {
+        try {
+            return new ResponseEntity<>(dishService.findAll(), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PostMapping(params = {"dishName", "price", "dishGroup", "dishDescription", "imagePath", "ingredients"})
-    public DishSaveOrUpdateDTO addDish(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
-        return dishService.add(dishSaveOrUpdateDTO);
+    @PostMapping
+    public ResponseEntity<?> addDish(@RequestBody DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
+        try {
+            return new ResponseEntity<>(dishService.add(dishSaveOrUpdateDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
-    @PutMapping(params = {"id", "dishName", "price", "dishGroup", "dishDescription", "imagePath", "ingredients"})
-    public DishSaveOrUpdateDTO updateDish(DishSaveOrUpdateDTO dishSaveOrUpdateDTO) throws ServiceException {
-        return dishService.update(dishSaveOrUpdateDTO);
+    @PutMapping
+    public ResponseEntity<?> updateDish(@RequestBody DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
+        try {
+            return new ResponseEntity<>(dishService.update(dishSaveOrUpdateDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDish(@PathVariable Long id) throws InvalidIdParameterServiceException {
-        dishService.delete(id);
+    public ResponseEntity<?> deleteDish(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(dishService.delete(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
     }
 }
