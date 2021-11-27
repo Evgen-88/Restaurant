@@ -5,13 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public abstract class AbstractController {
-    private ResponseEntity<?> getNothingFoundResponse() {
-        return new ResponseEntity<>("Nothing is found", HttpStatus.NOT_FOUND);
-    }
-
     protected ResponseEntity<?> getResponseEntityForException(ServiceException ex) {
         return ex.getMessage() != null
                 ? new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST)
-                :getNothingFoundResponse();
+                : new ResponseEntity<>("Nothing is found", HttpStatus.NOT_FOUND);
     }
 }
