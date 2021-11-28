@@ -1,4 +1,4 @@
-package com.itrex.kaliaha.repository;
+package com.itrex.kaliaha.repository.deprecated;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
@@ -7,6 +7,7 @@ import com.itrex.kaliaha.exception.RepositoryException;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 public interface UserRepository extends BaseRepository<User> {
     User add(User user, List<Role> roles) throws RepositoryException;
     Set<Role> findRolesByUserId(Long userId) throws RepositoryException;

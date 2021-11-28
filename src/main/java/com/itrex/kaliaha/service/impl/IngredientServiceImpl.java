@@ -4,7 +4,7 @@ import com.itrex.kaliaha.converters.IngredientConverter;
 import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.IngredientRepository;
+import com.itrex.kaliaha.repository.deprecated.IngredientRepository;
 import com.itrex.kaliaha.service.IngredientService;
 import org.springframework.stereotype.Service;
 

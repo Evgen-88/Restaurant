@@ -1,16 +1,16 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.OrderRepository;
+import com.itrex.kaliaha.repository.deprecated.OrderRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
+@Deprecated
 @Repository
 public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implements OrderRepository {
     private static final String PRICE_COLUMN = "price";

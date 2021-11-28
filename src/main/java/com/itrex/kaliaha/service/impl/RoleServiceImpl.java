@@ -4,7 +4,7 @@ import com.itrex.kaliaha.converters.RoleConverter;
 import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.BaseRepository;
+import com.itrex.kaliaha.repository.deprecated.BaseRepository;
 import com.itrex.kaliaha.service.RoleService;
 import org.springframework.stereotype.Service;
 

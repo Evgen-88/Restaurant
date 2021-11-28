@@ -1,11 +1,11 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.BaseRepository;
+import com.itrex.kaliaha.repository.deprecated.BaseRepository;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.deprecated.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

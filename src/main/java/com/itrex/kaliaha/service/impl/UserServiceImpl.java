@@ -8,7 +8,7 @@ import com.itrex.kaliaha.dto.UserSaveDTO;
 import com.itrex.kaliaha.dto.UserUpdateDTO;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.deprecated.UserRepository;
 import com.itrex.kaliaha.service.UserService;
 import org.springframework.stereotype.Service;
 

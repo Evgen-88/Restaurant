@@ -1,15 +1,16 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.DishRepository;
+import com.itrex.kaliaha.repository.deprecated.DishRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
+@Deprecated
 @Repository
 public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements DishRepository {
     private static final String SELECT_BY_ID =

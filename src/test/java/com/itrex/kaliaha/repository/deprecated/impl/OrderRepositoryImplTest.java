@@ -1,4 +1,4 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Order;
@@ -6,9 +6,9 @@ import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.DishRepository;
-import com.itrex.kaliaha.repository.OrderRepository;
-import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.deprecated.DishRepository;
+import com.itrex.kaliaha.repository.deprecated.OrderRepository;
+import com.itrex.kaliaha.repository.deprecated.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

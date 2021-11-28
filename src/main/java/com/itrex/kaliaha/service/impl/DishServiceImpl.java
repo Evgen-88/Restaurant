@@ -6,7 +6,7 @@ import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.DishRepository;
+import com.itrex.kaliaha.repository.deprecated.DishRepository;
 import com.itrex.kaliaha.service.DishService;
 import org.springframework.stereotype.Service;
 

@@ -10,7 +10,7 @@ import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.enums.OrderStatus;
 import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.OrderRepository;
+import com.itrex.kaliaha.repository.deprecated.OrderRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

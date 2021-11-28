@@ -1,13 +1,14 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.BaseEntity;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.BaseRepository;
+import com.itrex.kaliaha.repository.deprecated.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
+@Deprecated
 public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> implements BaseRepository<E> {
     protected static final String ID_COLUMN = "id";
     private final Class<E> clazz;

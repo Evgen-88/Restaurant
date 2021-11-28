@@ -1,16 +1,16 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.IngredientRepository;
+import com.itrex.kaliaha.repository.deprecated.IngredientRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
+@Deprecated
 @Repository
 public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient> implements IngredientRepository {
     private static final String SELECT_ALL = "from Ingredient i";

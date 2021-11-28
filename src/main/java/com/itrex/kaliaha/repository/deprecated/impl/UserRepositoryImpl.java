@@ -1,20 +1,20 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.UserRepository;
+import com.itrex.kaliaha.repository.deprecated.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Deprecated
 @Repository
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
     private static final String LAST_NAME_COLUMN = "lastName";

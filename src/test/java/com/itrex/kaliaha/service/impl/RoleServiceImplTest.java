@@ -4,7 +4,7 @@ import com.itrex.kaliaha.dto.RoleDTO;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.BaseRepository;
+import com.itrex.kaliaha.repository.deprecated.BaseRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

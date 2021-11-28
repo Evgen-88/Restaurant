@@ -1,11 +1,11 @@
-package com.itrex.kaliaha.repository.impl;
+package com.itrex.kaliaha.repository.deprecated.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
 import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.IngredientRepository;
+import com.itrex.kaliaha.repository.deprecated.IngredientRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

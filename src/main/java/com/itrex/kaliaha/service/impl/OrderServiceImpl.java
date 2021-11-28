@@ -6,7 +6,7 @@ import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.dto.OrderSaveOrUpdateDTO;
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.OrderRepository;
+import com.itrex.kaliaha.repository.deprecated.OrderRepository;
 import com.itrex.kaliaha.service.OrderService;
 import org.springframework.stereotype.Service;
 
