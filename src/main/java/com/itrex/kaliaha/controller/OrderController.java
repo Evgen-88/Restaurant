@@ -66,19 +66,28 @@ public class OrderController extends AbstractController{
         }
     }
 
-    @PutMapping("/{orderId}/dishes/{dishId}")
-    public ResponseEntity<?> addDishToOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
-        try {
-            return new ResponseEntity<>(orderService.addDishToOrder(orderId, dishId), HttpStatus.OK);
+    @GetMapping("/{id}/dishes")
+    public ResponseEntity<?> getDishIngredients(@PathVariable Long id) {
+        try{
+            return new ResponseEntity<>(orderService.getDishesByOrderId(id), HttpStatus.OK);
         } catch (ServiceException ex) {
             return getResponseEntityForException(ex);
         }
     }
 
-    @DeleteMapping("/{orderId}/dishes/{dishId}")
-    public ResponseEntity<?> deleteDishFromOrder(@PathVariable Long orderId, @PathVariable  Long dishId) {
+    @PutMapping("/{id}/dishes/{dishId}")
+    public ResponseEntity<?> addDishToOrder(@PathVariable Long id, @PathVariable  Long dishId) {
         try {
-            return new ResponseEntity<>(orderService.deleteDishFromOrder(orderId, dishId), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.addDishToOrder(id, dishId), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
+    }
+
+    @DeleteMapping("/{id}/dishes/{dishId}")
+    public ResponseEntity<?> deleteDishFromOrder(@PathVariable Long id, @PathVariable  Long dishId) {
+        try {
+            return new ResponseEntity<>(orderService.deleteDishFromOrder(id, dishId), HttpStatus.OK);
         } catch (ServiceException ex) {
             return getResponseEntityForException(ex);
         }

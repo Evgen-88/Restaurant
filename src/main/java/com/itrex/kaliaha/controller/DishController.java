@@ -1,5 +1,6 @@
 package com.itrex.kaliaha.controller;
 
+import com.itrex.kaliaha.dto.DishIngredientDTO;
 import com.itrex.kaliaha.dto.DishSaveOrUpdateDTO;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.DishService;
@@ -62,6 +63,33 @@ public class DishController extends AbstractController{
     public ResponseEntity<?> deleteDish(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(dishService.delete(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
+    }
+
+    @GetMapping("/{id}/ingredients")
+    public ResponseEntity<?> getDishIngredients(@PathVariable Long id) {
+        try{
+            return new ResponseEntity<>(dishService.getIngredientsByDishId(id), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
+    }
+
+    @PutMapping(value = "/{id}/ingredients", params = {"ingredientId", "quantity"})
+    public ResponseEntity<?> addIngredientToDish(@PathVariable Long id, DishIngredientDTO dishIngredientDTO) {
+        try{
+            return new ResponseEntity<>(dishService.addIngredientToDish(id, dishIngredientDTO), HttpStatus.OK);
+        } catch (ServiceException ex) {
+            return getResponseEntityForException(ex);
+        }
+    }
+
+    @DeleteMapping("/{dishId}/ingredients/{ingredientId}")
+    public ResponseEntity<?> deleteIngredientFromDish(@PathVariable Long dishId, @PathVariable Long ingredientId) {
+        try {
+            return new ResponseEntity<>(dishService.deleteIngredientFromDish(dishId, ingredientId), HttpStatus.OK);
         } catch (ServiceException ex) {
             return getResponseEntityForException(ex);
         }

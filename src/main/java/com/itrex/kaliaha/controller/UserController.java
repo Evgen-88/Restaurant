@@ -4,6 +4,8 @@ import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +33,11 @@ public class UserController extends AbstractController{
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsers() {
-        try {
-            return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-        } catch (ServiceException ex) {
-            return getResponseEntityForException(ex);
-        }
+    public ResponseEntity<Page<UserListDTO>> findAll(Pageable pageable) throws ServiceException {
+        Page<UserListDTO> users = userService.findAll(pageable);
+        return users != null && !users.isEmpty()
+                ? new ResponseEntity<>(users, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
