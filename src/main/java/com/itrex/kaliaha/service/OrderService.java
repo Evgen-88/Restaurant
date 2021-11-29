@@ -1,5 +1,6 @@
 package com.itrex.kaliaha.service;
 
+import com.itrex.kaliaha.dto.DishListDTO;
 import com.itrex.kaliaha.dto.OrderListDTO;
 import com.itrex.kaliaha.dto.OrderDTO;
 import com.itrex.kaliaha.dto.OrderSaveOrUpdateDTO;
@@ -13,6 +14,8 @@ public interface OrderService {
     OrderSaveOrUpdateDTO add(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
     OrderSaveOrUpdateDTO update(OrderSaveOrUpdateDTO saveOrUpdateDTO) throws ServiceException;
     boolean delete(Long id) throws ServiceException;
+
+    List<DishListDTO> getDishesByOrderId(Long orderId) throws ServiceException;
     boolean addDishToOrder(Long orderId, Long dishId) throws ServiceException;
     boolean deleteDishFromOrder(Long orderId, Long dishId) throws ServiceException;
 }

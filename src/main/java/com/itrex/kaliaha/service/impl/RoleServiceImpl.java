@@ -2,27 +2,22 @@ package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.RoleConverter;
 import com.itrex.kaliaha.dto.RoleDTO;
-import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.deprecated.BaseRepository;
+import com.itrex.kaliaha.repository.RoleRepository;
 import com.itrex.kaliaha.service.RoleService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class RoleServiceImpl implements RoleService {
-    private final BaseRepository<Role> roleRepository;
+    private final RoleRepository roleRepository;
 
-    public RoleServiceImpl(BaseRepository<Role> roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
+    @Transactional(readOnly = true)
     public List<RoleDTO> findAll() throws ServiceException {
-        try {
-            return RoleConverter.toRoleListDTO(roleRepository.findAll());
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
-        }
+        return RoleConverter.toRoleListDTO(roleRepository.findAll());
     }
 }

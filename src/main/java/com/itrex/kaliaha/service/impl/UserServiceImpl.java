@@ -1,93 +1,130 @@
 package com.itrex.kaliaha.service.impl;
 
-import com.itrex.kaliaha.converters.RoleConverter;
 import com.itrex.kaliaha.converters.UserConverter;
 import com.itrex.kaliaha.dto.UserDTO;
 import com.itrex.kaliaha.dto.UserListDTO;
 import com.itrex.kaliaha.dto.UserSaveDTO;
 import com.itrex.kaliaha.dto.UserUpdateDTO;
+import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.deprecated.UserRepository;
+import com.itrex.kaliaha.repository.OrderRepository;
+import com.itrex.kaliaha.repository.UserRepository;
 import com.itrex.kaliaha.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDTO findById(Long id) throws ServiceException {
-        try {
-            return UserConverter.toDTO(userRepository.findById(id));
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
-        }
+        return userRepository.findById(id).map(UserConverter::toDTO)
+                .orElseThrow(() -> new ServiceException("User is not found"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserListDTO> findAll() throws ServiceException {
-        try {
-            List<User> users = userRepository.findAll();
-            return users.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
-        }
+        return UserConverter.toUserListDTO(userRepository.findAll());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserListDTO> findAll(Pageable pageable) {
+        Page<User> pageUsers = userRepository.findAll(pageable);
+        List<UserListDTO> users = pageUsers.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
+        return new PageImpl<>(users);
+    }
+
+    @Transactional
     @Override
     public UserSaveDTO add(UserSaveDTO userSaveDTO) throws ServiceException {
-        try {
-            User user = UserConverter.fromDTO(userSaveDTO);
-            user = userRepository.add(user, RoleConverter.fromRoleListIdDTO(userSaveDTO.getRolesId()));
-            return UserConverter.toSaveDTO(user);
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
-        }
+        User user = UserConverter.fromDTO(userSaveDTO);
+        return UserConverter.toSaveDTO(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public UserUpdateDTO update(UserUpdateDTO userUpdateDTO) throws ServiceException {
-        try {
-            User user = UserConverter.fromDTO(userUpdateDTO);
-            return UserConverter.toUpdateDTO(userRepository.update(user));
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
+        Optional<User> userToUpdate = userRepository.findById(userUpdateDTO.getId());
+        if (userToUpdate.isPresent()) {
+            User user = userToUpdate.get();
+            if (userUpdateDTO.getFirstName() != null) {
+                user.setFirstName(userUpdateDTO.getFirstName());
+            }
+            if (userUpdateDTO.getLastName() != null) {
+                user.setLastName(userUpdateDTO.getLastName());
+            }
+            if (userUpdateDTO.getLogin() != null) {
+                user.setLogin(userUpdateDTO.getLogin());
+            }
+            if (userUpdateDTO.getPassword() != null) {
+                user.setPassword(userUpdateDTO.getPassword());
+            }
+            if (userUpdateDTO.getAddress() != null) {
+                user.setAddress(userUpdateDTO.getAddress());
+            }
+            userRepository.flush();
+            return UserConverter.toUpdateDTO(user);
+        } else {
+            throw new ServiceException("User is not updated");
         }
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) throws ServiceException {
-        try {
-            return userRepository.delete(id);
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
+        Optional<User> userToDelete = userRepository.findById(id);
+        if (userToDelete.isPresent()) {
+            User user = userToDelete.get();
+            orderRepository.deleteAll(user.getOrders());
+            userRepository.delete(user);
+            return true;
+        } else {
+            throw new ServiceException("User is not deleted");
         }
     }
 
+    @Transactional
     @Override
     public boolean addRoleToUser(Long userId, Long roleId) throws ServiceException {
-        try {
-            return userRepository.addRoleToUser(userId, roleId);
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
+        Optional<User> userToAddRole = userRepository.findById(userId);
+        if (userToAddRole.isPresent()) {
+            User user = userToAddRole.get();
+            user.getRoles().add(Role.builder().id(roleId).build());
+            userRepository.flush();
+            return true;
+        } else {
+            throw new ServiceException("Role is not added");
         }
-
     }
 
+    @Transactional
     @Override
     public boolean deleteRoleFromUser(Long userId, Long roleId) throws ServiceException {
-        try {
-            return userRepository.deleteRoleFromUser(userId, roleId);
-        } catch (Exception ex) {
-            throw new ServiceException(ex.getMessage(), ex.getCause());
+        Optional<User> userToRemoveRole = userRepository.findById(userId);
+        if (userToRemoveRole.isPresent()) {
+            User user = userToRemoveRole.get();
+            user.setRoles(user.getRoles().stream()
+                    .filter(role -> !Objects.equals(role.getId(), roleId))
+                    .collect(Collectors.toSet()));
+            userRepository.flush();
+            return true;
+        } else {
+            throw new ServiceException("Role is not deleted");
         }
     }
 }
