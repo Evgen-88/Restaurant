@@ -8,19 +8,16 @@ import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Dish;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.DishGroup;
-import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.deprecated.DishRepository;
+import com.itrex.kaliaha.repository.CompositionRepository;
+import com.itrex.kaliaha.repository.DishRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -29,6 +26,8 @@ class DishServiceImplTest extends BaseServiceTest {
     private DishServiceImpl dishService;
     @Mock
     private DishRepository dishRepository;
+    @Mock
+    private CompositionRepository compositionRepository;
 
     public Dish getDishFindById() {
         List<Composition> compositions = new ArrayList<>(){{
@@ -42,16 +41,16 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     public DishDTO getDishDTOExpected() {
-        return DishConverter.toDTO(getDishFindById());
+        return DishConverter.fromDTO(getDishFindById());
     }
 
     @Test
-    void findByIdTest_shouldReturnDishDTO() throws RepositoryException, ServiceException {
+    void findByIdTest_shouldReturnDishDTO() throws ServiceException {
         //given
         DishDTO expected = getDishDTOExpected();
 
         // when
-        when(dishRepository.findById(1L)).thenReturn(getDishFindById());
+        when(dishRepository.findById(1L)).thenReturn(Optional.of(getDishFindById()));
         DishDTO actual = dishService.findById(1L);
 
         //then
@@ -59,7 +58,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAllTest_shouldReturnAllDishListDTO() throws RepositoryException, ServiceException {
+    void findAllTest_shouldReturnAllDishListDTO() throws ServiceException {
         //given
         List<DishListDTO> expected = getListDishListDTO();
 
@@ -72,7 +71,7 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void addTest_shouldAddNewDish() throws RepositoryException, ServiceException {
+    void addTest_shouldAddNewDish() throws ServiceException {
         //given
         when(dishRepository.findAll()).thenReturn(getDishes());
         List<DishListDTO> actualList = dishService.findAll();
@@ -95,7 +94,7 @@ class DishServiceImplTest extends BaseServiceTest {
         Dish afterAdd =  DishConverter.fromDTO(expected);
         afterAdd.setId(4L);
 
-        when(dishRepository.addWithCompositions(beforeAdd, compositions)).thenReturn(afterAdd);
+        when(dishRepository.save(beforeAdd)).thenReturn(afterAdd);
         DishSaveOrUpdateDTO actual = dishService.add(expected);
 
         //then
@@ -105,13 +104,12 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void updateTest_shouldUpdateDish() throws ServiceException, RepositoryException {
+    void updateTest_shouldUpdateDish() throws ServiceException {
         //given
         DishSaveOrUpdateDTO expected = DishSaveOrUpdateDTO.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
-        Dish toUpdate = Dish.builder().id(1L).dishName("Шаньга").price(3).dishGroup(DishGroup.DRINK).dishDescription("Ужасно").imagePath("photo1111.img").build();
 
         //when
-        when(dishRepository.update(toUpdate)).thenReturn(toUpdate);
+        when(dishRepository.findById(1L)).thenReturn(Optional.of(getDishFindById()));
         DishSaveOrUpdateDTO actual = dishService.update(expected);
 
         //then
@@ -119,9 +117,9 @@ class DishServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteDish() throws RepositoryException {
+    void deleteTest_shouldDeleteDish() {
         //given && when && then
-        when(dishRepository.delete(1L)).thenReturn(true);
+        when(dishRepository.findById(1L)).thenReturn(Optional.of(getDishFindById()));
         Assertions.assertDoesNotThrow(() -> dishService.delete(1L));
     }
 }

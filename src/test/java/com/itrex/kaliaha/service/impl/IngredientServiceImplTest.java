@@ -3,16 +3,18 @@ package com.itrex.kaliaha.service.impl;
 import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
-import com.itrex.kaliaha.exception.RepositoryException;
 import com.itrex.kaliaha.exception.ServiceException;
-import com.itrex.kaliaha.repository.deprecated.IngredientRepository;
+import com.itrex.kaliaha.repository.CompositionRepository;
+import com.itrex.kaliaha.repository.IngredientRepository;
 import com.itrex.kaliaha.service.BaseServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -21,14 +23,16 @@ class IngredientServiceImplTest extends BaseServiceTest {
     private IngredientServiceImpl ingredientService;
     @Mock
     private IngredientRepository ingredientRepository;
+    @Mock
+    private CompositionRepository compositionRepository;
 
     @Test
-    void findByIdTest_shouldReturnIngredientDTO() throws RepositoryException, ServiceException {
+    void findByIdTest_shouldReturnIngredientDTO() throws ServiceException {
         //given
         IngredientDTO expected = getIngredientsDTO().get(0);
 
         // when
-        when(ingredientRepository.findById(1L)).thenReturn(getIngredients().get(0));
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.of(getIngredients().get(0)));
         IngredientDTO actual = ingredientService.findById(1L);
 
         //then
@@ -36,7 +40,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void findAllTest_shouldReturnAllIngredientDTO() throws RepositoryException, ServiceException {
+    void findAllTest_shouldReturnAllIngredientDTO() throws ServiceException {
         //given
         List<IngredientDTO> expected = getIngredientsDTO();
 
@@ -49,7 +53,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void addTest_shouldAddNewIngredient() throws ServiceException, RepositoryException {
+    void addTest_shouldAddNewIngredient() throws ServiceException {
         //given
         when(ingredientRepository.findAll()).thenReturn(getIngredients());
         List<IngredientDTO> actualList = ingredientService.findAll();
@@ -61,7 +65,7 @@ class IngredientServiceImplTest extends BaseServiceTest {
         Ingredient beforeAdd = Ingredient.builder().ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
         Ingredient afterAdd = Ingredient.builder().id(6L).ingredientName("Петрушка").price(8).remainder(1500).measurement(Measurement.KILOGRAM).build();
 
-        when(ingredientRepository.add(beforeAdd)).thenReturn(afterAdd);
+        when(ingredientRepository.save(beforeAdd)).thenReturn(afterAdd);
         IngredientDTO actual = ingredientService.add(expected);
 
         //then
@@ -71,13 +75,12 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void updateTest_shouldUpdateIngredient() throws ServiceException, RepositoryException {
+    void updateTest_shouldUpdateIngredient() throws ServiceException {
         //given
         IngredientDTO expected = IngredientDTO.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
-        Ingredient toUpdate = Ingredient.builder().id(1L).ingredientName("Рыба").price(120).remainder(1550).measurement(Measurement.GRAM).build();
 
         //when
-        when(ingredientRepository.update(toUpdate)).thenReturn(toUpdate);
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.of(getIngredients().get(0)));
         IngredientDTO actual = ingredientService.update(expected);
 
         //then
@@ -85,9 +88,15 @@ class IngredientServiceImplTest extends BaseServiceTest {
     }
 
     @Test
-    void deleteTest_shouldDeleteDish() throws RepositoryException {
-        //given && when && then
-        when(ingredientRepository.delete(1L)).thenReturn(true);
+    void deleteTest_shouldDeleteDish() {
+        //given
+        Ingredient ingredient = getIngredients().get(0);
+        ingredient.setCompositions(new ArrayList<>());
+
+        //when
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.of(ingredient));
+
+        //then
         Assertions.assertDoesNotThrow(() -> ingredientService.delete(1L));
     }
 }

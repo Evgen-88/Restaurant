@@ -1,10 +1,8 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.enums.Measurement;
-import com.itrex.kaliaha.repository.BaseRepositoryTest;
-import com.itrex.kaliaha.repository.IngredientRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientRepositoryImplTest extends BaseRepositoryTest {
+public class IngredientRepositoryTest extends BaseRepositoryTest {
     private final List<Ingredient> ingredients;
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    public IngredientRepositoryImplTest() {
+    public IngredientRepositoryTest() {
         ingredients = new ArrayList<>() {{
             add(Ingredient.builder().id(1L).ingredientName("Мясо").price(800).remainder(1500).measurement(Measurement.KILOGRAM).build());
             add(Ingredient.builder().id(2L).ingredientName("Картошка").price(300).remainder(777).measurement(Measurement.KILOGRAM).build());
@@ -85,25 +83,6 @@ public class IngredientRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assertions.assertEquals(expected, updatedIngredient);
         Assertions.assertEquals(expected, ingredientRepository.findById(updatedIngredient.getId()).orElse(null));
-    }
-
-    @Test//toDO
-    public void deleteTest_validData_shouldDeleteIngredient() {
-        //given
-        Ingredient expected = ingredients.get(0);
-        Ingredient actual = ingredientRepository.findById(1L).orElse(null);
-
-        Assertions.assertEquals(expected, actual);
-        assert actual != null;
-        Assertions.assertEquals(3, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
-
-        //when
-        //boolean isDeleted = ;
-        ingredientRepository.deleteById(actual.getId());
-        //then
-//        Assertions.assertTrue(isDeleted);
-        Assertions.assertNull(ingredientRepository.findById(1L).orElse(null));
-        Assertions.assertEquals(0, ingredientRepository.findAllCompositionsThatIncludeIngredientById(actual.getId()).size());
     }
 
     @Test
