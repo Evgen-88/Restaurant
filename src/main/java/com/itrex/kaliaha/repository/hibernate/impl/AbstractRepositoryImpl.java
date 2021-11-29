@@ -1,8 +1,8 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository.hibernate.impl;
 
 import com.itrex.kaliaha.entity.BaseEntity;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.deprecated.BaseRepository;
+import com.itrex.kaliaha.repository.hibernate.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

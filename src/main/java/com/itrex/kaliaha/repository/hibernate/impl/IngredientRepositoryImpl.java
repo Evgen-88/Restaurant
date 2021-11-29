@@ -1,9 +1,9 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository.hibernate.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.deprecated.IngredientRepository;
+import com.itrex.kaliaha.repository.hibernate.IngredientRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

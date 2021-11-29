@@ -1,4 +1,4 @@
-package com.itrex.kaliaha.repository.deprecated;
+package com.itrex.kaliaha.repository.hibernate;
 
 import com.itrex.kaliaha.entity.Composition;
 import com.itrex.kaliaha.entity.Ingredient;

@@ -1,16 +1,14 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository.hibernate.impl;
 
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
-import com.itrex.kaliaha.repository.deprecated.BaseRepository;
+import com.itrex.kaliaha.repository.hibernate.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Deprecated
-@Repository(value = "roleRepository")
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements BaseRepository<Role> {
     private static final String SELECT_ALL = "from Role r";
 

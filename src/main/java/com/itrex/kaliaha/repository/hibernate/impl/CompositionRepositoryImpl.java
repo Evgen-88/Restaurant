@@ -1,12 +1,10 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository.hibernate.impl;
 
 import com.itrex.kaliaha.entity.Composition;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.stereotype.Repository;
 
 @Deprecated
-@Repository(value = "compositionRepository")
 public class CompositionRepositoryImpl extends AbstractRepositoryImpl<Composition> {
     private static final String QUANTITY_COLUMN = "quantity";
 

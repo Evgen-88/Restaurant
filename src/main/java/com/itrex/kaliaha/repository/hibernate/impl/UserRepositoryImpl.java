@@ -1,10 +1,10 @@
-package com.itrex.kaliaha.repository.deprecated.impl;
+package com.itrex.kaliaha.repository.hibernate.impl;
 
 import com.itrex.kaliaha.entity.Order;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.RepositoryException;
-import com.itrex.kaliaha.repository.deprecated.UserRepository;
+import com.itrex.kaliaha.repository.hibernate.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -76,11 +76,11 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     @Override
-    public User add(User user, List<Role> roles) throws RepositoryException {
+    public User add(User user, Set<Role> roles) throws RepositoryException {
         try (Session session = getSessionFactory().openSession()) {
             try {
                 session.getTransaction().begin();
-                user.setRoles(new HashSet<>(roles));
+                user.setRoles(roles);
                 session.save(user);
                 session.getTransaction().commit();
             } catch (Exception ex) {
