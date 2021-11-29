@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,5 +25,5 @@ public class UserSaveDTO implements DTO {
     private String password;
     private String address;
 
-    private List<Long> rolesId;
+    private Set<Long> rolesId;
 }
