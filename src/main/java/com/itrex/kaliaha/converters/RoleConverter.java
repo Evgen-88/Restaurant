@@ -26,16 +26,4 @@ public class RoleConverter {
                 .map(RoleConverter::toDTO)
                 .collect(Collectors.toSet());
     }
-
-    public static List<Role> fromRoleListIdDTO(List<Long> rolesId) {
-        return rolesId.stream()
-                .map(RoleConverter::fromDTO)
-                .collect(Collectors.toList());
-    }
-
-    public static Role fromDTO(Long id) {
-        return Role.builder()
-                .id(id)
-                .build();
-    }
 }

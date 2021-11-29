@@ -2,9 +2,11 @@ package com.itrex.kaliaha.converters;
 
 import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.BaseEntity;
+import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserConverter {
@@ -19,6 +21,10 @@ public class UserConverter {
                 .roles(RoleConverter.toRoleSetDTO(user.getRoles()))
                 .orders(OrderConverter.toListUserOrderListDTO(new ArrayList<>(user.getOrders())))
                 .build();
+    }
+
+    public static List<UserListDTO> toUserListDTO(List<User> users) {
+        return users.stream().map(UserConverter::toListDTO).collect(Collectors.toList());
     }
 
     public static UserListDTO toListDTO(User user) {
@@ -39,7 +45,7 @@ public class UserConverter {
                 .login(user.getLogin())
                 .password(user.getPassword())
                 .address(user.getAddress())
-                .rolesId(user.getRoles().stream().map(BaseEntity::getId).collect(Collectors.toList()))
+                .rolesId(user.getRoles().stream().map(BaseEntity::getId).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -62,17 +68,7 @@ public class UserConverter {
                 .login(userSaveDTO.getLogin())
                 .password(userSaveDTO.getPassword())
                 .address(userSaveDTO.getAddress())
-                .build();
-    }
-
-    public static User fromDTO(UserUpdateDTO userUpdateDTO) {
-        return User.builder()
-                .id(userUpdateDTO.getId())
-                .firstName(userUpdateDTO.getFirstName())
-                .lastName(userUpdateDTO.getLastName())
-                .login(userUpdateDTO.getLogin())
-                .password(userUpdateDTO.getPassword())
-                .address(userUpdateDTO.getAddress())
+                .roles(userSaveDTO.getRolesId().stream().map(roleId -> Role.builder().id(roleId).build()).collect(Collectors.toSet()))
                 .build();
     }
 }
