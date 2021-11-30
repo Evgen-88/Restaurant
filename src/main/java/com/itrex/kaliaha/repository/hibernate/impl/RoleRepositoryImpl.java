@@ -6,14 +6,15 @@ import com.itrex.kaliaha.repository.hibernate.BaseRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Deprecated
 public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements BaseRepository<Role> {
     private static final String SELECT_ALL = "from Role r";
 
-    public RoleRepositoryImpl(SessionFactory sessionFactory) {
-        super(Role.class, sessionFactory);
+    public RoleRepositoryImpl(EntityManagerFactory factory) {
+        super(Role.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

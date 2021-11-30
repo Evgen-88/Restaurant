@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -35,8 +36,8 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
             "lastName = :lastName, firstName = :firstName, login = :login, " +
             "password = :password, address = :address where id = :id";
 
-    public UserRepositoryImpl(SessionFactory sessionFactory) {
-        super(User.class, sessionFactory);
+    public UserRepositoryImpl(EntityManagerFactory factory) {
+        super(User.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

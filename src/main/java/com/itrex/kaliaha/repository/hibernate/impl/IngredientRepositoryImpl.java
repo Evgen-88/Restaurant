@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Deprecated
@@ -19,8 +20,8 @@ public class IngredientRepositoryImpl extends AbstractRepositoryImpl<Ingredient>
     private static final String SELECT_COMPOSITIONS_BY_INGREDIENT_ID =
             "from Composition c left join fetch c.ingredient i where i.id=:id";
 
-    public IngredientRepositoryImpl(SessionFactory sessionFactory) {
-        super(Ingredient.class, sessionFactory);
+    public IngredientRepositoryImpl(EntityManagerFactory factory) {
+        super(Ingredient.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

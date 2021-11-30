@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Deprecated
@@ -30,8 +31,8 @@ public class OrderRepositoryImpl extends AbstractRepositoryImpl<Order> implement
             "price = :price, date = :date, address = :address, " +
             "orderStatus = :orderStatus where id = :id";
 
-    public OrderRepositoryImpl(SessionFactory sessionFactory) {
-        super(Order.class, sessionFactory);
+    public OrderRepositoryImpl(EntityManagerFactory factory) {
+        super(Order.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override

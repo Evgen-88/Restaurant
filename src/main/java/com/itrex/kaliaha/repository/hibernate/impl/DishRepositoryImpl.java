@@ -8,6 +8,8 @@ import com.itrex.kaliaha.repository.hibernate.DishRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Deprecated
@@ -23,8 +25,8 @@ public class DishRepositoryImpl extends AbstractRepositoryImpl<Dish> implements 
             "from Composition c left join fetch c.dish d where d.id=:id";
     private static final String SELECT_ALL = "from Dish r";
 
-    public DishRepositoryImpl(SessionFactory sessionFactory) {
-        super(Dish.class, sessionFactory);
+    public DishRepositoryImpl(EntityManagerFactory factory) {
+        super(Dish.class, factory.unwrap(SessionFactory.class));
     }
 
     @Override
