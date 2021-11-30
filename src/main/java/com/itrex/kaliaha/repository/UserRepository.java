@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("from User u left join fetch u.roles r where r.id =:roleId")
     List<User> findUsersWhoHaveRoleById(Long roleId);
+
+    @Query("from User u left join fetch u.roles where u.login =:login")
+    Optional<User> findByLogin(String login);
 }
