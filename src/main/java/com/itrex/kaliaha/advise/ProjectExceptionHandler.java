@@ -40,7 +40,9 @@ public class ProjectExceptionHandler {
 
         return ResponseEntity
                 .badRequest()
-                .body(new ApiCallError<>("Missing request parameter", List.of(ex.getMessage())));
+                .body(new ApiCallError<>("Missing request parameter",
+                        List.of(ex.getMessage() != null ? ex.getMessage() : ""))
+                );
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
