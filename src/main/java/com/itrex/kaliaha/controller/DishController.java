@@ -6,6 +6,7 @@ import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.DishService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,7 @@ public class DishController extends AbstractController{
     }
 
     @PostMapping
+    @Secured("admin")
     public ResponseEntity<?> addDish(@RequestBody DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
         try {
             return new ResponseEntity<>(dishService.add(dishSaveOrUpdateDTO), HttpStatus.OK);
@@ -51,6 +53,7 @@ public class DishController extends AbstractController{
     }
 
     @PutMapping
+    @Secured({"admin", "cook"})
     public ResponseEntity<?> updateDish(@RequestBody DishSaveOrUpdateDTO dishSaveOrUpdateDTO) {
         try {
             return new ResponseEntity<>(dishService.update(dishSaveOrUpdateDTO), HttpStatus.OK);
@@ -60,6 +63,7 @@ public class DishController extends AbstractController{
     }
 
     @DeleteMapping("/{id}")
+    @Secured("admin")
     public ResponseEntity<?> deleteDish(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(dishService.delete(id), HttpStatus.OK);
@@ -78,6 +82,7 @@ public class DishController extends AbstractController{
     }
 
     @PutMapping(value = "/{id}/ingredients", params = {"ingredientId", "quantity"})
+    @Secured({"admin", "cook"})
     public ResponseEntity<?> addIngredientToDish(@PathVariable Long id, DishIngredientDTO dishIngredientDTO) {
         try{
             return new ResponseEntity<>(dishService.addIngredientToDish(id, dishIngredientDTO), HttpStatus.OK);
@@ -87,6 +92,7 @@ public class DishController extends AbstractController{
     }
 
     @DeleteMapping("/{dishId}/ingredients/{ingredientId}")
+    @Secured({"admin", "cook"})
     public ResponseEntity<?> deleteIngredientFromDish(@PathVariable Long dishId, @PathVariable Long ingredientId) {
         try {
             return new ResponseEntity<>(dishService.deleteIngredientFromDish(dishId, ingredientId), HttpStatus.OK);
