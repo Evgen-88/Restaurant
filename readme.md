@@ -2,13 +2,9 @@
 
 _developed by Kolyago V. under the direction of Bobrovich M._
 
----
 <h2>Application description</h2>
 
----
 A web application **Restaurant** was created for educational purposes to study modern Java frameworks.<br/>
-
-
 
 The following frameworks are used in this project:
 - **Stream API** 
