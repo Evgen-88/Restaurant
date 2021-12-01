@@ -1,10 +1,7 @@
 package com.itrex.kaliaha.service.impl;
 
 import com.itrex.kaliaha.converters.UserConverter;
-import com.itrex.kaliaha.dto.UserDTO;
-import com.itrex.kaliaha.dto.UserListDTO;
-import com.itrex.kaliaha.dto.UserSaveDTO;
-import com.itrex.kaliaha.dto.UserUpdateDTO;
+import com.itrex.kaliaha.dto.*;
 import com.itrex.kaliaha.entity.Role;
 import com.itrex.kaliaha.entity.User;
 import com.itrex.kaliaha.exception.ServiceException;
@@ -15,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @AllArgsConstructor
 @Service
@@ -126,5 +126,13 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new ServiceException("Role is not deleted");
         }
+    }
+
+    @Override
+    public UserDetailsDTO findByLogin(String login) {
+        return UserConverter.toUserDetailsDTO(
+                userRepository.findByLogin(login)
+                        .orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", login)))
+        );
     }
 }
