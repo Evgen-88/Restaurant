@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS dish
 (
     id               BIGINT                         NOT NULL AUTO_INCREMENT,
     dish_name        VARCHAR(256)                   NOT NULL,
-    price            INT                            NULL,
+    price            INT                            NOT NULL,
     dish_group       ENUM ('HOT', 'SALAD', 'DRINK') NOT NULL,
     dish_description VARCHAR(5000)                  NULL,
     image_path       VARCHAR(512)                   NULL,

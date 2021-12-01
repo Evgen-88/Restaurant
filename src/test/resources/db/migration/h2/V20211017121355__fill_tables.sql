@@ -1,7 +1,6 @@
 INSERT INTO user_role(role_name)
 VALUES ('admin'),
-       ('user'),
-       ('cook');
+       ('user');
 
 INSERT INTO users(last_name, first_name, login, password, address)
 VALUES ('Коляго', 'Владислав', 'kaliaha.vladzislav', '1111', 'г.Витебск'),
@@ -14,7 +13,7 @@ VALUES (1, 1),
        (1, 2),
        (2, 2),
        (3, 2),
-       (4, 3);
+       (4, 2);
 
 INSERT INTO user_order (price, order_date, address, order_status, user_id)
 VALUES ('1500', '2021-10-21 00:00:00', 'г. Минск', 'COOKING', '1'),
