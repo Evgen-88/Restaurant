@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 
 @Configuration
 public class ApplicationContextConfiguration {
@@ -23,5 +24,11 @@ public class ApplicationContextConfiguration {
     @Profile("debug")
     public void configureLoggingDebug() {
         PropertyConfigurator.configure(loggingProfileDebug);
+    }
+
+    //remove the default ROLE_ prefix
+    @Bean
+    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
     }
 }
