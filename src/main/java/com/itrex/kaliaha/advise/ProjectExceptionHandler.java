@@ -1,6 +1,5 @@
 package com.itrex.kaliaha.advise;
 
-import com.itrex.kaliaha.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,15 +24,6 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 @ControllerAdvice
 public class ProjectExceptionHandler {
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiCallError<String>> handleNotFoundException(HttpServletRequest request, NotFoundException ex) {
-        log.error("NotFoundException {}\n", request.getRequestURI(), ex);
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ApiCallError<>("Not found exception", List.of(ex.getMessage())));
-    }
-
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiCallError<String>> handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException ex) {
         log.error("handleMissingServletRequestParameterException {}\n", request.getRequestURI(), ex);
