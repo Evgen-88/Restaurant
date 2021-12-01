@@ -23,8 +23,8 @@ Two databases are also used in this project:
 - **MySQL** database for the main application
 - **H2** for testing
 
-<h2>Main function</h2>
-The main function of the application is <b>to form a menu of dishes that can be ordered by the client</b>. <br/>
+<h2>Main functionality</h2>
+The main functionality of the application is <b>to form a menu of dishes that can be ordered by the client</b>. <br/>
 When you <b>select a dish</b> from the menu, you <b>create an order</b> that belongs to the user. <br/> 
 One order can contain several dishes, so each dish can be added to several orders. <br/>
 Each dish consists of ingredients contained in a different volume, one ingredient can be part of several dishes. <br/>
