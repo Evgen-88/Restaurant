@@ -1,9 +1,9 @@
-#Restaurant
+<h1>Restaurant</h1>
 
-######developed by Kolyago V. under the direction of Bobrovich M.
+_developed by Kolyago V. under the direction of Bobrovich M._
 
 ---
-##Application description
+<h2>Application description</h2>
 
 ---
 A web application **Restaurant** was created for educational purposes to study modern Java frameworks.<br/>
@@ -27,7 +27,7 @@ Two databases are also used in this project:
 - **MySQL** database for the main application
 - **H2** for testing
 
-##Main function
+<h2>Main function</h2>
 The main function of the application is **to form a menu of dishes that can be ordered by the client**. <br/>
 When you **select a dish** from the menu, you **create an order** that belongs to the user. <br/> 
 One order can contain several dishes, so each dish can be added to several orders. <br/>
