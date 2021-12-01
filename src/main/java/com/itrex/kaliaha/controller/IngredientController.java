@@ -4,6 +4,7 @@ import com.itrex.kaliaha.dto.IngredientDTO;
 import com.itrex.kaliaha.exception.ServiceException;
 import com.itrex.kaliaha.service.IngredientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/ingredients")
 @RequiredArgsConstructor
+@Secured("admin")
 public class IngredientController extends AbstractController {
     private final IngredientService ingredientService;
 

@@ -6,6 +6,7 @@ import com.itrex.kaliaha.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class UserController extends AbstractController{
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @Secured("admin")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
@@ -68,6 +70,7 @@ public class UserController extends AbstractController{
     }
 
     @DeleteMapping("/{userId}/roles/{roleId}")
+    @Secured("admin")
     public ResponseEntity<?> deleteRoleFromUser(@PathVariable long userId, @PathVariable long roleId) {
         try {
             return new ResponseEntity<>(userService.deleteRoleFromUser(userId, roleId), HttpStatus.OK);
@@ -77,6 +80,7 @@ public class UserController extends AbstractController{
     }
 
     @PutMapping("/{userId}/roles/{roleId}")
+    @Secured("admin")
     public ResponseEntity<?> addRoleToUser(@PathVariable long userId, @PathVariable long roleId) {
         try {
             return new ResponseEntity<>(userService.addRoleToUser(userId, roleId), HttpStatus.OK);
