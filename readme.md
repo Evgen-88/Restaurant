@@ -24,8 +24,8 @@ Two databases are also used in this project:
 - **H2** for testing
 
 <h2>Main function</h2>
-The main function of the application is **to form a menu of dishes that can be ordered by the client**. <br/>
-When you **select a dish** from the menu, you **create an order** that belongs to the user. <br/> 
+The main function of the application is <b>to form a menu of dishes that can be ordered by the client</b>. <br/>
+When you <b>select a dish</b> from the menu, you <b>create an order</b> that belongs to the user. <br/> 
 One order can contain several dishes, so each dish can be added to several orders. <br/>
 Each dish consists of ingredients contained in a different volume, one ingredient can be part of several dishes. <br/>
 Roles are used to delineate the functionality of the application. The user can have multiple roles and the role can have multiple users. <br/>
@@ -33,8 +33,8 @@ Roles are used to delineate the functionality of the application. The user can h
 The structure of the database is presented below:
 ![](./redmeFiles/СхемаБД.jpg)
 
-The entire functionality of the application is represented in the form of a **user request to the server** and **a response**, **which is formed on 
-the basis of requested parameters**. The list of possible requests to the server is provided below
+The entire functionality of the application is represented in the form of a <b>user request to the server</b> and <b>a response</b>, <b>which is formed on 
+the basis of requested parameters</b>. The list of possible requests to the server is provided below
 
 query | unauthorised | user | admin
 ---| :---: | :---: | :---:
