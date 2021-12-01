@@ -71,4 +71,13 @@ public class UserConverter {
                 .roles(userSaveDTO.getRolesId().stream().map(roleId -> Role.builder().id(roleId).build()).collect(Collectors.toSet()))
                 .build();
     }
+
+    public static UserDetailsDTO toUserDetailsDTO(User user) {
+        return UserDetailsDTO.builder()
+                .id(user.getId())
+                .username(user.getLogin())
+                .password(user.getPassword())
+                .roles(user.getRoles())
+                .build();
+    }
 }
