@@ -1,20 +1,19 @@
 INSERT INTO user_role(role_name)
 VALUES ('admin'),
-       ('user'),
-       ('cook');
+       ('user');
 
 INSERT INTO users(last_name, first_name, login, password, address)
-VALUES ('Коляго', 'Владислав', 'kaliaha.vladzislav', '1111', 'г.Витебск'),
-       ('Молочко', 'Юрий', 'molochko.urey', '2222', 'г.Хойники'),
-       ('Рубанов', 'Владислав', 'rubanov', '3333', 'г.Жлобин'),
-       ('Петров', 'Сергей', 'petrov', '4444', 'г.Москва');
+VALUES ('Коляго', 'Владислав', 'kaliaha.vladzislav', '$2a$12$ZzsBrVtm.E7.MPICtvM4C.0r3VZInYtVbexbVAML0LwbFuI9a4Huq', 'г.Витебск'),
+       ('Молочко', 'Юрий', 'molochko.urey', '$2a$12$.M9gDsXIh95pItG8wdOnUOOVhhNJh30qIqT0vRpQh8ymOMhzdgTti', 'г.Хойники'),
+       ('Рубанов', 'Владислав', 'rubanov', '$2a$12$WLo.y8PCYmjstVMLs19/yOHuUp7Y.DDWfouBofT.nCwUtRSqeeh.q', 'г.Жлобин'),
+       ('Петров', 'Сергей', 'petrov', '$2a$12$OrXD6DCzbAthbSWiCUO5OezA4JqqA54WMolgO0qKmegDHDNrPxMU2', 'г.Москва');
 
 INSERT INTO user_role_link(user_id, role_id)
 VALUES (1, 1),
        (1, 2),
        (2, 2),
        (3, 2),
-       (4, 3);
+       (4, 2);
 
 INSERT INTO user_order (price, order_date, address, order_status, user_id)
 VALUES ('1500', '2021-10-21 00:00:00', 'г. Минск', 'COOKING', '1'),
