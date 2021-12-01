@@ -91,7 +91,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
         List<User> actual = userRepository.findUsersWhoHaveRoleById(2L);
 
         //then
-        Assertions.assertEquals(3, actual.size());
+        Assertions.assertEquals(4, actual.size());
     }
 
 

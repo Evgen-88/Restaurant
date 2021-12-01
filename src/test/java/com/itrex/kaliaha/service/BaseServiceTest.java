@@ -36,7 +36,6 @@ public abstract class BaseServiceTest {
         return new ArrayList<>() {{
             add(Role.builder().id(1L).roleName("admin").build());
             add(Role.builder().id(2L).roleName("user").build());
-            add(Role.builder().id(3L).roleName("cook").build());
         }};
     }
 
@@ -44,7 +43,6 @@ public abstract class BaseServiceTest {
         return new ArrayList<>() {{
             add(RoleConverter.toDTO(getRoles().get(0)));
             add(RoleConverter.toDTO(getRoles().get(1)));
-            add(RoleConverter.toDTO(getRoles().get(2)));
         }};
     }
 

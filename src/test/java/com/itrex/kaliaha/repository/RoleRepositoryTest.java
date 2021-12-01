@@ -17,7 +17,6 @@ public class RoleRepositoryTest extends BaseRepositoryTest {
         roles = new ArrayList<>() {{
             add(Role.builder().id(1L).roleName("admin").build());
             add(Role.builder().id(2L).roleName("user").build());
-            add(Role.builder().id(3L).roleName("cook").build());
         }};
     }
 
@@ -52,7 +51,7 @@ public class RoleRepositoryTest extends BaseRepositoryTest {
         //when
         Role newActual = Role.builder().roleName("check").build();
         Role addedRole = roleRepository.save(newActual);
-        Role newExpected = Role.builder().id(4L).roleName("check").build();
+        Role newExpected = Role.builder().id(3L).roleName("check").build();
         expected.add(newExpected);
 
         //then
